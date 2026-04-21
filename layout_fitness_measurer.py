@@ -326,9 +326,9 @@ if __name__ == "__main__":
         RIGHT_BANK_MASKS
     )
 
-    #print("\nAll valid mask combos:")
-    #for combo, prons in matches.items():
-    #    print(f"{combo}: {prons}")
+    print("\nAll valid mask combos:")
+    for combo, prons in matches.items():
+        print(f"{combo}: {prons}")
 
     #print("\nAmbiguous combos:")
     #for combo, prons in ambiguous.items():

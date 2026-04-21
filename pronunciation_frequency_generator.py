@@ -210,7 +210,8 @@ def remove_vowels_but_keep_main(pron):
 
         # Rule 1: primary stress
         if "1" in ph:
-            reduced.append("vowel")
+            #reduced.append("vowel")
+            reduced.append((ph[:2]).replace())
             continue
 
         # Rule 2: first sound
@@ -236,6 +237,23 @@ def extract_clusters(pron):
     vowels = {"AA", "AE", "AH", "AO", "AW", "AY",
               "EH", "ER", "EY", "IH", "IY",
               "OW", "OY", "UH", "UW"}
+    
+    vowels = {
+"AH" and "ER" -> shortU, 
+"EH" -> shortE,
+"IH" -> shortI,
+#no short o
+"AA" and "AO" and "AW" -> AU,???
+"OW" -> longO,
+"OY",
+"AE" -> shortA,
+# long E and short A? They merge sometimes?
+??? also AU? ought/caught/oar???
+"EY" -> longA,
+"UH" and "UW" -> longU
+"IY" -> longE,
+"AY" -> longI,
+}
 
     def is_vowel(p): return p[:2] in vowels
 
