@@ -283,6 +283,7 @@ def build_pronunciation_frequency(words):
                 continue
 
             pron_word_map.setdefault(pron, {})[word] = freq_zipf
+            #pron_word_map.setdefault(pron, {})[word] = freq_linear
 
             initials, finals = extract_clusters(pron)
             for ic in initials:
@@ -318,31 +319,45 @@ if __name__ == "__main__":
 
     # Keep only the most common word for each pronunciation
     # This means I can make conflicts more punishing without punishing inherent conflicts like homophones/homonyms/stenonyms
-    filtered_pron_freq_map = {}
+    #filtered_pron_freq_map = {}
+    #for pron, words_dict in pron_freq_map.items():
+    #    most_common_word = max(words_dict.items(), key=lambda x: x[1])
+    #    filtered_pron_freq_map[pron] = {most_common_word[0]: most_common_word[1]}
+    #pron_freq_map = filtered_pron_freq_map
+
+
+    merged_pron_freq_map = {}
+
     for pron, words_dict in pron_freq_map.items():
-        most_common_word = max(words_dict.items(), key=lambda x: x[1])
-        filtered_pron_freq_map[pron] = {most_common_word[0]: most_common_word[1]}
-    pron_freq_map = filtered_pron_freq_map
+        # Words can only contribute so much, I don't want a common word to dominate, "th" is a rare sound despite "the"
+        capped_words = {
+            w: min(freq, 3.5)
+            for w, freq in words_dict.items()
+        }
 
+        #total_freq = sum(capped_words.values()) #linear logic, not zipf
 
-    MIN_CLUSTER_FREQ = 0.17
-    common_initial_clusters_frequencies = {c: f for c, f in initial_clusters.items() if f >= MIN_CLUSTER_FREQ}
-    common_final_clusters_frequencies   = {c: f for c, f in final_clusters.items()   if f >= MIN_CLUSTER_FREQ}
+        total_linear = sum(
+            min(10 ** (zipf - 6), 10 ** (3.5 - 6))
+            for zipf in words_dict.values()
+        )
+        total_freq = 6 + math.log10(total_linear)
+
+        sorted_words = sorted(capped_words.items(), key=lambda x: x[1], reverse=True)
+        word_label = "/".join(w for w, _ in sorted_words)
+
+        merged_pron_freq_map[pron] = {
+            word_label: round(total_freq, 3)
+        }
+
+    pron_freq_map = merged_pron_freq_map
+
 
     #Squish everything above 3.5 down to 3.5
-    for pron, words_dict in pron_freq_map.items():
-        for w in words_dict:
-            if words_dict[w] > 3.5:
-                words_dict[w] = 3.5
-
-    #Same here, but at 2
-    for c in common_initial_clusters_frequencies:
-        if common_initial_clusters_frequencies[c] > 2:
-            common_initial_clusters_frequencies[c] = 2.0
-
-    for c in common_final_clusters_frequencies:
-        if common_final_clusters_frequencies[c] > 2:
-            common_final_clusters_frequencies[c] = 2.0
+    #for pron, words_dict in pron_freq_map.items():
+    #    for w in words_dict:
+    #        if words_dict[w] > 3.5:
+    #            words_dict[w] = 3.5
 
 
     with open(INITIAL_CLUSTERS_FILE, "w", encoding="utf-8") as f:
