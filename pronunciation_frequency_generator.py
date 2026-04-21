@@ -6,9 +6,11 @@ from wordfreq import zipf_frequency
 from tqdm import tqdm
 from collections import Counter
 
+# input
 WORD_LIST_FILE = "words.txt"
-PRON_FREQ_FILE = "pronunciation_frequency.json"
 
+#output
+PRON_FREQ_FILE = "pronunciation_frequency.json"
 INITIAL_CLUSTERS_FILE = "initial_clusters.json"
 FINAL_CLUSTERS_FILE = "final_clusters.json"
 
@@ -57,9 +59,9 @@ def define_pronunciation_frequencies(word):
         new_prons = []
         for p in prons:
             phones = p.split()
-            # If it ends in a single S, change it to Z
-            if len(phones) > 0 and phones[-1] == "S":
-                phones[-1] = "Z"
+            # If it ends in a single S, give it its own phoneme (later I will merge with Z but with smart arpeggiation logic)
+            if len(phones) > 0 and phones[-1] in ["S","Z"]: #cyclops, eskimos
+                phones[-1] = "^S"
             new_prons.append(" ".join(phones))
         prons = new_prons
 
@@ -97,6 +99,11 @@ def remove_vowels_but_keep_main(pron):
     Also, replace first vowel in any vowel–vowel sequence with Y/W
     (before vowel removal), transferring primary stress if needed.
     """
+    #Treat secondary stress as simply unstressed
+    pron = pron.replace("2", "0").replace("3", "0")
+
+    #Merge NG G into just NG
+    pron = pron.replace("NG G", "NG")
 
     #Merge th and th, this is usually reflected in spelling too
     pron = pron.replace("DH", "TH")
@@ -175,12 +182,51 @@ def remove_vowels_but_keep_main(pron):
             replace_first_vowel_with_glide(phones, i)
         i += 1
 
-    # Drop unstressed vowels
-    kept = []
+
+
+    # Some words like "fourteen" have multiple main stresses? Only keep the first
+    found_primary = False
     for i, ph in enumerate(phones):
-        if not is_vowel(ph) or i == 0 or i == len(phones) - 1 or "1" in ph:
-            kept.append(ph[:2])
-    return " ".join(kept)
+        if "1" in ph:
+            if not found_primary:
+                found_primary = True
+            else:
+                phones[i] = ph.replace("1", "0")
+
+
+    # I'm wanting to only keep vowels that are 1: stressed 2: the first sound or 3: the final sound
+
+    # Build final reduced pronunciation
+    reduced = []
+    last_index = len(phones) - 1
+    if phones[-1] == "^S":
+        last_index-=1
+
+    for i, ph in enumerate(phones):
+
+        if not is_vowel(ph):
+            reduced.append(ph)
+            continue
+
+        # Rule 1: primary stress
+        if "1" in ph:
+            reduced.append("vowel")
+            continue
+
+        # Rule 2: first sound
+        if i == 0:
+            reduced.append(ph[:2])
+            continue
+
+        # Rule 3: last sound
+        if i == last_index:
+            reduced.append(ph[:2])
+            continue
+
+        # Rule 4: remove all other vowels
+        #
+ 
+    return " ".join(reduced)
 
 
 # I'm doing this so when a mutation grabs a new cluster it's a cluster that will actually contribute to the fitness
@@ -196,7 +242,8 @@ def extract_clusters(pron):
     initials = []
     finals = []
 
-    vowel_indices = [i for i, p in enumerate(phones) if is_vowel(p)]
+    #vowel_indices = [i for i, p in enumerate(phones) if is_vowel(p)]
+    vowel_indices = [i for i, p in enumerate(phones) if p == "vowel"]
     if not vowel_indices:
         return [], []
 
@@ -254,6 +301,19 @@ def build_pronunciation_frequency(words):
 
 if __name__ == "__main__":
     words = load_word_list()
+
+if __name__ == "__main__":
+    words = load_word_list()
+
+    # No longer necessary as I'm capping frequencies at 3.5
+    # removing the top 250 words
+    # = [(w, zipf_frequency(w.lower(), "en")) for w in words]
+    #words_with_freq.sort(key=lambda x: x[1], reverse=True)
+    #cutoff = 250
+    # excluded_words = [w for w, f in words_with_freq[:cutoff]]
+    #words = [w for w, f in words_with_freq[cutoff:]]
+    #print(f"Excluded common words (top {cutoff})")
+
     pron_freq_map, initial_clusters, final_clusters = build_pronunciation_frequency(words)
 
     # Keep only the most common word for each pronunciation
@@ -265,16 +325,34 @@ if __name__ == "__main__":
     pron_freq_map = filtered_pron_freq_map
 
 
-    MIN_CLUSTER_FREQ = 0.2
-    initial_clusters = {c: f for c, f in initial_clusters.items() if f >= MIN_CLUSTER_FREQ}
-    final_clusters   = {c: f for c, f in final_clusters.items()   if f >= MIN_CLUSTER_FREQ}
-    with open(PRON_FREQ_FILE, "w", encoding="utf-8") as f:
-        json.dump(pron_freq_map, f, indent=2)
-    with open(INITIAL_CLUSTERS_FILE, "w", encoding="utf-8") as f:
-        json.dump(initial_clusters, f, indent=2)
-    with open(FINAL_CLUSTERS_FILE, "w", encoding="utf-8") as f:
-        json.dump(final_clusters, f, indent=2)
+    MIN_CLUSTER_FREQ = 0.17
+    common_initial_clusters_frequencies = {c: f for c, f in initial_clusters.items() if f >= MIN_CLUSTER_FREQ}
+    common_final_clusters_frequencies   = {c: f for c, f in final_clusters.items()   if f >= MIN_CLUSTER_FREQ}
 
-    print(f"Written to {PRON_FREQ_FILE}")
+    #Squish everything above 3.5 down to 3.5
+    for pron, words_dict in pron_freq_map.items():
+        for w in words_dict:
+            if words_dict[w] > 3.5:
+                words_dict[w] = 3.5
+
+    #Same here, but at 2
+    for c in common_initial_clusters_frequencies:
+        if common_initial_clusters_frequencies[c] > 2:
+            common_initial_clusters_frequencies[c] = 2.0
+
+    for c in common_final_clusters_frequencies:
+        if common_final_clusters_frequencies[c] > 2:
+            common_final_clusters_frequencies[c] = 2.0
+
+
+    with open(INITIAL_CLUSTERS_FILE, "w", encoding="utf-8") as f:
+        json.dump(list(initial_clusters.keys()), f, indent=2)
     print(f"Written to {INITIAL_CLUSTERS_FILE}")
+
+    with open(FINAL_CLUSTERS_FILE, "w", encoding="utf-8") as f:
+        json.dump(list(final_clusters.keys()), f, indent=2)
     print(f"Written to {FINAL_CLUSTERS_FILE}")
+
+    with open(PRON_FREQ_FILE, "w", encoding="utf-8") as f:
+        json.dump((pron_freq_map), f, indent=2)
+    print(f"Written to {PRON_FREQ_FILE}")

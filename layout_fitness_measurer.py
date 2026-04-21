@@ -39,8 +39,8 @@ with open(PRON_FREQ_FILE, "r", encoding="utf-8") as f:
     PRONUNCIATIONS = json.load(f)
 
 # Instead of evolving the vowel bank, I'm treating that as a solved problem, 4 keys to categorise 16 vowels with space for homophone resolution too, reed/read/red
-VOWELS = {"AA", "AE", "AH", "AO", "AW", "AY",
-          "EH", "ER", "EY", "IH", "IY", "OW", "OY", "UH", "UW"}
+# VOWELS = {"AA", "AE", "AH", "AO", "AW", "AY", "EH", "ER", "EY", "IH", "IY", "OW", "OY", "UH", "UW"}
+VOWELS = {"vowel"}
 
 # The genes are chords, I would like to generate the corresponding layout
 def generate_bank(chord_map):
