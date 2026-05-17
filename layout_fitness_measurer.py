@@ -214,6 +214,110 @@ def print_detailed_matches(matches, pron_freqs):
         print(f"{combo}: [{'; '.join(match_strings)}]")
 
 
+def calculate_chord_frequencies(matches, pron_freqs):
+    """
+    Calculate the frequency contribution for each chord.
+    Returns two defaultdicts: left_chord_freqs and right_chord_freqs
+    """
+    left_chord_freqs = defaultdict(float)
+    right_chord_freqs = defaultdict(float)
+    
+    for combo, match_list in matches.items():
+        for match in match_list:
+            pron = match['full_match']
+            if pron not in pron_freqs:
+                continue
+            
+            # Calculate total frequency for this pronunciation
+            word_freqs = pron_freqs[pron]
+            total_freq = sum(zipf_to_prob(z) for z in word_freqs.values())
+            
+            # Add frequency to each left chord
+            for chord in match['left_chords']:
+                left_chord_freqs[chord] += total_freq
+            
+            # Add frequency to each right chord
+            for chord in match['right_chords']:
+                right_chord_freqs[chord] += total_freq
+    
+    return dict(left_chord_freqs), dict(right_chord_freqs)
+
+
+def print_chord_frequencies(left_freqs, right_freqs, min_freq=0.01):
+    """Print chord frequencies sorted by frequency."""
+    print("\n--- Left Hand Chord Frequencies ---")
+    print(f"{'Chord':<8} {'Probability':<12} {'Zipf':<8}")
+    print("-" * 30)
+    for chord, prob in sorted(left_freqs.items(), key=lambda x: x[1], reverse=True):
+        if prob >= min_freq:
+            zipf = 6 + math.log10(prob) if prob > 0 else 0
+            print(f"{chord:<8} {prob:<12.6f} {zipf:<8.2f}")
+    
+    print(f"\n--- Right Hand Chord Frequencies ---")
+    print(f"{'Chord':<8} {'Probability':<12} {'Zipf':<8}")
+    print("-" * 30)
+    for chord, prob in sorted(right_freqs.items(), key=lambda x: x[1], reverse=True):
+        if prob >= min_freq:
+            zipf = 6 + math.log10(prob) if prob > 0 else 0
+            print(f"{chord:<8} {prob:<12.6f} {zipf:<8.2f}")
+
+def print_edge_frequencies(matches, pron_freqs):
+    """
+    Analyze edge frequencies between chords on the SAME bank only.
+    This tracks transitions like S→L (both left chords) or K→SH (both right chords).
+    """
+    # Track transitions: (prev_chord, next_chord) -> frequency
+    left_transitions = defaultdict(float)
+    right_transitions = defaultdict(float)
+    
+    for combo, match_list in matches.items():
+        for match in match_list:
+            pron = match['full_match']
+            if pron not in pron_freqs:
+                continue
+            
+            # Calculate total frequency for this pronunciation
+            word_freqs = pron_freqs[pron]
+            total_freq = sum(zipf_to_prob(z) for z in word_freqs.values())
+            
+            left_chords = match['left_chords']
+            right_chords = match['right_chords']
+            
+            # Within left-hand transitions
+            for i in range(len(left_chords) - 1):
+                left_transitions[(left_chords[i], left_chords[i+1])] += total_freq
+            
+            # Within right-hand transitions
+            for i in range(len(right_chords) - 1):
+                right_transitions[(right_chords[i], right_chords[i+1])] += total_freq
+    
+    print("\n--- Left-Hand Chord Transitions (Edges) ---")
+    print(f"{'From':<8} {'To':<8} {'Probability':<12} {'Zipf':<8}")
+    print("-" * 40)
+    for (from_chord, to_chord), prob in sorted(left_transitions.items(), 
+                                                key=lambda x: x[1], reverse=True):
+        zipf = 6 + math.log10(prob) if prob > 0 else 0
+        print(f"{from_chord:<8} {to_chord:<8} {prob:<12.6f} {zipf:<8.2f}")
+    
+    print(f"\n--- Right-Hand Chord Transitions (Edges) ---")
+    print(f"{'From':<8} {'To':<8} {'Probability':<12} {'Zipf':<8}")
+    print("-" * 40)
+    for (from_chord, to_chord), prob in sorted(right_transitions.items(), 
+                                                key=lambda x: x[1], reverse=True):
+        zipf = 6 + math.log10(prob) if prob > 0 else 0
+        print(f"{from_chord:<8} {to_chord:<8} {prob:<12.6f} {zipf:<8.2f}")
+    
+    # Combine both for analysis
+    all_transitions = {}
+    all_transitions.update(left_transitions)
+    all_transitions.update(right_transitions)
+    
+    return {
+        'left_transitions': dict(left_transitions),
+        'right_transitions': dict(right_transitions),
+        'all_transitions': all_transitions
+    }
+
 if __name__ == "__main__":
     with open(PRON_FREQ_FILE, "r", encoding="utf-8") as f:
         PRONUNCIATIONS = json.load(f)
@@ -228,7 +332,14 @@ if __name__ == "__main__":
     )
 
     print("\nAll valid mask combos with chord breakdown:")
-    print_detailed_matches(matches, PRONUNCIATIONS)  # Pass PRONUNCIATIONS here
+    print_detailed_matches(matches, PRONUNCIATIONS)
+
+    # Calculate chord frequencies
+    left_freqs, right_freqs = calculate_chord_frequencies(matches, PRONUNCIATIONS)
+    print_chord_frequencies(left_freqs, right_freqs)
+    
+    # Analyze edges/transitions
+    transitions = print_edge_frequencies(matches, PRONUNCIATIONS)
 
     # Compute coverage and conflict
     scores = score_layout(matches, ambiguous, PRONUNCIATIONS)
