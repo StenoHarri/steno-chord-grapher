@@ -5,7 +5,7 @@ import json
 
 PRON_FREQ_FILE = "pronunciation_frequency.json"
 VOWELS = {"AA", "AE", "AH", "AO", "AW", "AY",
-          "EH", "ER", "EY", "IH", "IY", "OW", "OY", "UH", "UW"}
+          "EH", "ER", "EY", "IH", "IY", "OW", "OY", "UH", "UW", "vowel"}
 
 
 before_vowel = set()
