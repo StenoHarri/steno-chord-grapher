@@ -283,8 +283,8 @@ def score_individual(individual, cache):
         return 1
 
 
-def print_detailed_matches(matches):
-    """Print matches with chord breakdown details"""
+def print_detailed_matches(matches, pron_freqs):
+    """Print matches with chord breakdown details including frequency"""
     for combo, match_list in sorted(matches.items()):
         # Format each unique match
         formatted_matches = []
@@ -294,14 +294,31 @@ def print_detailed_matches(matches):
             key = (match['full_match'], tuple(match['left_chords']), tuple(match['right_chords']))
             if key not in seen:
                 seen.add(key)
-                formatted_matches.append(match)
+                
+                # Get the frequency for this pronunciation
+                pron = match['full_match']
+                freq_info = "unknown"
+                if pron in pron_freqs:
+                    # pron_freqs[pron] is a dict like {'word': zipf_freq, ...}
+                    # Show the words and their frequencies
+                    words_with_freqs = [f"{w} ({freq})" for w, freq in pron_freqs[pron].items()]
+                    freq_info = ", ".join(words_with_freqs)
+                
+                # Add frequency to the match
+                match_with_freq = match.copy()
+                match_with_freq['frequency'] = freq_info
+                formatted_matches.append(match_with_freq)
         
         # Format the output
         match_strings = []
         for match in formatted_matches:
             left_str = str(match['left_chords']) if match['left_chords'] else '[]'
             right_str = str(match['right_chords']) if match['right_chords'] else '[]'
-            formatted = f"full match: '{match['full_match']}', left chords: {left_str}, vowel: {match['vowel']}, right chords: {right_str}"
+            formatted = (f"full match: '{match['full_match']}', "
+                        f"frequency: {match['frequency']}, "
+                        f"left chords: {left_str}, "
+                        f"vowel: {match['vowel']}, "
+                        f"right chords: {right_str}")
             match_strings.append(formatted)
         
         print(f"{combo}: [{'; '.join(match_strings)}]")
@@ -363,7 +380,7 @@ if __name__ == "__main__":
     )
 
     print("\nAll valid mask combos with chord breakdown:")
-    print_detailed_matches(matches)
+    print_detailed_matches(matches, PRONUNCIATIONS)  # Pass PRONUNCIATIONS here
 
     # Compute coverage and conflict
     scores = score_layout(matches, ambiguous, PRONUNCIATIONS)
