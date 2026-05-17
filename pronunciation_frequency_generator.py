@@ -61,7 +61,7 @@ def define_pronunciation_frequencies(word):
             phones = p.split()
             # If it ends in a single S, give it its own phoneme (later I will merge with Z but with smart arpeggiation logic)
             if len(phones) > 0 and phones[-1] in ["S","Z"]: #cyclops, eskimos
-                phones[-1] = "^S"
+                phones[-1] = "SS"
             new_prons.append(" ".join(phones))
         prons = new_prons
 
@@ -199,7 +199,7 @@ def remove_vowels_but_keep_main(pron):
     # Build final reduced pronunciation
     reduced = []
     last_index = len(phones) - 1
-    if phones[-1] == "^S":
+    if phones[-1] == "SS":
         last_index-=1
 
     for i, ph in enumerate(phones):
