@@ -6,6 +6,7 @@ from base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN
 from find_implied_chords import generate_masks, mask_to_chords
 from collections import defaultdict
 
+
 class FitnessCache:
     def __init__(self, shared_dict=None):
         # If shared_dict is provided, use it; otherwise, fallback to normal dict
@@ -29,94 +30,118 @@ class FitnessCache:
     def set(self, individual, value):
         self.cache[self.key(individual)] = value
 
-#cacheing lodgic
-#removed because instead of a global variable, I'm now passing it in
-#fitness_cache = None #I will initialise this in the main process once with FitnessCache(shared_dict=_shared_cache)
-
 
 PRON_FREQ_FILE = "pronunciation_frequency.json"
 with open(PRON_FREQ_FILE, "r", encoding="utf-8") as f:
     PRONUNCIATIONS = json.load(f)
 
-# Instead of evolving the vowel bank, I'm treating that as a solved problem, 4 keys to categorise 16 vowels with space for homophone resolution too, reed/read/red
-# VOWELS = {"AA", "AE", "AH", "AO", "AW", "AY", "EH", "ER", "EY", "IH", "IY", "OW", "OY", "UH", "UW"}
 VOWELS = {"vowel"}
 
+
 # The genes are chords, I would like to generate the corresponding layout
-def generate_bank(chord_map):
+def generate_bank_from_chords(chord_map):
     bank = defaultdict(list)
     for chord, mask in chord_map.items():
         bank[mask].append(chord)
     return dict(bank)
 
-# Build banks automatically
-LEFT_BANK = generate_bank(LEFT_CHORDS)
-RIGHT_BANK = generate_bank(RIGHT_CHORDS)
 
-# Build left bank masks
-LEFT_BANK_MASKS = {
-    mask: mask_to_chords(mask, LEFT_BANK_LEN, LEFT_BANK)
-    for mask in generate_masks(LEFT_BANK_LEN)
-    # skip if maps to []
-    if (chords := mask_to_chords(mask, LEFT_BANK_LEN, LEFT_BANK))
-}
+# Build banks automatically
+LEFT_BANK = generate_bank_from_chords(LEFT_CHORDS)
+RIGHT_BANK = generate_bank_from_chords(RIGHT_CHORDS)
+
+
+# Build left bank masks with chord composition preserved
+LEFT_BANK_MASKS = {}
+for mask in generate_masks(LEFT_BANK_LEN):
+    chord_compositions = mask_to_chords(mask, LEFT_BANK_LEN, LEFT_BANK)
+    if chord_compositions:  # Only include if there are valid chord combinations
+        LEFT_BANK_MASKS[mask] = chord_compositions
+
 
 # Build right bank masks with some disallowed endings
 DISALLOWED_ENDINGS = r'(1..1|11.)$'
-RIGHT_BANK_MASKS = {
-    mask: mask_to_chords(mask, RIGHT_BANK_LEN, RIGHT_BANK)
-    for mask in generate_masks(RIGHT_BANK_LEN)
-    # however, some key combinations require contorting the hand, so I'll disallow those
-    if re.search(DISALLOWED_ENDINGS, mask) is None
-    # skip if maps to []
-    and (chords := mask_to_chords(mask, RIGHT_BANK_LEN, RIGHT_BANK)) 
-}
+RIGHT_BANK_MASKS = {}
+for mask in generate_masks(RIGHT_BANK_LEN):
+    # Skip masks with disallowed endings
+    if re.search(DISALLOWED_ENDINGS, mask) is not None:
+        continue
+    chord_compositions = mask_to_chords(mask, RIGHT_BANK_LEN, RIGHT_BANK)
+    if chord_compositions:  # Only include if there are valid chord combinations
+        RIGHT_BANK_MASKS[mask] = chord_compositions
 
 
 def find_vowel_split_matches(pronunciations, vowels, left_masks, right_masks):
+    """
+    Find matches between pronunciations and mask combinations.
+    Now preserves which specific chords form each match.
+    """
     matches = {}
-
+    
     # find the blank masks
     blank_left = "0" * len(next(iter(left_masks)))
     blank_right = "0" * len(next(iter(right_masks)))
-
+    
     for pron, data in pronunciations.items():
         phonemes = pron.split()
-
+        
         # Find all vowels in the pronunciation
         for i, ph in enumerate(phonemes):
             if ph not in vowels:
                 continue  # Only split at vowels
-
+            
             left_part = " ".join(phonemes[:i])
             right_part = " ".join(phonemes[i + 1:])
-
-            # left masks
+            
+            # left masks - find matches with chord composition preserved
             if left_part == "":
-                possible_left = [blank_left]  # must be blank if starts with vowel
+                possible_left = [(blank_left, [[]])]  # blank with empty chord list
             else:
-                possible_left = [
-                    lm for lm, chords in left_masks.items()
-                    if left_part in chords
-                ]
-
-            # right masks
+                possible_left = []
+                for lm, chord_compositions in left_masks.items():
+                    # chord_compositions is a dict: {pron_string: [[chord1, chord2], ...]}
+                    if left_part in chord_compositions:
+                        # Get all the ways to form this sound with these chords
+                        for chord_combo in chord_compositions[left_part]:
+                            possible_left.append((lm, chord_combo))
+            
+            # right masks - find matches with chord composition preserved
             if right_part == "":
-                possible_right = [blank_right]
+                possible_right = [(blank_right, [[]])]
             else:
-                possible_right = [
-                    rm for rm, chords in right_masks.items()
-                    if right_part in chords
-                ]
-
-            # Record all valid mask combos for this pronunciation
-            for lm in possible_left:
-                for rm in possible_right:
+                possible_right = []
+                for rm, chord_compositions in right_masks.items():
+                    if right_part in chord_compositions:
+                        for chord_combo in chord_compositions[right_part]:
+                            possible_right.append((rm, chord_combo))
+            
+            # Record all valid mask combos for this pronunciation with chord breakdown
+            for lm, left_chords in possible_left:
+                for rm, right_chords in possible_right:
                     combo = f"{lm}-{ph}-{rm}"
-                    matches.setdefault(combo, []).append(pron)
-
+                    
+                    # Create the detailed entry with exact chord composition
+                    match_detail = {
+                        'full_match': pron,
+                        'left_chords': left_chords if left_part != "" else [],
+                        'vowel': [ph],
+                        'right_chords': right_chords if right_part != "" else []
+                    }
+                    
+                    if combo not in matches:
+                        matches[combo] = []
+                    
+                    # Avoid exact duplicates
+                    if match_detail not in matches[combo]:
+                        matches[combo].append(match_detail)
+    
     # Now check for ambiguity (same combo matches multiple pronunciations)
-    ambiguous = {combo: ps for combo, ps in matches.items() if len(ps) > 1}
+    ambiguous = {}
+    for combo, match_list in matches.items():
+        unique_prons = set(m['full_match'] for m in match_list)
+        if len(unique_prons) > 1:
+            ambiguous[combo] = list(unique_prons)
+    
     return matches, ambiguous
 
 
@@ -130,10 +155,11 @@ def score_layout(matches, ambiguous, pron_freqs):
     conflict_score = 0.0
 
     # Coverage: sum of all probabilities
-    #Remember not to double-count words, even if 101 -> m and 011 -> m, I shouldn't care
+    # Remember not to double-count words
     seen_prons = set()
-    for combo, prons in matches.items():
-        for pron in prons:
+    for combo, match_list in matches.items():
+        for match_detail in match_list:
+            pron = match_detail['full_match']
             if pron in seen_prons:
                 continue
             seen_prons.add(pron)
@@ -171,12 +197,14 @@ def score_layout(matches, ambiguous, pron_freqs):
         "conflict_ratio": conflict_score / coverage_score if coverage_score > 0 else 0
     }
 
+
 def bank_genes_into_bank_chords(chord_list):
     chords = {}
     for d in chord_list:
         for cluster, mask in d.items():
             chords.setdefault(mask, []).append(cluster)
     return chords
+
 
 def score_individual(individual, cache):
     # If this individual's already been scored, it should be in the cache
@@ -188,25 +216,26 @@ def score_individual(individual, cache):
     if cached_value is not None:
         return cached_value
 
-
     try:
         left_bank_genes, right_bank_genes = individual
 
-        left_bank=bank_genes_into_bank_chords(left_bank_genes)
-        right_bank=bank_genes_into_bank_chords(right_bank_genes)
+        left_bank = bank_genes_into_bank_chords(left_bank_genes)
+        right_bank = bank_genes_into_bank_chords(right_bank_genes)
 
-        left_masks = {
-            mask: mask_to_chords(mask, LEFT_BANK_LEN, left_bank)
-            for mask in generate_masks(LEFT_BANK_LEN)
-            if (mask_to_chords(mask, LEFT_BANK_LEN, left_bank))
-        }
+        # Build masks with chord composition preserved
+        left_masks = {}
+        for mask in generate_masks(LEFT_BANK_LEN):
+            chord_compositions = mask_to_chords(mask, LEFT_BANK_LEN, left_bank)
+            if chord_compositions:
+                left_masks[mask] = chord_compositions
 
-        right_masks = {
-            mask: mask_to_chords(mask, RIGHT_BANK_LEN, right_bank)
-            for mask in generate_masks(RIGHT_BANK_LEN)
-            if (mask_to_chords(mask, RIGHT_BANK_LEN, right_bank))
-            and re.search(DISALLOWED_ENDINGS, mask) is None
-        }
+        right_masks = {}
+        for mask in generate_masks(RIGHT_BANK_LEN):
+            if re.search(DISALLOWED_ENDINGS, mask) is not None:
+                continue
+            chord_compositions = mask_to_chords(mask, RIGHT_BANK_LEN, right_bank)
+            if chord_compositions:
+                right_masks[mask] = chord_compositions
 
         matches, ambiguous = find_vowel_split_matches(
             PRONUNCIATIONS,
@@ -215,78 +244,89 @@ def score_individual(individual, cache):
             right_masks
         )
 
-
         scores = score_layout(matches, ambiguous, PRONUNCIATIONS)
 
         coverage = scores["coverage_prob"]
         conflict = scores["conflict_ratio"]
 
-        #initial target, not penalising conflicts too much
+        # initial target, not penalising conflicts too much
         alpha = 10.0
         beta = 1.0
 
-        #target, once it gets to here, conflicts will be at 0.0015
-        coverage_threshold = 522 #  WSI is at 522.67
-        target_conflict = 0.0012 # WSI is at 001237
+        # target, once it gets to here, conflicts will be at 0.0015
+        coverage_threshold = 522  # WSI is at 522.67
+        target_conflict = 0.0012  # WSI is at 001237
 
-        #I'm basically saying to move past 522 coverage, you gotta have lower conflict ratio than WSI
-
-        if coverage > (coverage_threshold+5) and conflict < target_conflict:
+        if coverage > (coverage_threshold + 5) and conflict < target_conflict:
             overall_fitness = math.log10(coverage**alpha * (1 - conflict)**beta)
-            # Cache it
             cache.set(individual, overall_fitness)
             return overall_fitness
 
-        #I want this effect to come in gradually, so I'm using a sigmoid function starting at 450 (takes about 20 generations to reach this coverage) and then ends at 522(coverage of the WSI layout)
+        # Sigmoid function for gradual penalty
         a = 0.15
-        midpoint = 486 #not 486 because I'm scared of it converging too quickly, okay maybe
+        midpoint = 486
         activation = 1 / (1 + math.exp(-a * (coverage - midpoint)))
 
         excess_conflict = max(0.0, conflict - target_conflict)
 
         # penalty strength
-        s = 50  # adjust as needed
+        s = 50
         penalty = 1 + s * activation * excess_conflict
 
         overall_fitness = math.log10(coverage**alpha * (1 - conflict)**beta / penalty)
         
-        # Cache it
         cache.set(individual, overall_fitness)
         return overall_fitness
 
     except Exception as e:
         print("Error scoring individual:", e)
-        return 1 
+        return 1
 
-    # or alternative:
-    # overall_fitness = scores["coverage_zipf"] - scores["conflict_zipf"]
 
-    #print("\n--- Layout Scoring ---")
-    #print(f"Coverage (prob): {scores['coverage_prob']:.2f}")
-    #print(f"Conflict ratio:  {scores['conflict_ratio']:.4%}")
-    #print(f"Base chords:     {len(LEFT_CHORDS)} and {len(RIGHT_CHORDS)}")
-    #print(f"Overall fitness: {overall_fitness:,.4f}")
+def print_detailed_matches(matches):
+    """Print matches with chord breakdown details"""
+    for combo, match_list in sorted(matches.items()):
+        # Format each unique match
+        formatted_matches = []
+        seen = set()
+        for match in match_list:
+            # Create a unique key to avoid duplicates
+            key = (match['full_match'], tuple(match['left_chords']), tuple(match['right_chords']))
+            if key not in seen:
+                seen.add(key)
+                formatted_matches.append(match)
+        
+        # Format the output
+        match_strings = []
+        for match in formatted_matches:
+            left_str = str(match['left_chords']) if match['left_chords'] else '[]'
+            right_str = str(match['right_chords']) if match['right_chords'] else '[]'
+            formatted = f"full match: '{match['full_match']}', left chords: {left_str}, vowel: {match['vowel']}, right chords: {right_str}"
+            match_strings.append(formatted)
+        
+        print(f"{combo}: [{'; '.join(match_strings)}]")
 
 
 
 def score_individual_detailed(individual):
     left_bank_genes, right_bank_genes = individual
 
-    left_bank=bank_genes_into_bank_chords(left_bank_genes)
-    right_bank=bank_genes_into_bank_chords(right_bank_genes)
+    left_bank = bank_genes_into_bank_chords(left_bank_genes)
+    right_bank = bank_genes_into_bank_chords(right_bank_genes)
 
-    left_masks = {
-        mask: mask_to_chords(mask, LEFT_BANK_LEN, left_bank)
-        for mask in generate_masks(LEFT_BANK_LEN)
-        if (mask_to_chords(mask, LEFT_BANK_LEN, left_bank))
-    }
+    left_masks = {}
+    for mask in generate_masks(LEFT_BANK_LEN):
+        chord_compositions = mask_to_chords(mask, LEFT_BANK_LEN, left_bank)
+        if chord_compositions:
+            left_masks[mask] = chord_compositions
 
-    right_masks = {
-        mask: mask_to_chords(mask, RIGHT_BANK_LEN, right_bank)
-        for mask in generate_masks(RIGHT_BANK_LEN)
-        if (mask_to_chords(mask, RIGHT_BANK_LEN, right_bank))
-        and not re.search(DISALLOWED_ENDINGS, mask)
-    }
+    right_masks = {}
+    for mask in generate_masks(RIGHT_BANK_LEN):
+        if re.search(DISALLOWED_ENDINGS, mask) is not None:
+            continue
+        chord_compositions = mask_to_chords(mask, RIGHT_BANK_LEN, right_bank)
+        if chord_compositions:
+            right_masks[mask] = chord_compositions
 
     matches, ambiguous = find_vowel_split_matches(
         PRONUNCIATIONS,
@@ -295,23 +335,19 @@ def score_individual_detailed(individual):
         right_masks
     )
 
-
     scores = score_layout(matches, ambiguous, PRONUNCIATIONS)
 
-    alpha = 10.0   # weight coverage normally
-    beta = 1.0   # penalize conflict, but not so much as to flip ranking
+    alpha = 10.0
+    beta = 1.0
     overall_fitness = math.log10(scores["coverage_prob"]**alpha * (1 - scores["conflict_ratio"])**beta)
-    # or alternative:
-    # overall_fitness = scores["coverage_zipf"] - scores["conflict_zipf"]
 
     print("\n--- Layout Scoring ---")
     print(f"Coverage (prob): {scores['coverage_prob']:.2f}")
     print(f"Conflict ratio:  {scores['conflict_ratio']:.4%}")
-    #print(f"Base chords:     {len(LEFT_CHORDS)} and {len(RIGHT_CHORDS)}")
     print(f"Overall fitness: {overall_fitness:,.4f}")
 
-
     return overall_fitness
+
 
 if __name__ == "__main__":
     with open(PRON_FREQ_FILE, "r", encoding="utf-8") as f:
@@ -326,33 +362,20 @@ if __name__ == "__main__":
         RIGHT_BANK_MASKS
     )
 
-    #print("\nAll valid mask combos:")
-    #for combo, prons in matches.items():
-    #    print(f"{combo}: {prons}")
-
-    #print("\nAmbiguous combos:")
-    #for combo, prons in ambiguous.items():
-    #    print(f"{combo}: {prons}")
+    print("\nAll valid mask combos with chord breakdown:")
+    print_detailed_matches(matches)
 
     # Compute coverage and conflict
     scores = score_layout(matches, ambiguous, PRONUNCIATIONS)
 
-    alpha = 10.0   # weight coverage normally
-    beta = 1.0   # penalize conflict, but not so much as to flip ranking
+    alpha = 10.0
+    beta = 1.0
     overall_fitness = math.log10(scores["coverage_prob"]**alpha * (1 - scores["conflict_ratio"])**beta)
-    # or alternative:
-    # overall_fitness = scores["coverage_zipf"] - scores["conflict_zipf"]
 
     print("\n--- Layout Scoring ---")
     print(f"Coverage (prob): {scores['coverage_prob']:.2f}")
-    #print(f"Conflict (prob): {scores['conflict_prob']:.2f}")
-    #print(f"Coverage (Zipf): {scores['coverage_zipf']:.4f}")
-    #print(f"Conflict (Zipf): {scores['conflict_zipf']:.4f}")
     print(f"Conflict ratio:  {scores['conflict_ratio']:.4%}")
-    #print(f"Base chords:     {len(LEFT_CHORDS)} and {len(RIGHT_CHORDS)}")
     print(f"Overall fitness: {overall_fitness:,.4f}")
 
-    elapsed = time.time() - start_time 
+    elapsed = time.time() - start_time
     print(f"\nExecution time: {elapsed:.2f} seconds")
-    #lab computer: 0.75s
-    #home pc: 1.14s
