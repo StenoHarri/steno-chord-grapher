@@ -27,6 +27,6 @@ for key in data.keys():
         if idx > 0:
             before_vowel.add(" ".join(pronunciation[:idx]))
         
-        # After vowel: everything from that vowel onward
-        after_vowel.add(" ".join(pronunciation[idx:]))
-
+        # After vowel: everything AFTER that vowel (exclude the vowel itself)
+        if idx < len(pronunciation) - 1:
+            after_vowel.add(" ".join(pronunciation[idx + 1:]))  # Skip the vowel
