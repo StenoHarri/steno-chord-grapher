@@ -102,7 +102,9 @@ def find_vowel_split_matches(pronunciations, vowels, left_masks, right_masks):
                         'full_match': pron,
                         'left_chords': left_chords if left_part != "" else [],
                         'vowel': [ph],
-                        'right_chords': right_chords if right_part != "" else []
+                        'right_chords': right_chords if right_part != "" else [],
+                        'left_mask': lm,
+                        'right_mask': rm
                     }
                     
                     if combo not in matches:
@@ -112,14 +114,14 @@ def find_vowel_split_matches(pronunciations, vowels, left_masks, right_masks):
                     if match_detail not in matches[combo]:
                         matches[combo].append(match_detail)
     
-    # Now check for ambiguity (same combo matches multiple pronunciations)
-    ambiguous = {}
+    # Now check for conflicts (same combo matches multiple pronunciations)
+    conflicts = {}
     for combo, match_list in matches.items():
         unique_prons = set(m['full_match'] for m in match_list)
         if len(unique_prons) > 1:
-            ambiguous[combo] = list(unique_prons)
+            conflicts[combo] = list(unique_prons)
     
-    return matches, ambiguous
+    return matches, conflicts
 
 
 def zipf_to_prob(zipf):
@@ -127,9 +129,8 @@ def zipf_to_prob(zipf):
     return 10 ** (zipf - 6)
 
 
-def score_layout(matches, ambiguous, pron_freqs):
+def score_layout(matches, conflicts, pron_freqs):
     coverage_score = 0.0
-    conflict_score = 0.0
 
     # Coverage: sum of all probabilities
     # Remember not to double-count words
@@ -148,30 +149,27 @@ def score_layout(matches, ambiguous, pron_freqs):
             total_pron_prob = sum(zipf_to_prob(z) for z in word_freqs.values())
             coverage_score += total_pron_prob
 
-    # Conflict: sum probabilities of "losing" words
-    for combo, prons in ambiguous.items():
-        word_prob_list = []
-        for pron in prons:
-            if pron in pron_freqs:
-                word_prob_list.extend((w, zipf_to_prob(z)) for w, z in pron_freqs[pron].items())
-
-        if not word_prob_list:
-            continue
-
-        max_prob = max(p for _, p in word_prob_list)
-        for _, p in word_prob_list:
-            if p < max_prob:
-                conflict_score += p
+    # Calculate conflicts (collisions)
+    total_conflict_score, conflict_details, chord_conflict_scores, edge_conflict_scores = calculate_conflicts(
+        matches, conflicts, pron_freqs
+    )
 
     def prob_to_zipf(p):
         return 6 + math.log10(p) if p > 0 else 0
 
+    # Ensure ratio is properly bounded
+    conflict_ratio = total_conflict_score / coverage_score if coverage_score > 0 else 0
+    conflict_ratio = min(conflict_ratio, 1.0)
+
     return {
         "coverage_prob": coverage_score,
-        "conflict_prob": conflict_score,
+        "conflict_prob": total_conflict_score,
         "coverage_zipf": prob_to_zipf(coverage_score),
-        "conflict_zipf": prob_to_zipf(conflict_score),
-        "conflict_ratio": conflict_score / coverage_score if coverage_score > 0 else 0
+        "conflict_zipf": prob_to_zipf(total_conflict_score),
+        "conflict_ratio": conflict_ratio,
+        "conflict_details": conflict_details,
+        "chord_conflict_scores": chord_conflict_scores,
+        "edge_conflict_scores": edge_conflict_scores
     }
 
 
@@ -181,7 +179,7 @@ if __name__ == "__main__":
 
     start_time = time.time()
 
-    matches, ambiguous = find_vowel_split_matches(
+    matches, conflicts = find_vowel_split_matches(
         PRONUNCIATIONS,
         VOWELS,
         LEFT_BANK_MASKS,
@@ -198,17 +196,68 @@ if __name__ == "__main__":
     # Analyze edges/transitions
     transitions = print_edge_frequencies(matches, PRONUNCIATIONS)
 
-    # Compute coverage and conflict
-    scores = score_layout(matches, ambiguous, PRONUNCIATIONS)
+    # Compute coverage and conflicts
+    scores = score_layout(matches, conflicts, PRONUNCIATIONS)
 
     alpha = 10.0
     beta = 1.0
-    overall_fitness = math.log10(scores["coverage_prob"]**alpha * (1 - scores["conflict_ratio"])**beta)
+    
+    # Safely compute fitness avoiding complex numbers
+    coverage_term = scores["coverage_prob"]**alpha if scores["coverage_prob"] > 0 else 0
+    conflict_term = max(0, (1 - scores["conflict_ratio"]))**beta
+    
+    product = coverage_term * conflict_term
+    
+    if product > 0:
+        overall_fitness = math.log10(product)
+    else:
+        overall_fitness = float('-inf')  # Worst possible fitness
 
     print("\n--- Layout Scoring ---")
-    print(f"Coverage (prob): {scores['coverage_prob']:.2f}")
+    print(f"Coverage (prob): {scores['coverage_prob']:.6f} (Zipf: {scores['coverage_zipf']:.2f})")
+    print(f"Conflict (prob): {scores['conflict_prob']:.6f} (Zipf: {scores['conflict_zipf']:.2f})")
     print(f"Conflict ratio:  {scores['conflict_ratio']:.4%}")
     print(f"Overall fitness: {overall_fitness:,.4f}")
+    
+    # Print conflict summary
+    if scores['conflict_details']:
+        print("\n--- Mask Combo Conflicts Summary ---")
+        print(f"{'Mask Combo':<30} {'Winner':<20} {'Losing Prob':<12} {'Collisions':<30}")
+        print("-" * 92)
+        for combo, details in sorted(scores['conflict_details'].items(), 
+                                     key=lambda x: x[1]['losing_prob'], reverse=True)[:20]:
+            collisions = []
+            if details['colliding_chords']:
+                collisions.extend(details['colliding_chords'])
+            if details['colliding_edges']:
+                collisions.extend([f"{e[0]}→{e[1]}" for e in details['colliding_edges']])
+            collisions_str = ', '.join(collisions[:4])
+            print(f"{combo:<30} {details['winner_word']:<20} {details['losing_prob']:<12.6f} {collisions_str:<30}")
+        
+        # Show detailed example of the highest-conflict combo
+        print("\n--- Detailed Example: Highest Conflict Combo ---")
+        top_combo = max(scores['conflict_details'].items(), key=lambda x: x[1]['losing_prob'])
+        print_conflict_detail(top_combo[0], top_combo[1])
+    
+    # Show chord conflict scores
+    if scores['chord_conflict_scores']:
+        print("\n--- Conflict Score by Chord ---")
+        print(f"{'Chord':<8} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
+        print("-" * 35)
+        for chord, prob in sorted(scores['chord_conflict_scores'].items(), 
+                                  key=lambda x: x[1], reverse=True)[:15]:
+            zipf = 6 + math.log10(prob) if prob > 0 else 0
+            print(f"{chord:<8} {prob:<15.6f} {zipf:<12.2f}")
+    
+    # Show edge conflict scores
+    if scores['edge_conflict_scores']:
+        print("\n--- Conflict Score by Edge ---")
+        print(f"{'Edge':<12} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
+        print("-" * 39)
+        for (from_chord, to_chord), prob in sorted(scores['edge_conflict_scores'].items(), 
+                                                    key=lambda x: x[1], reverse=True)[:15]:
+            zipf = 6 + math.log10(prob) if prob > 0 else 0
+            print(f"{from_chord}→{to_chord:<8} {prob:<15.6f} {zipf:<12.2f}")
 
     elapsed = time.time() - start_time
     print(f"\nExecution time: {elapsed:.2f} seconds")
