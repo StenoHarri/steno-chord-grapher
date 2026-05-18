@@ -9,14 +9,14 @@ from chord_frequency import *
 
 
 # Choose which pronunciation file to use
-PRON_FREQ_FILE = "pronunciation_frequency.json"           # merged vowels
-#PRON_FREQ_FILE = "pronunciation_frequency_specific.json"   # specific vowels
+#PRON_FREQ_FILE = "pronunciation_frequency.json"           # merged vowels
+PRON_FREQ_FILE = "pronunciation_frequency_specific.json"   # specific vowels
 with open(PRON_FREQ_FILE, "r", encoding="utf-8") as f:
     PRONUNCIATIONS = json.load(f)
 
 # Detect whether we're using merged or specific vowels
-# If any pronunciation contains "vowel", it's the merged dataset
-sample_prons = list(PRONUNCIATIONS.keys())[:3] # 3 words tested because words like 'a' have no primary stress
+# Sample multiple pronunciations to catch "vowel" reliably
+sample_prons = list(PRONUNCIATIONS.keys())[:3]
 if any("vowel" in p for p in sample_prons):
     VOWELS = {"vowel"}
 else:
@@ -167,7 +167,7 @@ def score_layout(matches, conflicts, pron_freqs):
             coverage_score += total_pron_prob
 
     # Calculate conflicts (collisions)
-    total_conflict_score, conflict_details, chord_conflict_scores, left_edge_conflicts, right_edge_conflicts = calculate_conflicts(
+    total_conflict_score, conflict_details, left_chord_conflicts, right_chord_conflicts, left_edge_conflicts, right_edge_conflicts = calculate_conflicts(
         matches, conflicts, pron_freqs
     )
 
@@ -185,7 +185,8 @@ def score_layout(matches, conflicts, pron_freqs):
         "conflict_zipf": prob_to_zipf(total_conflict_score),
         "conflict_ratio": conflict_ratio,
         "conflict_details": conflict_details,
-        "chord_conflict_scores": chord_conflict_scores,
+        "left_chord_conflicts": left_chord_conflicts,
+        "right_chord_conflicts": right_chord_conflicts,
         "left_edge_conflicts": left_edge_conflicts,
         "right_edge_conflicts": right_edge_conflicts
     }
@@ -240,34 +241,53 @@ if __name__ == "__main__":
     # Print conflict summary
     if scores['conflict_details']:
         print("\n--- Mask Combo Conflicts Summary ---")
-        print(f"{'Mask Combo':<30} {'Winner':<20} {'Losing Prob':<12} {'Collisions':<30}")
-        print("-" * 92)
+        print(f"{'Mask Combo':<30} {'Winner':<20} {'Loser(s)':<25} {'Losing Prob':<12} {'Collisions'}")
+        print("-" * 110)
         for combo, details in sorted(scores['conflict_details'].items(), 
                                      key=lambda x: x[1]['losing_prob'], reverse=True)[:20]:
             collisions = []
-            if details['colliding_chords']:
-                collisions.extend(details['colliding_chords'])
+            if details['colliding_left_chords']:
+                collisions.extend([f"L:{c}" for c in details['colliding_left_chords']])
+            if details['colliding_right_chords']:
+                collisions.extend([f"R:{c}" for c in details['colliding_right_chords']])
             if details['colliding_left_edges']:
                 collisions.extend([f"L:{e[0]}→{e[1]}" for e in details['colliding_left_edges']])
             if details['colliding_right_edges']:
                 collisions.extend([f"R:{e[0]}→{e[1]}" for e in details['colliding_right_edges']])
             collisions_str = ', '.join(collisions[:4])
-            print(f"{combo:<30} {details['winner_word']:<20} {details['losing_prob']:<12.6f} {collisions_str:<30}")
+            
+            # Format loser words with their probabilities
+            loser_strs = []
+            for word, prob in sorted(details['losing_words'].items(), key=lambda x: x[1], reverse=True):
+                loser_strs.append(f"{word}({prob:.4f})")
+            loser_str = ', '.join(loser_strs[:3])  # Show up to 3 losers
+            
+            print(f"{combo:<30} {details['winner_word']:<20} {loser_str:<25} {details['losing_prob']:<12.6f} {collisions_str}")
         
         # Show detailed example of the highest-conflict combo
         print("\n--- Detailed Example: Highest Conflict Combo ---")
         top_combo = max(scores['conflict_details'].items(), key=lambda x: x[1]['losing_prob'])
         print_conflict_detail(top_combo[0], top_combo[1])
     
-    # Show chord conflict scores
-    if scores['chord_conflict_scores']:
-        print("\n--- Conflict Score by Chord ---")
+    # Show left hand chord conflict scores
+    if scores['left_chord_conflicts']:
+        print("\n--- Conflict Score by Left-Hand Chord ---")
         print(f"{'Chord':<8} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
         print("-" * 35)
-        for chord, prob in sorted(scores['chord_conflict_scores'].items(), 
+        for chord, prob in sorted(scores['left_chord_conflicts'].items(), 
                                   key=lambda x: x[1], reverse=True)[:15]:
             zipf = 6 + math.log10(prob) if prob > 0 else 0
-            print(f"{chord:<8} {prob:<15.6f} {zipf:<12.2f}")
+            print(f"L {chord:<6} {prob:<15.6f} {zipf:<12.2f}")
+    
+    # Show right hand chord conflict scores
+    if scores['right_chord_conflicts']:
+        print("\n--- Conflict Score by Right-Hand Chord ---")
+        print(f"{'Chord':<8} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
+        print("-" * 35)
+        for chord, prob in sorted(scores['right_chord_conflicts'].items(), 
+                                  key=lambda x: x[1], reverse=True)[:15]:
+            zipf = 6 + math.log10(prob) if prob > 0 else 0
+            print(f"R {chord:<6} {prob:<15.6f} {zipf:<12.2f}")
     
     # Show left hand edge conflict scores
     if scores['left_edge_conflicts']:

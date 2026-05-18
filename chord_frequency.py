@@ -162,7 +162,8 @@ def find_colliding_elements(winner_left, winner_right, loser_left, loser_right, 
     Determine what's actually colliding: individual chords or edges.
     Separates left and right hand collisions.
     """
-    colliding_chords = []
+    colliding_left_chords = []
+    colliding_right_chords = []
     colliding_left_edges = []
     colliding_right_edges = []
     
@@ -170,45 +171,46 @@ def find_colliding_elements(winner_left, winner_right, loser_left, loser_right, 
     if left_mask != "0" * len(left_mask):  # Skip blank masks
         if len(winner_left) == 1 and len(loser_left) >= 2:
             # Loser's edges are colliding with winner's chord
-            colliding_chords.append(winner_left[0])
+            colliding_left_chords.append(winner_left[0])
             colliding_left_edges.extend(get_chord_edges(loser_left))
         elif len(loser_left) == 1 and len(winner_left) >= 2:
             # Winner's edges are fine, loser's chord is colliding
-            colliding_chords.append(loser_left[0])
+            colliding_left_chords.append(loser_left[0])
         elif len(winner_left) >= 2 and len(loser_left) >= 2:
             # Both are left-hand edges - mark loser's edges as colliding
             colliding_left_edges.extend(get_chord_edges(loser_left))
         elif len(winner_left) == 1 and len(loser_left) == 1:
             # Both are single chords colliding
-            colliding_chords.append(loser_left[0])
+            colliding_left_chords.append(loser_left[0])
     
     # Check right side collisions
     if right_mask != "0" * len(right_mask):  # Skip blank masks
         if len(winner_right) == 1 and len(loser_right) >= 2:
-            colliding_chords.append(winner_right[0])
+            colliding_right_chords.append(winner_right[0])
             colliding_right_edges.extend(get_chord_edges(loser_right))
         elif len(loser_right) == 1 and len(winner_right) >= 2:
-            colliding_chords.append(loser_right[0])
+            colliding_right_chords.append(loser_right[0])
         elif len(winner_right) >= 2 and len(loser_right) >= 2:
             # Both are right-hand edges - mark loser's edges as colliding
             colliding_right_edges.extend(get_chord_edges(loser_right))
         elif len(winner_right) == 1 and len(loser_right) == 1:
-            colliding_chords.append(loser_right[0])
+            colliding_right_chords.append(loser_right[0])
     
-    return colliding_chords, colliding_left_edges, colliding_right_edges
+    return colliding_left_chords, colliding_right_chords, colliding_left_edges, colliding_right_edges
 
 
 def calculate_conflicts(matches, conflicts, pron_freqs):
     """
     Calculate conflict scores where the same mask combo maps to multiple words.
     Attributes conflict to the specific chords or edges that collide.
-    Separates left-hand and right-hand edges.
+    Separates left-hand and right-hand chords and edges.
     """
     total_conflict_score = 0.0
     conflict_details = {}
-    chord_conflict_scores = defaultdict(float)  # chord -> accumulated conflict probability
-    left_edge_conflicts = defaultdict(float)    # left-hand edge -> conflict probability
-    right_edge_conflicts = defaultdict(float)   # right-hand edge -> conflict probability
+    left_chord_conflict_scores = defaultdict(float)    # left chord -> accumulated conflict probability
+    right_chord_conflict_scores = defaultdict(float)   # right chord -> accumulated conflict probability
+    left_edge_conflicts = defaultdict(float)           # left-hand edge -> conflict probability
+    right_edge_conflicts = defaultdict(float)          # right-hand edge -> conflict probability
     
     for combo, prons in conflicts.items():
         # Get all words that map to this combo with their probabilities and chord info
@@ -253,7 +255,8 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
         # Calculate losing probability and find what collides
         losing_words = {}
         losing_prob = 0.0
-        all_colliding_chords = set()
+        all_colliding_left_chords = set()
+        all_colliding_right_chords = set()
         all_colliding_left_edges = set()
         all_colliding_right_edges = set()
         
@@ -263,21 +266,24 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
                 losing_prob += info['prob']
                 
                 # Find what specifically collides between winner and this loser
-                colliding_chords, colliding_left_edges, colliding_right_edges = find_colliding_elements(
+                colliding_left_chords, colliding_right_chords, colliding_left_edges, colliding_right_edges = find_colliding_elements(
                     winner_info['left_chords'], winner_info['right_chords'],
                     info['left_chords'], info['right_chords'],
                     info['left_mask'], info['right_mask']
                 )
                 
-                # Attribute conflict to colliding elements
-                for chord in colliding_chords:
-                    chord_conflict_scores[chord] += info['prob']
+                # Attribute conflict to colliding elements, separated by hand
+                for chord in colliding_left_chords:
+                    left_chord_conflict_scores[chord] += info['prob']
+                for chord in colliding_right_chords:
+                    right_chord_conflict_scores[chord] += info['prob']
                 for edge in colliding_left_edges:
                     left_edge_conflicts[edge] += info['prob']
                 for edge in colliding_right_edges:
                     right_edge_conflicts[edge] += info['prob']
                 
-                all_colliding_chords.update(colliding_chords)
+                all_colliding_left_chords.update(colliding_left_chords)
+                all_colliding_right_chords.update(colliding_right_chords)
                 all_colliding_left_edges.update(colliding_left_edges)
                 all_colliding_right_edges.update(colliding_right_edges)
         
@@ -300,12 +306,13 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
             'word_to_pron': {w: info['pron'] for w, info in word_info.items()},
             'word_to_chords': {w: {'left': info['left_chords'], 'right': info['right_chords']} 
                               for w, info in word_info.items()},
-            'colliding_chords': list(all_colliding_chords),
+            'colliding_left_chords': list(all_colliding_left_chords),
+            'colliding_right_chords': list(all_colliding_right_chords),
             'colliding_left_edges': list(all_colliding_left_edges),
             'colliding_right_edges': list(all_colliding_right_edges)
         }
     
-    return total_conflict_score, conflict_details, dict(chord_conflict_scores), dict(left_edge_conflicts), dict(right_edge_conflicts)
+    return total_conflict_score, conflict_details, dict(left_chord_conflict_scores), dict(right_chord_conflict_scores), dict(left_edge_conflicts), dict(right_edge_conflicts)
 
 
 def print_conflict_detail(combo, details):
@@ -331,8 +338,10 @@ def print_conflict_detail(combo, details):
         print(f"      Right chords: {chords.get('right', [])}")
         print()
     
-    if details['colliding_chords']:
-        print(f"  Colliding chords (loser's chords that conflict): {details['colliding_chords']}")
+    if details['colliding_left_chords']:
+        print(f"  Colliding left chords: {details['colliding_left_chords']}")
+    if details['colliding_right_chords']:
+        print(f"  Colliding right chords: {details['colliding_right_chords']}")
     if details['colliding_left_edges']:
         edge_strs = [f"L:{e[0]}→{e[1]}" for e in details['colliding_left_edges']]
         print(f"  Colliding left edges: {edge_strs}")
