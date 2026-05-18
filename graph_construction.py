@@ -142,40 +142,70 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
             # Size based on probability
             size = min_size + (info['probability'] / max_prob) * (max_size - min_size) if max_prob > 0 else min_size
             
-            # Color based on conflict ratio (green = low conflict, red = high conflict)
+            # Color based on conflict ratio with midpoint shift (more red overall)
             if info['probability'] > 0 and max_conflict_ratio > 0:
                 conflict_ratio = info['conflict'] / info['probability']
                 color_intensity = conflict_ratio / max_conflict_ratio
             else:
                 color_intensity = 0
             
-            # Green to red gradient
-            color = (color_intensity, 1 - color_intensity, 0)
+            # Apply midpoint shift strategy for nodes - makes colors more red overall
+            # Exponential mapping shifts the midpoint toward red
+            adjusted_intensity = color_intensity ** 0.5  # Values <1 become larger, shifting toward red
+            
+            # Calculate red and green with adjusted intensity
+            red = adjusted_intensity
+            green = max(0, min(1, 1 - adjusted_intensity * 1.2))  # Reduce green faster
+            blue = 0
+            
+            color = (red, green, blue)
             
             ax1.scatter(pos[chord][0], pos[chord][1], s=size, c=[color], 
                        edgecolors='black', linewidth=1.5, zorder=3, alpha=0.8)
             
             # Label
             ax1.annotate(chord, pos[chord], textcoords="offset points", 
-                        xytext=(0, 10), ha='center', fontsize=9, fontweight='bold')
+                        xytext=(0, 0), ha='center', fontsize=9, fontweight='bold')
     
     # Draw edges
     max_edge_prob = max(info['probability'] for info in edge_info.values()) if edge_info else 1
     
+    # Edge thickness parameters
+    min_edge_width = 2.0
+    max_edge_width = 10
+    
     for (from_chord, to_chord), info in edge_info.items():
         if info['probability'] >= min_edge_prob and from_chord in pos and to_chord in pos:
-            # Edge width based on probability
-            width = 2 + (info['probability'] / max_edge_prob) * 8  # Range: 1 to 9
+            # Edge width based on probability (thicker for more common edges)
+            width = min_edge_width + (info['probability'] / max_edge_prob) * (max_edge_width - min_edge_width)
             
-            # Edge color based on conflict ratio
+            # Inverted opacity: common edges less visible, rare edges more visible
+            #alpha = 1.0 - (info['probability'] / max_edge_prob) * 0.5  # Rare: 1.0, Common: 0.5
+            alpha = 1.0
+
+            # Edge color based on conflict ratio with midpoint shift (more red overall)
             if info['probability'] > 0:
                 conflict_ratio = info['conflict'] / info['probability']
-                edge_color = (conflict_ratio, 1 - conflict_ratio, 0)  # green to red
+                # Normalize conflict ratio across all edges
+                edge_max_conflict = max((e['conflict'] / e['probability'] if e['probability'] > 0 else 0) 
+                                       for e in edge_info.values()) if edge_info else 1
+                if edge_max_conflict > 0:
+                    edge_color_intensity = conflict_ratio / edge_max_conflict
+                else:
+                    edge_color_intensity = 0
             else:
-                edge_color = (0, 1, 0)
+                edge_color_intensity = 0
             
-            alpha = 1.0 - (info['probability'] / max_edge_prob) * 0.5
-
+            # Apply midpoint shift strategy for edges
+            adjusted_edge_intensity = edge_color_intensity ** 0.5  # Shift toward red
+            
+            # Calculate red and green with adjusted intensity
+            edge_red = adjusted_edge_intensity
+            edge_green = max(0, min(1, 1 - adjusted_edge_intensity * 1.2))
+            edge_blue = 0
+            
+            edge_color = (edge_red, edge_green, edge_blue)
+            
             # Draw curved edge
             rad = 0.1 if abs(pos[from_chord][1] - pos[to_chord][1]) < 0.1 else 0
             
@@ -217,10 +247,13 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
         "NODE LEGEND:",
         "○ Size: Coverage probability (frequency of use)",
         "○ Color: Green (low conflict) → Red (high conflict)",
+        "   (Shifted toward red overall)",
         "",
         "EDGE LEGEND:",
         "→ Width: Transition probability (frequency of chord pair)",
-        "→ Color: Blue (low conflict) → Red (high conflict)",
+        "→ Opacity: Inverted - rare edges more visible",
+        "→ Color: Green (low conflict) → Red (high conflict)",
+        "   (Shifted toward red overall)",
         "",
         "LAYERS:",
         "The position of the last key in its chord",
@@ -230,7 +263,9 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
         f"Total chords: {len(chord_info)}",
         f"Total edges shown: {sum(1 for e in edge_info.values() if e['probability'] >= min_edge_prob)}",
         "",
-        f"Top 5 chords by coverage:"
+        f"Min edge probability threshold: {min_edge_prob}",
+        "",
+        "Top 5 chords by coverage:"
     ]
     
     sorted_chords = sorted(chord_info.items(), key=lambda x: x[1]['probability'], reverse=True)
@@ -275,12 +310,12 @@ right_edge_info = add_conflicts_to_edge_info(right_edge_info, edge_conflicts['ri
 
 # Plot both banks
 print("Plotting left hand layout...")
-fig_left = plot_bank_layout(left_chord_info, left_edge_info, "left", min_edge_prob=0.01)
+fig_left = plot_bank_layout(left_chord_info, left_edge_info, "left", min_edge_prob=0.03)
 plt.savefig("left_hand_layout.png", dpi=150, bbox_inches='tight')
 print("Saved left_hand_layout.png")
 
 print("Plotting right hand layout...")
-fig_right = plot_bank_layout(right_chord_info, right_edge_info, "right", min_edge_prob=0.01)
+fig_right = plot_bank_layout(right_chord_info, right_edge_info, "right", min_edge_prob=0.03)
 plt.savefig("right_hand_layout.png", dpi=150, bbox_inches='tight')
 print("Saved right_hand_layout.png")
 
