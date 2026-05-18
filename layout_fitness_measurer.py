@@ -6,7 +6,7 @@ from base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN
 from find_implied_chords import generate_masks, mask_to_chords
 from collections import defaultdict
 from chord_frequency import *
-
+from export_chords import *
 
 # Choose which pronunciation file to use
 #PRON_FREQ_FILE = "pronunciation_frequency.json"           # merged vowels
@@ -30,6 +30,13 @@ else:
                 VOWELS.add(phone)
 
 print(f"Using vowel set: {VOWELS}")
+
+# Output files
+MATCHES_FILE = "layout_matches.json"
+CONFLICTS_FILE = "layout_conflicts.json"
+CHORD_FREQS_FILE = "chord_frequencies.json"
+EDGE_FREQS_FILE = "edge_frequencies.json"
+SCORES_FILE = "layout_scores.json"
 
 
 # The genes are chords, I would like to generate the corresponding layout
@@ -205,12 +212,8 @@ if __name__ == "__main__":
         RIGHT_BANK_MASKS
     )
 
-    print("\nAll valid mask combos with chord breakdown:")
-    print_detailed_matches(matches, PRONUNCIATIONS)
-
     # Calculate chord frequencies
     left_freqs, right_freqs = calculate_chord_frequencies(matches, PRONUNCIATIONS)
-    print_chord_frequencies(left_freqs, right_freqs)
     
     # Analyze edges/transitions
     transitions = print_edge_frequencies(matches, PRONUNCIATIONS)
@@ -232,82 +235,62 @@ if __name__ == "__main__":
     else:
         overall_fitness = float('-inf')  # Worst possible fitness
 
+    # Export all data to JSON files
+    print("\n--- Exporting Data ---")
+    
+    # Export matches
+    matches_export = serialize_matches_for_export(matches, PRONUNCIATIONS)
+    with open(MATCHES_FILE, "w", encoding="utf-8") as f:
+        json.dump(matches_export, f, indent=2)
+    print(f"Exported {len(matches_export)} mask combos to {MATCHES_FILE}")
+    
+    # Export conflicts
+    conflicts_export = serialize_conflicts_for_export(conflicts, scores['conflict_details'])
+    with open(CONFLICTS_FILE, "w", encoding="utf-8") as f:
+        json.dump(conflicts_export, f, indent=2)
+    print(f"Exported {len(conflicts_export)} conflicts to {CONFLICTS_FILE}")
+    
+    # Export chord frequencies
+    chord_freqs_export = {
+        'left_chords': serialize_frequencies_for_export(left_freqs, 'left'),
+        'right_chords': serialize_frequencies_for_export(right_freqs, 'right')
+    }
+    with open(CHORD_FREQS_FILE, "w", encoding="utf-8") as f:
+        json.dump(chord_freqs_export, f, indent=2)
+    print(f"Exported chord frequencies to {CHORD_FREQS_FILE}")
+    
+    # Export edge frequencies
+    edge_freqs_export = {
+        'left_edges': serialize_frequencies_for_export(transitions['left_transitions'], 'left'),
+        'right_edges': serialize_frequencies_for_export(transitions['right_transitions'], 'right')
+    }
+    with open(EDGE_FREQS_FILE, "w", encoding="utf-8") as f:
+        json.dump(edge_freqs_export, f, indent=2)
+    print(f"Exported edge frequencies to {EDGE_FREQS_FILE}")
+    
+    # Export scores
+    scores_export = {
+        'coverage_prob': scores['coverage_prob'],
+        'coverage_zipf': scores['coverage_zipf'],
+        'conflict_prob': scores['conflict_prob'],
+        'conflict_zipf': scores['conflict_zipf'],
+        'conflict_ratio': scores['conflict_ratio'],
+        'overall_fitness': overall_fitness,
+        'left_chord_conflicts': serialize_frequencies_for_export(scores['left_chord_conflicts'], 'left'),
+        'right_chord_conflicts': serialize_frequencies_for_export(scores['right_chord_conflicts'], 'right'),
+        'left_edge_conflicts': serialize_frequencies_for_export(scores['left_edge_conflicts'], 'left'),
+        'right_edge_conflicts': serialize_frequencies_for_export(scores['right_edge_conflicts'], 'right')
+    }
+    with open(SCORES_FILE, "w", encoding="utf-8") as f:
+        json.dump(scores_export, f, indent=2)
+    print(f"Exported layout scores to {SCORES_FILE}")
+
+    # Print summary
     print("\n--- Layout Scoring ---")
     print(f"Coverage (prob): {scores['coverage_prob']:.6f} (Zipf: {scores['coverage_zipf']:.2f})")
     print(f"Conflict (prob): {scores['conflict_prob']:.6f} (Zipf: {scores['conflict_zipf']:.2f})")
     print(f"Conflict ratio:  {scores['conflict_ratio']:.4%}")
     print(f"Overall fitness: {overall_fitness:,.4f}")
-    
-    # Print conflict summary
-    if scores['conflict_details']:
-        print("\n--- Mask Combo Conflicts Summary ---")
-        print(f"{'Mask Combo':<30} {'Winner':<20} {'Loser(s)':<25} {'Losing Prob':<12} {'Collisions'}")
-        print("-" * 110)
-        for combo, details in sorted(scores['conflict_details'].items(), 
-                                     key=lambda x: x[1]['losing_prob'], reverse=True)[:20]:
-            collisions = []
-            if details['colliding_left_chords']:
-                collisions.extend([f"L:{c}" for c in details['colliding_left_chords']])
-            if details['colliding_right_chords']:
-                collisions.extend([f"R:{c}" for c in details['colliding_right_chords']])
-            if details['colliding_left_edges']:
-                collisions.extend([f"L:{e[0]}→{e[1]}" for e in details['colliding_left_edges']])
-            if details['colliding_right_edges']:
-                collisions.extend([f"R:{e[0]}→{e[1]}" for e in details['colliding_right_edges']])
-            collisions_str = ', '.join(collisions[:4])
-            
-            # Format loser words with their probabilities
-            loser_strs = []
-            for word, prob in sorted(details['losing_words'].items(), key=lambda x: x[1], reverse=True):
-                loser_strs.append(f"{word}({prob:.4f})")
-            loser_str = ', '.join(loser_strs[:3])  # Show up to 3 losers
-            
-            print(f"{combo:<30} {details['winner_word']:<20} {loser_str:<25} {details['losing_prob']:<12.6f} {collisions_str}")
-        
-        # Show detailed example of the highest-conflict combo
-        print("\n--- Detailed Example: Highest Conflict Combo ---")
-        top_combo = max(scores['conflict_details'].items(), key=lambda x: x[1]['losing_prob'])
-        print_conflict_detail(top_combo[0], top_combo[1])
-    
-    # Show left hand chord conflict scores
-    if scores['left_chord_conflicts']:
-        print("\n--- Conflict Score by Left-Hand Chord ---")
-        print(f"{'Chord':<8} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
-        print("-" * 35)
-        for chord, prob in sorted(scores['left_chord_conflicts'].items(), 
-                                  key=lambda x: x[1], reverse=True)[:15]:
-            zipf = 6 + math.log10(prob) if prob > 0 else 0
-            print(f"L {chord:<6} {prob:<15.6f} {zipf:<12.2f}")
-    
-    # Show right hand chord conflict scores
-    if scores['right_chord_conflicts']:
-        print("\n--- Conflict Score by Right-Hand Chord ---")
-        print(f"{'Chord':<8} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
-        print("-" * 35)
-        for chord, prob in sorted(scores['right_chord_conflicts'].items(), 
-                                  key=lambda x: x[1], reverse=True)[:15]:
-            zipf = 6 + math.log10(prob) if prob > 0 else 0
-            print(f"R {chord:<6} {prob:<15.6f} {zipf:<12.2f}")
-    
-    # Show left hand edge conflict scores
-    if scores['left_edge_conflicts']:
-        print("\n--- Conflict Score by Left-Hand Edge ---")
-        print(f"{'Edge':<12} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
-        print("-" * 39)
-        for (from_chord, to_chord), prob in sorted(scores['left_edge_conflicts'].items(), 
-                                                    key=lambda x: x[1], reverse=True)[:15]:
-            zipf = 6 + math.log10(prob) if prob > 0 else 0
-            print(f"L {from_chord}→{to_chord:<8} {prob:<15.6f} {zipf:<12.2f}")
-    
-    # Show right hand edge conflict scores
-    if scores['right_edge_conflicts']:
-        print("\n--- Conflict Score by Right-Hand Edge ---")
-        print(f"{'Edge':<12} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
-        print("-" * 39)
-        for (from_chord, to_chord), prob in sorted(scores['right_edge_conflicts'].items(), 
-                                                    key=lambda x: x[1], reverse=True)[:15]:
-            zipf = 6 + math.log10(prob) if prob > 0 else 0
-            print(f"R {from_chord}→{to_chord:<8} {prob:<15.6f} {zipf:<12.2f}")
 
     elapsed = time.time() - start_time
     print(f"\nExecution time: {elapsed:.2f} seconds")
