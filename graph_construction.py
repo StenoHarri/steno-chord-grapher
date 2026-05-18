@@ -203,7 +203,7 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     ax1.axis('off')
 
 
-    fig.patch.set_facecolor("#00478F")  # Light blue-gray background for entire figure
+    fig.patch.set_facecolor("#BBDDFF")  # Light blue-gray background for entire figure
     ax1.set_facecolor('#D6EAF8')         # Slightly darker blue for the plot area
     ax2.set_facecolor('#E8F0F8')         # Match the figure background
     
@@ -223,8 +223,8 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
         "→ Color: Blue (low conflict) → Red (high conflict)",
         "",
         "LAYERS:",
-        "Based on position of first '1' in mask",
-        "Leftmost 1 determines the layer",
+        "The position of the last key in its chord",
+        "Leftmost key determines the layer",
         "",
         f"BANK: {bank_name.upper()} HAND",
         f"Total chords: {len(chord_info)}",
