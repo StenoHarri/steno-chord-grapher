@@ -1,3 +1,5 @@
 tqdm
 pronouncing
 wordfreq
+networkx
+matplotlib
