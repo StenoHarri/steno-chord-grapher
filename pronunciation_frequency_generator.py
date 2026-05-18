@@ -218,7 +218,7 @@ def remove_vowels_but_keep_main(pron, keep_specific_vowels=False):
         # Rule 1: primary stress
         if "1" in ph:
             if keep_specific_vowels:
-                reduced.append(ph)  # Keep the full vowel with stress (e.g., "IY1")
+                reduced.append(ph[:2])  # Keep the full vowel with stress (e.g., "IY1")
             else:
                 reduced.append("vowel")
             continue
