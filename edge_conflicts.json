@@ -1,0 +1,966 @@
+{
+  "left_edges": [
+    {
+      "from": "P",
+      "from_mask": "0001000",
+      "from_bank": "left",
+      "to": "W",
+      "to_mask": "0000100",
+      "to_bank": "left",
+      "probability": 0.010886,
+      "zipf": 4.04
+    },
+    {
+      "from": "D",
+      "from_mask": "0110000",
+      "from_bank": "left",
+      "to": "B",
+      "to_mask": "0001100",
+      "to_bank": "left",
+      "probability": 0.010058,
+      "zipf": 4.0
+    },
+    {
+      "from": "P",
+      "from_mask": "0001000",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 0.009821,
+      "zipf": 3.99
+    },
+    {
+      "from": "HH",
+      "from_mask": "0000010",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.009707,
+      "zipf": 3.99
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "Y",
+      "to_mask": "0010101",
+      "to_bank": "left",
+      "probability": 0.008282,
+      "zipf": 3.92
+    },
+    {
+      "from": "T",
+      "from_mask": "0100000",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.007749,
+      "zipf": 3.89
+    },
+    {
+      "from": "SH",
+      "from_mask": "1000010",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.005499,
+      "zipf": 3.74
+    },
+    {
+      "from": "M",
+      "from_mask": "0001010",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.003683,
+      "zipf": 3.57
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 0.002505,
+      "zipf": 3.4
+    },
+    {
+      "from": "T",
+      "from_mask": "0100000",
+      "from_bank": "left",
+      "to": "K",
+      "to_mask": "0010000",
+      "to_bank": "left",
+      "probability": 0.002011,
+      "zipf": 3.3
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "T",
+      "to_mask": "0100000",
+      "to_bank": "left",
+      "probability": 0.001954,
+      "zipf": 3.29
+    },
+    {
+      "from": "G",
+      "from_mask": "0111100",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.00169,
+      "zipf": 3.23
+    },
+    {
+      "from": "B",
+      "from_mask": "0001100",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.001198,
+      "zipf": 3.08
+    },
+    {
+      "from": "D",
+      "from_mask": "0110000",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 0.001186,
+      "zipf": 3.07
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "D",
+      "to_mask": "0110000",
+      "to_bank": "left",
+      "probability": 0.001096,
+      "zipf": 3.04
+    },
+    {
+      "from": "W",
+      "from_mask": "0000100",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.000776,
+      "zipf": 2.89
+    },
+    {
+      "from": "IH N F",
+      "from_mask": "0101100",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 0.000776,
+      "zipf": 2.89
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "P",
+      "to_mask": "0001000",
+      "to_bank": "left",
+      "probability": 0.000693,
+      "zipf": 2.84
+    },
+    {
+      "from": "B",
+      "from_mask": "0001100",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 0.000662,
+      "zipf": 2.82
+    },
+    {
+      "from": "K",
+      "from_mask": "0010000",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.000637,
+      "zipf": 2.8
+    },
+    {
+      "from": "T",
+      "from_mask": "0100000",
+      "from_bank": "left",
+      "to": "M",
+      "to_mask": "0001010",
+      "to_bank": "left",
+      "probability": 0.000617,
+      "zipf": 2.79
+    },
+    {
+      "from": "K",
+      "from_mask": "0010000",
+      "from_bank": "left",
+      "to": "W",
+      "to_mask": "0000100",
+      "to_bank": "left",
+      "probability": 0.000595,
+      "zipf": 2.77
+    },
+    {
+      "from": "P",
+      "from_mask": "0001000",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.00048,
+      "zipf": 2.68
+    },
+    {
+      "from": "K",
+      "from_mask": "0010000",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 0.000459,
+      "zipf": 2.66
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.000456,
+      "zipf": 2.66
+    },
+    {
+      "from": "F",
+      "from_mask": "0101000",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 0.00045,
+      "zipf": 2.65
+    },
+    {
+      "from": "D",
+      "from_mask": "0110000",
+      "from_bank": "left",
+      "to": "P",
+      "to_mask": "0001000",
+      "to_bank": "left",
+      "probability": 0.000401,
+      "zipf": 2.6
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "N",
+      "to_mask": "0101010",
+      "to_bank": "left",
+      "probability": 0.000389,
+      "zipf": 2.59
+    },
+    {
+      "from": "K",
+      "from_mask": "0010000",
+      "from_bank": "left",
+      "to": "HH",
+      "to_mask": "0000010",
+      "to_bank": "left",
+      "probability": 0.000386,
+      "zipf": 2.59
+    },
+    {
+      "from": "D",
+      "from_mask": "0110000",
+      "from_bank": "left",
+      "to": "W",
+      "to_mask": "0000100",
+      "to_bank": "left",
+      "probability": 0.000377,
+      "zipf": 2.58
+    },
+    {
+      "from": "W",
+      "from_mask": "0000100",
+      "from_bank": "left",
+      "to": "HH",
+      "to_mask": "0000010",
+      "to_bank": "left",
+      "probability": 0.000372,
+      "zipf": 2.57
+    },
+    {
+      "from": "D S",
+      "from_mask": "1110000",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 0.000269,
+      "zipf": 2.43
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "K",
+      "to_mask": "0010000",
+      "to_bank": "left",
+      "probability": 0.000229,
+      "zipf": 2.36
+    },
+    {
+      "from": "T",
+      "from_mask": "0100000",
+      "from_bank": "left",
+      "to": "P",
+      "to_mask": "0001000",
+      "to_bank": "left",
+      "probability": 0.000166,
+      "zipf": 2.22
+    },
+    {
+      "from": "F",
+      "from_mask": "0101000",
+      "from_bank": "left",
+      "to": "R",
+      "to_mask": "0000001",
+      "to_bank": "left",
+      "probability": 0.000158,
+      "zipf": 2.2
+    },
+    {
+      "from": "K M P",
+      "from_mask": "0011000",
+      "from_bank": "left",
+      "to": "L",
+      "to_mask": "0000011",
+      "to_bank": "left",
+      "probability": 7.2e-05,
+      "zipf": 1.86
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "HH",
+      "to_mask": "0000010",
+      "to_bank": "left",
+      "probability": 5.9e-05,
+      "zipf": 1.77
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "B",
+      "to_mask": "0001100",
+      "to_bank": "left",
+      "probability": 5.5e-05,
+      "zipf": 1.74
+    },
+    {
+      "from": "D S",
+      "from_mask": "1110000",
+      "from_bank": "left",
+      "to": "B",
+      "to_mask": "0001100",
+      "to_bank": "left",
+      "probability": 4.8e-05,
+      "zipf": 1.68
+    },
+    {
+      "from": "K",
+      "from_mask": "0010000",
+      "from_bank": "left",
+      "to": "P",
+      "to_mask": "0001000",
+      "to_bank": "left",
+      "probability": 3.3e-05,
+      "zipf": 1.52
+    },
+    {
+      "from": "S",
+      "from_mask": "1000000",
+      "from_bank": "left",
+      "to": "W",
+      "to_mask": "0000100",
+      "to_bank": "left",
+      "probability": 2.2e-05,
+      "zipf": 1.34
+    }
+  ],
+  "right_edges": [
+    {
+      "from": "F",
+      "from_mask": "1000000000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 0.017782,
+      "zipf": 4.25
+    },
+    {
+      "from": "T",
+      "from_mask": "0000001000",
+      "from_bank": "right",
+      "to": "S",
+      "to_mask": "0000000100",
+      "to_bank": "right",
+      "probability": 0.017257,
+      "zipf": 4.24
+    },
+    {
+      "from": "P",
+      "from_mask": "0010000000",
+      "from_bank": "right",
+      "to": "L",
+      "to_mask": "0000100000",
+      "to_bank": "right",
+      "probability": 0.015837,
+      "zipf": 4.2
+    },
+    {
+      "from": "M",
+      "from_mask": "0010100000",
+      "from_bank": "right",
+      "to": "SS",
+      "to_mask": "0000000001",
+      "to_bank": "right",
+      "probability": 0.0099,
+      "zipf": 4.0
+    },
+    {
+      "from": "K",
+      "from_mask": "0001010000",
+      "from_bank": "right",
+      "to": "S",
+      "to_mask": "0000000100",
+      "to_bank": "right",
+      "probability": 0.009695,
+      "zipf": 3.99
+    },
+    {
+      "from": "F",
+      "from_mask": "1000000000",
+      "from_bank": "right",
+      "to": "R",
+      "to_mask": "0100000000",
+      "to_bank": "right",
+      "probability": 0.006775,
+      "zipf": 3.83
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "B",
+      "to_mask": "0001000000",
+      "to_bank": "right",
+      "probability": 0.005633,
+      "zipf": 3.75
+    },
+    {
+      "from": "P",
+      "from_mask": "0010000000",
+      "from_bank": "right",
+      "to": "K",
+      "to_mask": "0001010000",
+      "to_bank": "right",
+      "probability": 0.005219,
+      "zipf": 3.72
+    },
+    {
+      "from": "T",
+      "from_mask": "0000001000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 0.005056,
+      "zipf": 3.7
+    },
+    {
+      "from": "F",
+      "from_mask": "1000000000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 0.004687,
+      "zipf": 3.67
+    },
+    {
+      "from": "M",
+      "from_mask": "0010100000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 0.004212,
+      "zipf": 3.62
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 0.003909,
+      "zipf": 3.59
+    },
+    {
+      "from": "L",
+      "from_mask": "0000100000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 0.003276,
+      "zipf": 3.52
+    },
+    {
+      "from": "G",
+      "from_mask": "0000010000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 0.003273,
+      "zipf": 3.51
+    },
+    {
+      "from": "L",
+      "from_mask": "0000100000",
+      "from_bank": "right",
+      "to": "SS",
+      "to_mask": "0000000001",
+      "to_bank": "right",
+      "probability": 0.003009,
+      "zipf": 3.48
+    },
+    {
+      "from": "L",
+      "from_mask": "0000100000",
+      "from_bank": "right",
+      "to": "T SS",
+      "to_mask": "0000001100",
+      "to_bank": "right",
+      "probability": 0.002512,
+      "zipf": 3.4
+    },
+    {
+      "from": "R CH",
+      "from_mask": "1111000000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 0.001738,
+      "zipf": 3.24
+    },
+    {
+      "from": "V R",
+      "from_mask": "1100000000",
+      "from_bank": "right",
+      "to": "N",
+      "to_mask": "0011000000",
+      "to_bank": "right",
+      "probability": 0.001724,
+      "zipf": 3.24
+    },
+    {
+      "from": "N",
+      "from_mask": "0011000000",
+      "from_bank": "right",
+      "to": "S",
+      "to_mask": "0000000100",
+      "to_bank": "right",
+      "probability": 0.00166,
+      "zipf": 3.22
+    },
+    {
+      "from": "ZH N",
+      "from_mask": "0000010100",
+      "from_bank": "right",
+      "to": "SS",
+      "to_mask": "0000000001",
+      "to_bank": "right",
+      "probability": 0.001549,
+      "zipf": 3.19
+    },
+    {
+      "from": "N",
+      "from_mask": "0011000000",
+      "from_bank": "right",
+      "to": "G",
+      "to_mask": "0000010000",
+      "to_bank": "right",
+      "probability": 0.001188,
+      "zipf": 3.07
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "G",
+      "to_mask": "0000010000",
+      "to_bank": "right",
+      "probability": 0.001187,
+      "zipf": 3.07
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "M",
+      "to_mask": "0010100000",
+      "to_bank": "right",
+      "probability": 0.001049,
+      "zipf": 3.02
+    },
+    {
+      "from": "G",
+      "from_mask": "0000010000",
+      "from_bank": "right",
+      "to": "SS",
+      "to_mask": "0000000001",
+      "to_bank": "right",
+      "probability": 0.001047,
+      "zipf": 3.02
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "T SS",
+      "to_mask": "0000001100",
+      "to_bank": "right",
+      "probability": 0.000982,
+      "zipf": 2.99
+    },
+    {
+      "from": "B",
+      "from_mask": "0001000000",
+      "from_bank": "right",
+      "to": "G",
+      "to_mask": "0000010000",
+      "to_bank": "right",
+      "probability": 0.000979,
+      "zipf": 2.99
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "NG",
+      "to_mask": "0011010000",
+      "to_bank": "right",
+      "probability": 0.000832,
+      "zipf": 2.92
+    },
+    {
+      "from": "D",
+      "from_mask": "0000000010",
+      "from_bank": "right",
+      "to": "SS",
+      "to_mask": "0000000001",
+      "to_bank": "right",
+      "probability": 0.000798,
+      "zipf": 2.9
+    },
+    {
+      "from": "L",
+      "from_mask": "0000100000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 0.000787,
+      "zipf": 2.9
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "SS",
+      "to_mask": "0000000001",
+      "to_bank": "right",
+      "probability": 0.000755,
+      "zipf": 2.88
+    },
+    {
+      "from": "N",
+      "from_mask": "0011000000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 0.000715,
+      "zipf": 2.85
+    },
+    {
+      "from": "NG",
+      "from_mask": "0011010000",
+      "from_bank": "right",
+      "to": "SS",
+      "to_mask": "0000000001",
+      "to_bank": "right",
+      "probability": 0.000631,
+      "zipf": 2.8
+    },
+    {
+      "from": "N CH",
+      "from_mask": "1111000000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 0.000358,
+      "zipf": 2.55
+    },
+    {
+      "from": "G",
+      "from_mask": "0000010000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 0.000224,
+      "zipf": 2.35
+    },
+    {
+      "from": "K",
+      "from_mask": "0001010000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 0.00022,
+      "zipf": 2.34
+    },
+    {
+      "from": "N",
+      "from_mask": "0011000000",
+      "from_bank": "right",
+      "to": "SS",
+      "to_mask": "0000000001",
+      "to_bank": "right",
+      "probability": 0.000219,
+      "zipf": 2.34
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "K",
+      "to_mask": "0001010000",
+      "to_bank": "right",
+      "probability": 0.000195,
+      "zipf": 2.29
+    },
+    {
+      "from": "V R",
+      "from_mask": "1100000000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 0.000188,
+      "zipf": 2.27
+    },
+    {
+      "from": "V R",
+      "from_mask": "1100000000",
+      "from_bank": "right",
+      "to": "T SS",
+      "to_mask": "0000001100",
+      "to_bank": "right",
+      "probability": 0.000154,
+      "zipf": 2.19
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 0.000121,
+      "zipf": 2.08
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "M N T",
+      "to_mask": "0010101000",
+      "to_bank": "right",
+      "probability": 9.6e-05,
+      "zipf": 1.98
+    },
+    {
+      "from": "SH",
+      "from_mask": "0101000000",
+      "from_bank": "right",
+      "to": "L",
+      "to_mask": "0000100000",
+      "to_bank": "right",
+      "probability": 8.3e-05,
+      "zipf": 1.92
+    },
+    {
+      "from": "NG",
+      "from_mask": "0011010000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 8.1e-05,
+      "zipf": 1.91
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "N",
+      "to_mask": "0011000000",
+      "to_bank": "right",
+      "probability": 7.3e-05,
+      "zipf": 1.86
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "T NG",
+      "to_mask": "0000011000",
+      "to_bank": "right",
+      "probability": 7.1e-05,
+      "zipf": 1.85
+    },
+    {
+      "from": "N",
+      "from_mask": "0011000000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 6e-05,
+      "zipf": 1.78
+    },
+    {
+      "from": "P",
+      "from_mask": "0010000000",
+      "from_bank": "right",
+      "to": "T",
+      "to_mask": "0000001000",
+      "to_bank": "right",
+      "probability": 5.4e-05,
+      "zipf": 1.73
+    },
+    {
+      "from": "N",
+      "from_mask": "0011000000",
+      "from_bank": "right",
+      "to": "T SS",
+      "to_mask": "0000001100",
+      "to_bank": "right",
+      "probability": 4e-05,
+      "zipf": 1.6
+    },
+    {
+      "from": "M N T",
+      "from_mask": "0010101000",
+      "from_bank": "right",
+      "to": "D",
+      "to_mask": "0000000010",
+      "to_bank": "right",
+      "probability": 4e-05,
+      "zipf": 1.6
+    },
+    {
+      "from": "F",
+      "from_mask": "1000000000",
+      "from_bank": "right",
+      "to": "NG",
+      "to_mask": "0011010000",
+      "to_bank": "right",
+      "probability": 3e-05,
+      "zipf": 1.47
+    },
+    {
+      "from": "M",
+      "from_mask": "0010100000",
+      "from_bank": "right",
+      "to": "G",
+      "to_mask": "0000010000",
+      "to_bank": "right",
+      "probability": 2.6e-05,
+      "zipf": 1.41
+    },
+    {
+      "from": "R",
+      "from_mask": "0100000000",
+      "from_bank": "right",
+      "to": "P",
+      "to_mask": "0010000000",
+      "to_bank": "right",
+      "probability": 2.4e-05,
+      "zipf": 1.37
+    },
+    {
+      "from": "F",
+      "from_mask": "1000000000",
+      "from_bank": "right",
+      "to": "N",
+      "to_mask": "0011000000",
+      "to_bank": "right",
+      "probability": 1.5e-05,
+      "zipf": 1.17
+    },
+    {
+      "from": "N",
+      "from_mask": "0011000000",
+      "from_bank": "right",
+      "to": "L",
+      "to_mask": "0000100000",
+      "to_bank": "right",
+      "probability": 1.5e-05,
+      "zipf": 1.17
+    },
+    {
+      "from": "G",
+      "from_mask": "0000010000",
+      "from_bank": "right",
+      "to": "S",
+      "to_mask": "0000000100",
+      "to_bank": "right",
+      "probability": 1.1e-05,
+      "zipf": 1.04
+    }
+  ]
+}

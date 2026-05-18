@@ -1,0 +1,391 @@
+{
+  "left_chords": [
+    {
+      "chord": "L",
+      "mask": "0000011",
+      "bank": "left",
+      "probability": 0.029251,
+      "zipf": 4.47
+    },
+    {
+      "chord": "B",
+      "mask": "0001100",
+      "bank": "left",
+      "probability": 0.020567,
+      "zipf": 4.31
+    },
+    {
+      "chord": "G",
+      "mask": "0111100",
+      "bank": "left",
+      "probability": 0.017083,
+      "zipf": 4.23
+    },
+    {
+      "chord": "S",
+      "mask": "1000000",
+      "bank": "left",
+      "probability": 0.015302,
+      "zipf": 4.18
+    },
+    {
+      "chord": "K",
+      "mask": "0010000",
+      "bank": "left",
+      "probability": 0.013738,
+      "zipf": 4.14
+    },
+    {
+      "chord": "N",
+      "mask": "0101010",
+      "bank": "left",
+      "probability": 0.010137,
+      "zipf": 4.01
+    },
+    {
+      "chord": "R",
+      "mask": "0000001",
+      "bank": "left",
+      "probability": 0.010076,
+      "zipf": 4.0
+    },
+    {
+      "chord": "JH",
+      "mask": "1010101",
+      "bank": "left",
+      "probability": 0.009642,
+      "zipf": 3.98
+    },
+    {
+      "chord": "F",
+      "mask": "0101000",
+      "bank": "left",
+      "probability": 0.00886,
+      "zipf": 3.95
+    },
+    {
+      "chord": "HH",
+      "mask": "0000010",
+      "bank": "left",
+      "probability": 0.005921,
+      "zipf": 3.77
+    },
+    {
+      "chord": "D",
+      "mask": "0110000",
+      "bank": "left",
+      "probability": 0.005605,
+      "zipf": 3.75
+    },
+    {
+      "chord": "IH N V",
+      "mask": "0101110",
+      "bank": "left",
+      "probability": 0.004711,
+      "zipf": 3.67
+    },
+    {
+      "chord": "P",
+      "mask": "0001000",
+      "bank": "left",
+      "probability": 0.004569,
+      "zipf": 3.66
+    },
+    {
+      "chord": "W",
+      "mask": "0000100",
+      "bank": "left",
+      "probability": 0.004568,
+      "zipf": 3.66
+    },
+    {
+      "chord": "T",
+      "mask": "0100000",
+      "bank": "left",
+      "probability": 0.004054,
+      "zipf": 3.61
+    },
+    {
+      "chord": "M",
+      "mask": "0001010",
+      "bank": "left",
+      "probability": 0.00319,
+      "zipf": 3.5
+    },
+    {
+      "chord": "K M P",
+      "mask": "0011000",
+      "bank": "left",
+      "probability": 0.002737,
+      "zipf": 3.44
+    },
+    {
+      "chord": "V",
+      "mask": "1000001",
+      "bank": "left",
+      "probability": 0.002208,
+      "zipf": 3.34
+    },
+    {
+      "chord": "Z",
+      "mask": "1111100",
+      "bank": "left",
+      "probability": 0.002001,
+      "zipf": 3.3
+    },
+    {
+      "chord": "D V",
+      "mask": "0110100",
+      "bank": "left",
+      "probability": 0.001964,
+      "zipf": 3.29
+    },
+    {
+      "chord": "IH K S",
+      "mask": "0011000",
+      "bank": "left",
+      "probability": 0.001582,
+      "zipf": 3.2
+    },
+    {
+      "chord": "SH",
+      "mask": "1000010",
+      "bank": "left",
+      "probability": 0.001557,
+      "zipf": 3.19
+    },
+    {
+      "chord": "D S",
+      "mask": "1110000",
+      "bank": "left",
+      "probability": 0.001486,
+      "zipf": 3.17
+    },
+    {
+      "chord": "IH N F",
+      "mask": "0101100",
+      "bank": "left",
+      "probability": 0.001445,
+      "zipf": 3.16
+    },
+    {
+      "chord": "CH",
+      "mask": "0010010",
+      "bank": "left",
+      "probability": 0.001102,
+      "zipf": 3.04
+    },
+    {
+      "chord": "HH W",
+      "mask": "0000110",
+      "bank": "left",
+      "probability": 0.000829,
+      "zipf": 2.92
+    },
+    {
+      "chord": "IH N S",
+      "mask": "1101010",
+      "bank": "left",
+      "probability": 0.000389,
+      "zipf": 2.59
+    },
+    {
+      "chord": "IH N T",
+      "mask": "1001100",
+      "bank": "left",
+      "probability": 5.5e-05,
+      "zipf": 1.74
+    }
+  ],
+  "right_chords": [
+    {
+      "chord": "T SS",
+      "mask": "0000001100",
+      "bank": "right",
+      "probability": 0.025786,
+      "zipf": 4.41
+    },
+    {
+      "chord": "S T",
+      "mask": "1000001000",
+      "bank": "right",
+      "probability": 0.023456,
+      "zipf": 4.37
+    },
+    {
+      "chord": "M",
+      "mask": "0010100000",
+      "bank": "right",
+      "probability": 0.022488,
+      "zipf": 4.35
+    },
+    {
+      "chord": "K SH N",
+      "mask": "0001010100",
+      "bank": "right",
+      "probability": 0.016921,
+      "zipf": 4.23
+    },
+    {
+      "chord": "N",
+      "mask": "0011000000",
+      "bank": "right",
+      "probability": 0.01318,
+      "zipf": 4.12
+    },
+    {
+      "chord": "SH",
+      "mask": "0101000000",
+      "bank": "right",
+      "probability": 0.009188,
+      "zipf": 3.96
+    },
+    {
+      "chord": "NG",
+      "mask": "0011010000",
+      "bank": "right",
+      "probability": 0.008256,
+      "zipf": 3.92
+    },
+    {
+      "chord": "S D",
+      "mask": "1000000010",
+      "bank": "right",
+      "probability": 0.007657,
+      "zipf": 3.88
+    },
+    {
+      "chord": "T",
+      "mask": "0000001000",
+      "bank": "right",
+      "probability": 0.006597,
+      "zipf": 3.82
+    },
+    {
+      "chord": "NG K",
+      "mask": "1111010000",
+      "bank": "right",
+      "probability": 0.005999,
+      "zipf": 3.78
+    },
+    {
+      "chord": "L",
+      "mask": "0000100000",
+      "bank": "right",
+      "probability": 0.005786,
+      "zipf": 3.76
+    },
+    {
+      "chord": "V R",
+      "mask": "1100000000",
+      "bank": "right",
+      "probability": 0.00568,
+      "zipf": 3.75
+    },
+    {
+      "chord": "M N T",
+      "mask": "0010101000",
+      "bank": "right",
+      "probability": 0.003936,
+      "zipf": 3.6
+    },
+    {
+      "chord": "D",
+      "mask": "0000000010",
+      "bank": "right",
+      "probability": 0.003757,
+      "zipf": 3.57
+    },
+    {
+      "chord": "S",
+      "mask": "0000000100",
+      "bank": "right",
+      "probability": 0.003551,
+      "zipf": 3.55
+    },
+    {
+      "chord": "ZH N",
+      "mask": "0000010100",
+      "bank": "right",
+      "probability": 0.003442,
+      "zipf": 3.54
+    },
+    {
+      "chord": "N CH",
+      "mask": "1111000000",
+      "bank": "right",
+      "probability": 0.003371,
+      "zipf": 3.53
+    },
+    {
+      "chord": "T NG",
+      "mask": "0000011000",
+      "bank": "right",
+      "probability": 0.003361,
+      "zipf": 3.53
+    },
+    {
+      "chord": "R",
+      "mask": "0100000000",
+      "bank": "right",
+      "probability": 0.002694,
+      "zipf": 3.43
+    },
+    {
+      "chord": "R CH",
+      "mask": "1111000000",
+      "bank": "right",
+      "probability": 0.002654,
+      "zipf": 3.42
+    },
+    {
+      "chord": "SH N",
+      "mask": "0000010100",
+      "bank": "right",
+      "probability": 0.002271,
+      "zipf": 3.36
+    },
+    {
+      "chord": "G",
+      "mask": "0000010000",
+      "bank": "right",
+      "probability": 0.002078,
+      "zipf": 3.32
+    },
+    {
+      "chord": "SS",
+      "mask": "0000000001",
+      "bank": "right",
+      "probability": 0.001325,
+      "zipf": 3.12
+    },
+    {
+      "chord": "K",
+      "mask": "0001010000",
+      "bank": "right",
+      "probability": 0.00105,
+      "zipf": 3.02
+    },
+    {
+      "chord": "F",
+      "mask": "1000000000",
+      "bank": "right",
+      "probability": 0.000328,
+      "zipf": 2.52
+    },
+    {
+      "chord": "V",
+      "mask": "1001000000",
+      "bank": "right",
+      "probability": 0.000193,
+      "zipf": 2.29
+    },
+    {
+      "chord": "M P",
+      "mask": "1110000000",
+      "bank": "right",
+      "probability": 1.5e-05,
+      "zipf": 1.19
+    }
+  ]
+}
