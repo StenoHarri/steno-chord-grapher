@@ -27,7 +27,7 @@ with open(EDGE_CONFLICTS_FILE, "r", encoding="utf-8") as f:
 
 def get_layer_from_mask(mask):
     """Get the layer number from a mask string (0-indexed position of first '1')"""
-    return mask.index('1')
+    return mask.rindex('1')
 
 
 def build_chord_info(chord_list):
