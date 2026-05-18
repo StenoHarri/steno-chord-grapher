@@ -165,7 +165,7 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     for (from_chord, to_chord), info in edge_info.items():
         if info['probability'] >= min_edge_prob and from_chord in pos and to_chord in pos:
             # Edge width based on probability
-            width = 0.5 + (info['probability'] / max_edge_prob) * 4
+            width = 2 + (info['probability'] / max_edge_prob) * 8  # Range: 1 to 9
             
             # Edge color based on conflict ratio
             if info['probability'] > 0:
@@ -174,8 +174,8 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
             else:
                 edge_color = (0, 1, 0)
             
-            alpha = 0.3 + (info['probability'] / max_edge_prob) * 0.5
-            
+            alpha = 1.0 - (info['probability'] / max_edge_prob) * 0.5
+
             # Draw curved edge
             rad = 0.1 if abs(pos[from_chord][1] - pos[to_chord][1]) < 0.1 else 0
             
@@ -203,7 +203,7 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     ax1.axis('off')
 
 
-    fig.patch.set_facecolor("#BBDDFF")  # Light blue-gray background for entire figure
+    fig.patch.set_facecolor("#5D6872")  # Light blue-gray background for entire figure
     ax1.set_facecolor('#D6EAF8')         # Slightly darker blue for the plot area
     ax2.set_facecolor('#E8F0F8')         # Match the figure background
     
@@ -275,12 +275,12 @@ right_edge_info = add_conflicts_to_edge_info(right_edge_info, edge_conflicts['ri
 
 # Plot both banks
 print("Plotting left hand layout...")
-fig_left = plot_bank_layout(left_chord_info, left_edge_info, "left", min_edge_prob=0.0001)
+fig_left = plot_bank_layout(left_chord_info, left_edge_info, "left", min_edge_prob=0.01)
 plt.savefig("left_hand_layout.png", dpi=150, bbox_inches='tight')
 print("Saved left_hand_layout.png")
 
 print("Plotting right hand layout...")
-fig_right = plot_bank_layout(right_chord_info, right_edge_info, "right", min_edge_prob=0.0001)
+fig_right = plot_bank_layout(right_chord_info, right_edge_info, "right", min_edge_prob=0.01)
 plt.savefig("right_hand_layout.png", dpi=150, bbox_inches='tight')
 print("Saved right_hand_layout.png")
 
