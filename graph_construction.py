@@ -170,9 +170,9 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
             # Edge color based on conflict ratio
             if info['probability'] > 0:
                 conflict_ratio = info['conflict'] / info['probability']
-                edge_color = (conflict_ratio, 0, 1 - conflict_ratio)  # Blue to red
+                edge_color = (conflict_ratio, 1 - conflict_ratio, 0)  # green to red
             else:
-                edge_color = (0, 0, 1)
+                edge_color = (0, 1, 0)
             
             alpha = 0.3 + (info['probability'] / max_edge_prob) * 0.5
             
@@ -201,6 +201,12 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     
     ax1.axis('equal')
     ax1.axis('off')
+
+
+    fig.patch.set_facecolor("#00478F")  # Light blue-gray background for entire figure
+    ax1.set_facecolor('#D6EAF8')         # Slightly darker blue for the plot area
+    ax2.set_facecolor('#E8F0F8')         # Match the figure background
+    
     
     # Plot 2: Legend and statistics
     ax2.axis('off')
