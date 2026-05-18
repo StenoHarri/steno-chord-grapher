@@ -9,8 +9,9 @@ from collections import Counter
 # input
 WORD_LIST_FILE = "words.txt"
 
-#output
+# output
 PRON_FREQ_FILE = "pronunciation_frequency.json"
+PRON_FREQ_SPECIFIC_FILE = "pronunciation_frequency_specific.json"
 INITIAL_CLUSTERS_FILE = "initial_clusters.json"
 FINAL_CLUSTERS_FILE = "final_clusters.json"
 
@@ -30,10 +31,19 @@ PRIMARY_WEIGHT = 0.999  # adjustable primary pronunciation weighting
 #currently set to 1 because words like "fifth" that can be pronounced "fifth" or alternatively "fith", but I wish to ignore that
 
 
+VOWELS = {"AA", "AE", "AH", "AO", "AW", "AY",
+          "EH", "ER", "EY", "IH", "IY",
+          "OW", "OY", "UH", "UW"}
 
-def define_pronunciation_frequencies(word):
+
+def is_vowel(phone):
+    return any(phone.startswith(v) for v in VOWELS)
+
+
+def define_pronunciation_frequencies(word, keep_specific_vowels=False):
     """
-    Fetch the how common the pronunciation of a given word is
+    Fetch the how common the pronunciation of a given word is.
+    If keep_specific_vowels is True, stressed vowels keep their specific identity.
     """
     prons = pronouncing.phones_for_word(word)
     if not prons:
@@ -84,20 +94,27 @@ def define_pronunciation_frequencies(word):
         weights = [PRIMARY_WEIGHT] + [secondary_weight] * (n - 1)
 
     # Remove superfluous vowels
-    normalised_prons = {remove_vowels_but_keep_main(p): f for p, f in zip(prons, weights)}
+    normalised_prons = {}
+    for p, w in zip(prons, weights):
+        pron = remove_vowels_but_keep_main(p, keep_specific_vowels=keep_specific_vowels)
+        if pron:
+            normalised_prons[pron] = normalised_prons.get(pron, 0) + w
 
     # Filter out pronunciations that have an issue, but keep the valid ones
-    valid_prons = {pron: freq_linear * w for pron, w in normalised_prons.items() if pron}
+    valid_prons = {pron: freq_linear * w for pron, w in normalised_prons.items()}
 
     # If there's at least one valid pronunciation, return the frequencies
     return valid_prons if valid_prons else {}
 
 
-def remove_vowels_but_keep_main(pron):
+def remove_vowels_but_keep_main(pron, keep_specific_vowels=False):
     """
     Remove vowels unless they are initial, final, or stressed.
     Also, replace first vowel in any vowel–vowel sequence with Y/W
     (before vowel removal), transferring primary stress if needed.
+    
+    If keep_specific_vowels is True, stressed vowels keep their specific
+    identity (AA1, AE1, etc.) instead of being reduced to 'vowel'.
     """
     #Treat secondary stress as simply unstressed
     pron = pron.replace("2", "0").replace("3", "0")
@@ -121,13 +138,6 @@ def remove_vowels_but_keep_main(pron):
     #pron = pron.replace("IH0", "EH0").replace("IH2", "EH2")
 
     phones = pron.split()
-
-    vowels = {"AA", "AE", "AH", "AO", "AW", "AY",
-              "EH", "ER", "EY", "IH", "IY",
-              "OW", "OY", "UH", "UW"}
-
-    def is_vowel(phone):
-        return any(phone.startswith(v) for v in vowels)
 
     def replace_first_vowel_with_glide(phones, i):
         """
@@ -168,7 +178,7 @@ def remove_vowels_but_keep_main(pron):
 
         return True
 
-    ## Replace IH with EH if it’s at the start or end (pin/pen merger)
+    ## Replace IH with EH if it's at the start or end (pin/pen merger)
     #if phones:
     #    if phones[0].startswith("IH"):
     #        phones[0] = phones[0].replace("IH", "EH", 1)
@@ -182,8 +192,6 @@ def remove_vowels_but_keep_main(pron):
             replace_first_vowel_with_glide(phones, i)
         i += 1
 
-
-
     # Some words like "fourteen" have multiple main stresses? Only keep the first
     found_primary = False
     for i, ph in enumerate(phones):
@@ -192,7 +200,6 @@ def remove_vowels_but_keep_main(pron):
                 found_primary = True
             else:
                 phones[i] = ph.replace("1", "0")
-
 
     # I'm wanting to only keep vowels that are 1: stressed 2: the first sound or 3: the final sound
 
@@ -210,7 +217,10 @@ def remove_vowels_but_keep_main(pron):
 
         # Rule 1: primary stress
         if "1" in ph:
-            reduced.append("vowel")
+            if keep_specific_vowels:
+                reduced.append(ph)  # Keep the full vowel with stress (e.g., "IY1")
+            else:
+                reduced.append("vowel")
             continue
 
         # Rule 2: first sound
@@ -233,17 +243,13 @@ def remove_vowels_but_keep_main(pron):
 def extract_clusters(pron):
     """Extract initial (left of vowel) and final (right of vowel) clusters"""
     phones = pron.split()
-    vowels = {"AA", "AE", "AH", "AO", "AW", "AY",
-              "EH", "ER", "EY", "IH", "IY",
-              "OW", "OY", "UH", "UW"}
-
-    def is_vowel(p): return p[:2] in vowels
 
     initials = []
     finals = []
 
-    #vowel_indices = [i for i, p in enumerate(phones) if is_vowel(p)]
-    vowel_indices = [i for i, p in enumerate(phones) if p == "vowel"]
+    # Find vowel positions - works for both "vowel" and specific vowels like "IY1"
+    vowel_indices = [i for i, p in enumerate(phones) if p == "vowel" or p[:2] in VOWELS]
+    
     if not vowel_indices:
         return [], []
 
@@ -265,31 +271,47 @@ def extract_clusters(pron):
 
 
 def build_pronunciation_frequency(words):
-    pron_word_map = {}
-    skipped = 0
-
+    # Merged vowel dataset
+    merged_pron_map = {}
+    
+    # Specific vowel dataset
+    specific_pron_map = {}
+    
+    # Clusters are identical for both, so we only need one set
     initial_counter = Counter()
     final_counter = Counter()
+    
+    skipped = 0
 
     for word in tqdm(words, desc="Processing words", unit="word"):
-        pron_freqs = define_pronunciation_frequencies(word)
-        if not pron_freqs:
+        # Generate merged version
+        merged_freqs = define_pronunciation_frequencies(word, keep_specific_vowels=False)
+        # Generate specific version
+        specific_freqs = define_pronunciation_frequencies(word, keep_specific_vowels=True)
+        
+        if not merged_freqs and not specific_freqs:
             skipped += 1
             continue
 
-        for pron, freq_linear in pron_freqs.items():
+        # Process merged version
+        for pron, freq_linear in merged_freqs.items():
             freq_zipf = round(6 + math.log10(freq_linear), 3)
             if freq_zipf < 1:
                 continue
-
-            pron_word_map.setdefault(pron, {})[word] = freq_zipf
-            #pron_word_map.setdefault(pron, {})[word] = freq_linear
-
+            merged_pron_map.setdefault(pron, {})[word] = freq_zipf
+            # Extract clusters (only need to do this once since they're identical)
             initials, finals = extract_clusters(pron)
             for ic in initials:
                 initial_counter[ic] += freq_linear
             for fc in finals:
                 final_counter[fc] += freq_linear
+
+        # Process specific version
+        for pron, freq_linear in specific_freqs.items():
+            freq_zipf = round(6 + math.log10(freq_linear), 3)
+            if freq_zipf < 1:
+                continue
+            specific_pron_map.setdefault(pron, {})[word] = freq_zipf
 
     print(f"Skipped {skipped} words that did not have frequency data, writing to JSON")
 
@@ -297,45 +319,19 @@ def build_pronunciation_frequency(words):
     sorted_initials = dict(sorted(initial_counter.items(), key=lambda x: x[1], reverse=True))
     sorted_finals = dict(sorted(final_counter.items(), key=lambda x: x[1], reverse=True))
 
-    return pron_word_map, sorted_initials, sorted_finals
+    return merged_pron_map, specific_pron_map, sorted_initials, sorted_finals
 
 
-if __name__ == "__main__":
-    words = load_word_list()
-
-if __name__ == "__main__":
-    words = load_word_list()
-
-    # No longer necessary as I'm capping frequencies at 3.5
-    # removing the top 250 words
-    # = [(w, zipf_frequency(w.lower(), "en")) for w in words]
-    #words_with_freq.sort(key=lambda x: x[1], reverse=True)
-    #cutoff = 250
-    # excluded_words = [w for w, f in words_with_freq[:cutoff]]
-    #words = [w for w, f in words_with_freq[cutoff:]]
-    #print(f"Excluded common words (top {cutoff})")
-
-    pron_freq_map, initial_clusters, final_clusters = build_pronunciation_frequency(words)
-
-    # Keep only the most common word for each pronunciation
-    # This means I can make conflicts more punishing without punishing inherent conflicts like homophones/homonyms/stenonyms
-    #filtered_pron_freq_map = {}
-    #for pron, words_dict in pron_freq_map.items():
-    #    most_common_word = max(words_dict.items(), key=lambda x: x[1])
-    #    filtered_pron_freq_map[pron] = {most_common_word[0]: most_common_word[1]}
-    #pron_freq_map = filtered_pron_freq_map
-
-
+def merge_and_cap_frequencies(pron_map):
+    """Apply frequency capping and merge words for a pronunciation map"""
     merged_pron_freq_map = {}
 
-    for pron, words_dict in pron_freq_map.items():
+    for pron, words_dict in pron_map.items():
         # Words can only contribute so much, I don't want a common word to dominate, "th" is a rare sound despite "the"
         capped_words = {
             w: min(freq, 3.5)
             for w, freq in words_dict.items()
         }
-
-        #total_freq = sum(capped_words.values()) #linear logic, not zipf
 
         total_linear = sum(
             min(10 ** (zipf - 6), 10 ** (3.5 - 6))
@@ -350,16 +346,28 @@ if __name__ == "__main__":
             word_label: round(total_freq, 3)
         }
 
-    pron_freq_map = merged_pron_freq_map
+    return merged_pron_freq_map
 
 
-    #Squish everything above 3.5 down to 3.5
-    #for pron, words_dict in pron_freq_map.items():
-    #    for w in words_dict:
-    #        if words_dict[w] > 3.5:
-    #            words_dict[w] = 3.5
+if __name__ == "__main__":
+    words = load_word_list()
 
+    # No longer necessary as I'm capping frequencies at 3.5
+    # removing the top 250 words
+    # = [(w, zipf_frequency(w.lower(), "en")) for w in words]
+    #words_with_freq.sort(key=lambda x: x[1], reverse=True)
+    #cutoff = 250
+    # excluded_words = [w for w, f in words_with_freq[:cutoff]]
+    #words = [w for w, f in words_with_freq[cutoff:]]
+    #print(f"Excluded common words (top {cutoff})")
 
+    merged_pron_map, specific_pron_map, initial_clusters, final_clusters = build_pronunciation_frequency(words)
+    
+    # Apply frequency capping and merging to both datasets
+    merged_pron_map = merge_and_cap_frequencies(merged_pron_map)
+    specific_pron_map = merge_and_cap_frequencies(specific_pron_map)
+
+    # Write cluster files (shared between both datasets)
     with open(INITIAL_CLUSTERS_FILE, "w", encoding="utf-8") as f:
         json.dump(list(initial_clusters.keys()), f, indent=2)
     print(f"Written to {INITIAL_CLUSTERS_FILE}")
@@ -368,6 +376,12 @@ if __name__ == "__main__":
         json.dump(list(final_clusters.keys()), f, indent=2)
     print(f"Written to {FINAL_CLUSTERS_FILE}")
 
+    # Write merged vowel dataset
     with open(PRON_FREQ_FILE, "w", encoding="utf-8") as f:
-        json.dump((pron_freq_map), f, indent=2)
+        json.dump(merged_pron_map, f, indent=2)
     print(f"Written to {PRON_FREQ_FILE}")
+
+    # Write specific vowel dataset
+    with open(PRON_FREQ_SPECIFIC_FILE, "w", encoding="utf-8") as f:
+        json.dump(specific_pron_map, f, indent=2)
+    print(f"Written to {PRON_FREQ_SPECIFIC_FILE}")

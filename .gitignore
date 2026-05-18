@@ -2,3 +2,4 @@ pronunciation_frequency.json
 initial_clusters.json
 final_clusters.json
 __pycache__/*
+pronunciation_frequency_specific.json
