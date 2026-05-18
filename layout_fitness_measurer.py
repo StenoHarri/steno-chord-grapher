@@ -150,7 +150,7 @@ def score_layout(matches, conflicts, pron_freqs):
             coverage_score += total_pron_prob
 
     # Calculate conflicts (collisions)
-    total_conflict_score, conflict_details, chord_conflict_scores, edge_conflict_scores = calculate_conflicts(
+    total_conflict_score, conflict_details, chord_conflict_scores, left_edge_conflicts, right_edge_conflicts = calculate_conflicts(
         matches, conflicts, pron_freqs
     )
 
@@ -169,7 +169,8 @@ def score_layout(matches, conflicts, pron_freqs):
         "conflict_ratio": conflict_ratio,
         "conflict_details": conflict_details,
         "chord_conflict_scores": chord_conflict_scores,
-        "edge_conflict_scores": edge_conflict_scores
+        "left_edge_conflicts": left_edge_conflicts,
+        "right_edge_conflicts": right_edge_conflicts
     }
 
 
@@ -229,8 +230,10 @@ if __name__ == "__main__":
             collisions = []
             if details['colliding_chords']:
                 collisions.extend(details['colliding_chords'])
-            if details['colliding_edges']:
-                collisions.extend([f"{e[0]}→{e[1]}" for e in details['colliding_edges']])
+            if details['colliding_left_edges']:
+                collisions.extend([f"L:{e[0]}→{e[1]}" for e in details['colliding_left_edges']])
+            if details['colliding_right_edges']:
+                collisions.extend([f"R:{e[0]}→{e[1]}" for e in details['colliding_right_edges']])
             collisions_str = ', '.join(collisions[:4])
             print(f"{combo:<30} {details['winner_word']:<20} {details['losing_prob']:<12.6f} {collisions_str:<30}")
         
@@ -249,15 +252,25 @@ if __name__ == "__main__":
             zipf = 6 + math.log10(prob) if prob > 0 else 0
             print(f"{chord:<8} {prob:<15.6f} {zipf:<12.2f}")
     
-    # Show edge conflict scores
-    if scores['edge_conflict_scores']:
-        print("\n--- Conflict Score by Edge ---")
+    # Show left hand edge conflict scores
+    if scores['left_edge_conflicts']:
+        print("\n--- Conflict Score by Left-Hand Edge ---")
         print(f"{'Edge':<12} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
         print("-" * 39)
-        for (from_chord, to_chord), prob in sorted(scores['edge_conflict_scores'].items(), 
+        for (from_chord, to_chord), prob in sorted(scores['left_edge_conflicts'].items(), 
                                                     key=lambda x: x[1], reverse=True)[:15]:
             zipf = 6 + math.log10(prob) if prob > 0 else 0
-            print(f"{from_chord}→{to_chord:<8} {prob:<15.6f} {zipf:<12.2f}")
+            print(f"L {from_chord}→{to_chord:<8} {prob:<15.6f} {zipf:<12.2f}")
+    
+    # Show right hand edge conflict scores
+    if scores['right_edge_conflicts']:
+        print("\n--- Conflict Score by Right-Hand Edge ---")
+        print(f"{'Edge':<12} {'Conflict Prob':<15} {'Conflict Zipf':<12}")
+        print("-" * 39)
+        for (from_chord, to_chord), prob in sorted(scores['right_edge_conflicts'].items(), 
+                                                    key=lambda x: x[1], reverse=True)[:15]:
+            zipf = 6 + math.log10(prob) if prob > 0 else 0
+            print(f"R {from_chord}→{to_chord:<8} {prob:<15.6f} {zipf:<12.2f}")
 
     elapsed = time.time() - start_time
     print(f"\nExecution time: {elapsed:.2f} seconds")
