@@ -8,11 +8,28 @@ from collections import defaultdict
 from chord_frequency import *
 
 
-PRON_FREQ_FILE = "pronunciation_frequency.json"
+# Choose which pronunciation file to use
+PRON_FREQ_FILE = "pronunciation_frequency.json"           # merged vowels
+#PRON_FREQ_FILE = "pronunciation_frequency_specific.json"   # specific vowels
 with open(PRON_FREQ_FILE, "r", encoding="utf-8") as f:
     PRONUNCIATIONS = json.load(f)
 
-VOWELS = {"vowel"}
+# Detect whether we're using merged or specific vowels
+# If any pronunciation contains "vowel", it's the merged dataset
+sample_prons = list(PRONUNCIATIONS.keys())[:3] # 3 words tested because words like 'a' have no primary stress
+if any("vowel" in p for p in sample_prons):
+    VOWELS = {"vowel"}
+else:
+    # Specific vowel dataset - collect all unique vowel labels that appear
+    VOWELS = set()
+    for pron in PRONUNCIATIONS:
+        for phone in pron.split():
+            if phone[:2] in {"AA", "AE", "AH", "AO", "AW", "AY",
+                             "EH", "ER", "EY", "IH", "IY",
+                             "OW", "OY", "UH", "UW"}:
+                VOWELS.add(phone)
+
+print(f"Using vowel set: {VOWELS}")
 
 
 # The genes are chords, I would like to generate the corresponding layout
