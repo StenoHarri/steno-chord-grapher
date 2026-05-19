@@ -2,7 +2,7 @@ import json
 import re
 import time
 import math
-from base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN
+from base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN, DISALLOWED_ENDINGS
 from find_implied_chords import generate_masks, mask_to_chords
 from collections import defaultdict
 from chord_frequency import *
@@ -63,7 +63,6 @@ for mask in generate_masks(LEFT_BANK_LEN):
 
 
 # Build right bank masks with some disallowed endings
-DISALLOWED_ENDINGS = r'(1..1|11.)$'
 RIGHT_BANK_MASKS = {}
 for mask in generate_masks(RIGHT_BANK_LEN):
     # Skip masks with disallowed endings
