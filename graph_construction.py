@@ -122,7 +122,6 @@ def format_collision_display(collisions, max_display=3):
     
     return displays
 
-
 def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     """
     Plot a multipartite layout for one bank (left or right).
@@ -190,7 +189,7 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     # Create figure with 2 columns: network (60%), stats (40%)
     # Stats will be split into chords (left side of stats) and edges (right side of stats)
     fig = plt.figure(figsize=(28, 16))
-    gs = fig.add_gridspec(1, 3, width_ratios=[1.5, 0.5, 0.5])
+    gs = fig.add_gridspec(1, 3, width_ratios=[1.5, 0.5, 0.5], top=0.92)  # Added top=0.92 to give room for title
     
     ax1 = fig.add_subplot(gs[0])  # Network graph
     ax2 = fig.add_subplot(gs[1])  # Chord Statistics
@@ -198,7 +197,7 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     
     # Plot 1: Chord nodes with coverage and conflict
     ax1.set_title(f"{bank_name.capitalize()} Hand Chord Layout\n(Node size = Coverage, Color intensity = Conflict ratio)", 
-                  fontsize=14, fontweight='bold')
+                  fontsize=14, fontweight='bold', pad=20)  # Added pad=20 for more spacing
     
     # Calculate node sizes based on probability (skip dummy nodes)
     real_chords = [info for info in chord_info.values() if not info.get('is_dummy', False)]
@@ -382,7 +381,6 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     
     plt.tight_layout()
     return fig
-
 
 # Process left hand
 left_chord_info = build_chord_info(chord_freqs['left_chords'])
