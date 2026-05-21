@@ -146,7 +146,7 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
         layer1, layer2 = sorted_subsets[0], sorted_subsets[1]
         
         # Create 3 invisible intermediate layers between the two real layers
-        num_intermediate_layers = 3
+        num_intermediate_layers = 15
         
         # Calculate positions for intermediate layers
         step = (layer2 - layer1) / (num_intermediate_layers + 1)
