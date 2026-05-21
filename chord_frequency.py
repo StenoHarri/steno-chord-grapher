@@ -204,6 +204,7 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
     Calculate conflict scores where the same mask combo maps to multiple words.
     Attributes conflict to the specific chords or edges that collide.
     Separates left-hand and right-hand chords and edges.
+    Now includes detailed collision tracking with specific word pairs.
     """
     total_conflict_score = 0.0
     conflict_details = {}
@@ -211,6 +212,12 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
     right_chord_conflict_scores = defaultdict(float)   # right chord -> accumulated conflict probability
     left_edge_conflicts = defaultdict(float)           # left-hand edge -> conflict probability
     right_edge_conflicts = defaultdict(float)          # right-hand edge -> conflict probability
+    
+    # Detailed collision tracking for chords and edges
+    left_chord_collisions = defaultdict(list)    # left chord -> list of (colliding_word, colliding_with_word, prob)
+    right_chord_collisions = defaultdict(list)   # right chord -> list of (colliding_word, colliding_with_word, prob)
+    left_edge_collisions = defaultdict(list)     # left edge -> list of (colliding_word, colliding_with_word, prob)
+    right_edge_collisions = defaultdict(list)    # right edge -> list of (colliding_word, colliding_with_word, prob)
     
     for combo, prons in conflicts.items():
         # Get all words that map to this combo with their probabilities and chord info
@@ -272,15 +279,51 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
                     info['left_mask'], info['right_mask']
                 )
                 
-                # Attribute conflict to colliding elements, separated by hand
+                # Attribute conflict to colliding elements with detailed tracking
                 for chord in colliding_left_chords:
                     left_chord_conflict_scores[chord] += info['prob']
+                    # Track the specific collision
+                    left_chord_collisions[chord].append({
+                        'colliding_word': word,
+                        'colliding_pron': info['pron'],
+                        'colliding_with_word': winner_name,
+                        'colliding_with_pron': winner_info['pron'],
+                        'probability': info['prob'],
+                        'mask_combo': combo
+                    })
+                
                 for chord in colliding_right_chords:
                     right_chord_conflict_scores[chord] += info['prob']
+                    right_chord_collisions[chord].append({
+                        'colliding_word': word,
+                        'colliding_pron': info['pron'],
+                        'colliding_with_word': winner_name,
+                        'colliding_with_pron': winner_info['pron'],
+                        'probability': info['prob'],
+                        'mask_combo': combo
+                    })
+                
                 for edge in colliding_left_edges:
                     left_edge_conflicts[edge] += info['prob']
+                    left_edge_collisions[edge].append({
+                        'colliding_word': word,
+                        'colliding_pron': info['pron'],
+                        'colliding_with_word': winner_name,
+                        'colliding_with_pron': winner_info['pron'],
+                        'probability': info['prob'],
+                        'mask_combo': combo
+                    })
+                
                 for edge in colliding_right_edges:
                     right_edge_conflicts[edge] += info['prob']
+                    right_edge_collisions[edge].append({
+                        'colliding_word': word,
+                        'colliding_pron': info['pron'],
+                        'colliding_with_word': winner_name,
+                        'colliding_with_pron': winner_info['pron'],
+                        'probability': info['prob'],
+                        'mask_combo': combo
+                    })
                 
                 all_colliding_left_chords.update(colliding_left_chords)
                 all_colliding_right_chords.update(colliding_right_chords)
@@ -312,7 +355,32 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
             'colliding_right_edges': list(all_colliding_right_edges)
         }
     
-    return total_conflict_score, conflict_details, dict(left_chord_conflict_scores), dict(right_chord_conflict_scores), dict(left_edge_conflicts), dict(right_edge_conflicts)
+    # Convert collisions to sorted lists (by probability, highest first)
+    left_chord_collisions_sorted = {
+        chord: sorted(collisions, key=lambda x: x['probability'], reverse=True)
+        for chord, collisions in left_chord_collisions.items()
+    }
+    
+    right_chord_collisions_sorted = {
+        chord: sorted(collisions, key=lambda x: x['probability'], reverse=True)
+        for chord, collisions in right_chord_collisions.items()
+    }
+    
+    left_edge_collisions_sorted = {
+        edge: sorted(collisions, key=lambda x: x['probability'], reverse=True)
+        for edge, collisions in left_edge_collisions.items()
+    }
+    
+    right_edge_collisions_sorted = {
+        edge: sorted(collisions, key=lambda x: x['probability'], reverse=True)
+        for edge, collisions in right_edge_collisions.items()
+    }
+    
+    return (total_conflict_score, conflict_details, 
+            dict(left_chord_conflict_scores), dict(right_chord_conflict_scores),
+            dict(left_edge_conflicts), dict(right_edge_conflicts),
+            left_chord_collisions_sorted, right_chord_collisions_sorted,
+            left_edge_collisions_sorted, right_edge_collisions_sorted)
 
 
 def print_conflict_detail(combo, details):

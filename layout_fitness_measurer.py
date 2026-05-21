@@ -178,7 +178,11 @@ def score_layout(matches, conflicts, pron_freqs):
             coverage_score += total_pron_prob
 
     # Calculate conflicts (collisions)
-    total_conflict_score, conflict_details, left_chord_conflicts, right_chord_conflicts, left_edge_conflicts, right_edge_conflicts = calculate_conflicts(
+    (total_conflict_score, conflict_details, 
+     left_chord_conflicts, right_chord_conflicts, 
+     left_edge_conflicts, right_edge_conflicts,
+     left_chord_collisions, right_chord_collisions,
+     left_edge_collisions, right_edge_collisions) = calculate_conflicts(
         matches, conflicts, pron_freqs
     )
 
@@ -199,7 +203,11 @@ def score_layout(matches, conflicts, pron_freqs):
         "left_chord_conflicts": left_chord_conflicts,
         "right_chord_conflicts": right_chord_conflicts,
         "left_edge_conflicts": left_edge_conflicts,
-        "right_edge_conflicts": right_edge_conflicts
+        "right_edge_conflicts": right_edge_conflicts,
+        "left_chord_collisions": left_chord_collisions,
+        "right_chord_collisions": right_chord_collisions,
+        "left_edge_collisions": left_edge_collisions,
+        "right_edge_collisions": right_edge_collisions
     }
 
 
@@ -263,10 +271,14 @@ if __name__ == "__main__":
         json.dump(chord_freqs_export, f, indent=2)
     print(f"Exported chord frequencies to {CHORD_FREQS_FILE}")
     
-    # Export chord conflicts
+    # Export chord conflicts with detailed collisions
     chord_conflicts_export = {
-        'left_chords': serialize_frequencies_for_export(scores['left_chord_conflicts'], 'left'),
-        'right_chords': serialize_frequencies_for_export(scores['right_chord_conflicts'], 'right')
+        'left_chords': serialize_frequencies_with_collisions_for_export(
+            scores['left_chord_conflicts'], scores['left_chord_collisions'], 'left'
+        ),
+        'right_chords': serialize_frequencies_with_collisions_for_export(
+            scores['right_chord_conflicts'], scores['right_chord_collisions'], 'right'
+        )
     }
     with open(CHORD_CONFLICTS_FILE, "w", encoding="utf-8") as f:
         json.dump(chord_conflicts_export, f, indent=2)
@@ -281,10 +293,14 @@ if __name__ == "__main__":
         json.dump(edge_freqs_export, f, indent=2)
     print(f"Exported edge frequencies to {EDGE_FREQS_FILE}")
     
-    # Export edge conflicts
+    # Export edge conflicts with detailed collisions
     edge_conflicts_export = {
-        'left_edges': serialize_frequencies_for_export(scores['left_edge_conflicts'], 'left'),
-        'right_edges': serialize_frequencies_for_export(scores['right_edge_conflicts'], 'right')
+        'left_edges': serialize_frequencies_with_collisions_for_export(
+            scores['left_edge_conflicts'], scores['left_edge_collisions'], 'left'
+        ),
+        'right_edges': serialize_frequencies_with_collisions_for_export(
+            scores['right_edge_conflicts'], scores['right_edge_collisions'], 'right'
+        )
     }
     with open(EDGE_CONFLICTS_FILE, "w", encoding="utf-8") as f:
         json.dump(edge_conflicts_export, f, indent=2)

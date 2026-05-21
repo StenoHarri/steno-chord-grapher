@@ -159,3 +159,43 @@ def serialize_frequencies_for_export(freq_dict, name):
         }
         result.append(entry)
     return result
+
+
+def serialize_frequencies_with_collisions_for_export(freq_dict, collisions_dict, name):
+    """
+    Convert frequency dict with collision details to sorted list for export.
+    Includes top 3 contributing collisions for each chord/edge.
+    """
+    result = []
+    for k, v in sorted(freq_dict.items(), key=lambda x: x[1], reverse=True):
+        if isinstance(k, tuple):
+            # For edges
+            item = {
+                'from': k[0],
+                'from_mask': get_chord_mask(k[0], name),
+                'from_bank': name,
+                'to': k[1],
+                'to_mask': get_chord_mask(k[1], name),
+                'to_bank': name
+            }
+        else:
+            # For single chords
+            item = {
+                'chord': k,
+                'mask': get_chord_mask(k, name),
+                'bank': name
+            }
+        
+        # Get collisions for this chord/edge
+        collisions = collisions_dict.get(k, [])
+        # Take top 3 collisions (they're already sorted by probability)
+        top_collisions = collisions[:3]
+        
+        entry = {
+            **item,
+            'probability': round(v, 6),
+            'zipf': round(6 + math.log10(v), 2) if v > 0 else 0,
+            'top_collisions': top_collisions
+        }
+        result.append(entry)
+    return result
