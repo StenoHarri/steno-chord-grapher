@@ -45,7 +45,7 @@ SCORES_FILE = "layout_scores.json"
 def generate_bank_from_chords(chord_map):
     bank = defaultdict(list)
     for chord, mask in chord_map.items():
-        bank[mask].append(chord)
+        bank[mask].append(chord.replace("_",""))
     return dict(bank)
 
 

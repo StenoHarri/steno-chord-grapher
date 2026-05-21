@@ -3,7 +3,7 @@
 current_layout = "michela"
 #current_layout = "extended stenotype"
 #current_layout = "evolved stenotype"
-#current_layout = "stenotype"
+current_layout = "stenotype"
 
 
 if current_layout == "stenotype":
@@ -214,19 +214,19 @@ elif current_layout == "michela":
         "EH K S": "10011100000",
         "IH K S": "10011100000",
         # The initials can be combined with these:
-        "R":     "00000010001",
-        "S":     "00000001001",
-        "Y":     "00000011001",
-        "L":     "00000000101",
-        "W":     "00000010101",
-        "M":     "00000001101",
-        "N":     "00000011101",
-        "P":     "00000000011",
-        "B":     "00000000011",
-        "T":     "00000010011",
-        "D":     "00000010011",
-        "K":     "00000001011",
-        "G":     "00000001011",
+        "_R":     "00000010001",
+        "_S":     "00000001001",
+        "_Y":     "00000011001",
+        "_L":     "00000000101",
+        "_W":     "00000010101",
+        "_M":     "00000001101",
+        "_N":     "00000011101",
+        "_P":     "00000000011",
+        "_B":     "00000000011",
+        "_T":     "00000010011",
+        "_D":     "00000010011",
+        "_K":     "00000001011",
+        "_G":     "00000001011",
         # Some chords are the whole bank
         "S T R":   "00100110001", #otherwise HH + R
         "S P L":   "00100100101", #otherwise HH + L
