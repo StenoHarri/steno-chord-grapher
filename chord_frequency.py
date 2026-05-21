@@ -213,7 +213,7 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
     left_edge_conflicts = defaultdict(float)           # left-hand edge -> conflict probability
     right_edge_conflicts = defaultdict(float)          # right-hand edge -> conflict probability
     
-    # Detailed collision tracking for chords and edges
+    # Detailed collision tracking for chords and edges - store ALL collisions
     left_chord_collisions = defaultdict(list)    # left chord -> list of (colliding_word, colliding_with_word, prob)
     right_chord_collisions = defaultdict(list)   # right chord -> list of (colliding_word, colliding_with_word, prob)
     left_edge_collisions = defaultdict(list)     # left edge -> list of (colliding_word, colliding_with_word, prob)
@@ -279,10 +279,10 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
                     info['left_mask'], info['right_mask']
                 )
                 
-                # Attribute conflict to colliding elements with detailed tracking
+                # Attribute conflict to colliding elements with detailed tracking - store ALL collisions
                 for chord in colliding_left_chords:
                     left_chord_conflict_scores[chord] += info['prob']
-                    # Track the specific collision
+                    # Track the specific collision - append to list (don't limit)
                     left_chord_collisions[chord].append({
                         'colliding_word': word,
                         'colliding_pron': info['pron'],
@@ -355,7 +355,7 @@ def calculate_conflicts(matches, conflicts, pron_freqs):
             'colliding_right_edges': list(all_colliding_right_edges)
         }
     
-    # Convert collisions to sorted lists (by probability, highest first)
+    # Sort collisions by probability (highest first) but keep ALL of them
     left_chord_collisions_sorted = {
         chord: sorted(collisions, key=lambda x: x['probability'], reverse=True)
         for chord, collisions in left_chord_collisions.items()

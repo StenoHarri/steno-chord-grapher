@@ -164,7 +164,7 @@ def serialize_frequencies_for_export(freq_dict, name):
 def serialize_frequencies_with_collisions_for_export(freq_dict, collisions_dict, name):
     """
     Convert frequency dict with collision details to sorted list for export.
-    Includes top 3 contributing collisions for each chord/edge.
+    Includes ALL collisions (not just top 3) - the graph will decide how many to display.
     """
     result = []
     for k, v in sorted(freq_dict.items(), key=lambda x: x[1], reverse=True):
@@ -186,16 +186,15 @@ def serialize_frequencies_with_collisions_for_export(freq_dict, collisions_dict,
                 'bank': name
             }
         
-        # Get collisions for this chord/edge
+        # Get ALL collisions for this chord/edge (not just top 3)
         collisions = collisions_dict.get(k, [])
-        # Take top 3 collisions (they're already sorted by probability)
-        top_collisions = collisions[:3]
         
         entry = {
             **item,
             'probability': round(v, 6),
             'zipf': round(6 + math.log10(v), 2) if v > 0 else 0,
-            'top_collisions': top_collisions
+            'total_collisions': len(collisions),  # Store the total count
+            'top_collisions': collisions  # Store ALL collisions, graph will display first 3
         }
         result.append(entry)
     return result

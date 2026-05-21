@@ -106,13 +106,16 @@ def add_conflicts_to_edge_info(edge_info, conflict_list):
     return edge_info
 
 
-def format_collision_display(collisions):
-    """Format collision list into display strings - show ALL provided collisions"""
+def format_collision_display(collisions, max_display=3):
+    """Format collision list - show total count but only display top 'max_display' examples"""
     if not collisions:
         return ["    (no collisions)"]
     
     displays = []
-    for i, coll in enumerate(collisions):
+    total = len(collisions)
+    
+    # Show top examples
+    for i, coll in enumerate(collisions[:max_display]):
         word1 = coll['colliding_word'][:15] + '..' if len(coll['colliding_word']) > 15 else coll['colliding_word']
         word2 = coll['colliding_with_word'][:15] + '..' if len(coll['colliding_with_word']) > 15 else coll['colliding_with_word']
         displays.append(f"    {i+1}. '{word1}' ↔ '{word2}'")
@@ -279,8 +282,8 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     chord_lines.append("")
     for chord, info in chords_by_conflict[:5]:
         num_collisions = len(info['collisions'])
-        chord_lines.append(f"  {chord}: {info['conflict']:.6f} ({num_collisions} collisions)")
-        collision_displays = format_collision_display(info['collisions'])
+        chord_lines.append(f"  {chord}: {info['conflict']:.6f} ({num_collisions} total collisions)")
+        collision_displays = format_collision_display(info['collisions'], max_display=3)
         for display in collision_displays:
             chord_lines.append(display)
         chord_lines.append("")
@@ -312,8 +315,8 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     edge_lines.append("")
     for (from_chord, to_chord), info in edges_by_conflict[:5]:
         num_collisions = len(info['collisions'])
-        edge_lines.append(f"  {from_chord}→{to_chord}: {info['conflict']:.6f} ({num_collisions} collisions)")
-        collision_displays = format_collision_display(info['collisions'])
+        edge_lines.append(f"  {from_chord}→{to_chord}: {info['conflict']:.6f} ({num_collisions} total collisions)")
+        collision_displays = format_collision_display(info['collisions'], max_display=3)
         for display in collision_displays:
             edge_lines.append(display)
         edge_lines.append("")
