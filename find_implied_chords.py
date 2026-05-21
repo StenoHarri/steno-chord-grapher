@@ -2,7 +2,10 @@
 Given a base layout, construct all the implied chords, such as 1000: s + 0100: t = 1100: st
 """
 from allowed_chords import before_vowel, after_vowel
+import re
 
+# Import the strip function
+from base_chords import strip_chord_numbers
 
 def mask_is_subset(possible_subset, full_mask):
     """If a key is present in the subset that isn't in the full mask, return false"""
@@ -52,8 +55,16 @@ def find_combinations(target_mask, base_items, start_index=0, accumulated_mask=N
             for combo in find_combinations(remainder, base_items, i, new_accum):
                 combined = [name] + combo
                 
-                # Filter to make sure only combos that are actually in the training data come up
-                if ' '.join(combined) in before_vowel or ' '.join(combined) in after_vowel:
+                # Create the pronunciation string (with numbers stripped for comparison)
+                pron_string = ' '.join(combined)
+                stripped_pron_string = strip_chord_numbers(pron_string)
+                
+                # Check against allowed chords (strip numbers from allowed chords too)
+                # We need to check both with and without numbers
+                if (stripped_pron_string in before_vowel or 
+                    stripped_pron_string in after_vowel or
+                    pron_string in before_vowel or 
+                    pron_string in after_vowel):
                     results.append(combined)
 
     return results
@@ -82,10 +93,18 @@ def mask_to_chords(mask, order_len, base_chords):
     # Convert to dict: pronunciation -> list of constituent chords
     results = {}
     for combo in combos:
+        # Keep the original chord names (with numbers)
         pron_string = ' '.join(combo)
-        if pron_string not in results:
-            results[pron_string] = []
-        results[pron_string].append(combo)
+        
+        # Also create a stripped version for lookup
+        stripped_pron_string = strip_chord_numbers(pron_string)
+        
+        # Store under both the original and stripped version?
+        # Actually, we should store under the stripped version for matching
+        # But keep the original chords in the combo
+        if stripped_pron_string not in results:
+            results[stripped_pron_string] = []
+        results[stripped_pron_string].append(combo)
     
     return results
 
