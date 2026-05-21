@@ -2,8 +2,8 @@
 
 #current_layout = "michela"
 #current_layout = "extended stenotype"
-current_layout = "stenotype"
 current_layout = "evolved stenotype"
+current_layout = "stenotype"
 
 
 if current_layout == "stenotype":
@@ -58,6 +58,7 @@ if current_layout == "stenotype":
         "M B": "1101000000",
         "CH": "1010000000",
         "V": "1001000000",
+        "S K": "1001010000",
         "S T": "1000001000",
         "S D": "1000000010",
         "R": "0100000000",
