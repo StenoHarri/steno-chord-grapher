@@ -310,12 +310,12 @@ right_edge_info = add_conflicts_to_edge_info(right_edge_info, edge_conflicts['ri
 
 # Plot both banks
 print("Plotting left hand layout...")
-fig_left = plot_bank_layout(left_chord_info, left_edge_info, "left", min_edge_prob=0.03)
+fig_left = plot_bank_layout(left_chord_info, left_edge_info, "left", min_edge_prob=0.01)
 plt.savefig("left_hand_layout.png", dpi=150, bbox_inches='tight')
 print("Saved left_hand_layout.png")
 
 print("Plotting right hand layout...")
-fig_right = plot_bank_layout(right_chord_info, right_edge_info, "right", min_edge_prob=0.03)
+fig_right = plot_bank_layout(right_chord_info, right_edge_info, "right", min_edge_prob=0.01)
 plt.savefig("right_hand_layout.png", dpi=150, bbox_inches='tight')
 print("Saved right_hand_layout.png")
 

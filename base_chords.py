@@ -1,15 +1,16 @@
 
 
-#current_layout = "michela"
+current_layout = "michela"
 #current_layout = "extended stenotype"
-current_layout = "evolved stenotype"
-current_layout = "stenotype"
+#current_layout = "evolved stenotype"
+#current_layout = "stenotype"
 
 
 if current_layout == "stenotype":
 
     LEFT_BANK_LEN = 7   #WSI layout has 7 initials STKPWHR
     RIGHT_BANK_LEN = 10 #WSI layout has 10 finals -FRPBLGTSDZ
+    DISALLOWED_STARTINGS = r'^(nothing)'
     DISALLOWED_ENDINGS = r'(1..1|11.)$'
 
     LEFT_CHORDS = {
@@ -91,6 +92,7 @@ elif current_layout == "extended stenotype":
 
     LEFT_BANK_LEN = 8   #WSI layout has 7 initials STKPWHR
     RIGHT_BANK_LEN = 10 #WSI layout has 10 finals -FRPBLGTSDZ
+    DISALLOWED_STARTINGS = r'^(nothing)'
     DISALLOWED_ENDINGS = r'(1..1|11.)$'
 
     LEFT_CHORDS = {
@@ -173,9 +175,8 @@ elif current_layout == "extended stenotype":
 elif current_layout == "michela":
     LEFT_BANK_LEN = 11   #WSI layout has 7 initials STKPWHR
     RIGHT_BANK_LEN = 6 #WSI layout has 10 finals -FRPBLGTSDZ
+    DISALLOWED_STARTINGS = r'^0000000?0?0?0?1'
     DISALLOWED_ENDINGS = r'(nothing)$'
-    #Although Michela does have disallowed starts (starting on second bank)
-    #00000100001
 
     LEFT_CHORDS = {
         "F":    "10000100000",
@@ -273,6 +274,7 @@ elif current_layout == "evolved stenotype":
 
     LEFT_BANK_LEN = 7   #WSI layout has 7 initials STKPWHR
     RIGHT_BANK_LEN = 10 #WSI layout has 10 finals -FRPBLGTSDZ
+    DISALLOWED_STARTINGS = r'^(nothing)'
     DISALLOWED_ENDINGS = r'(1..1|11.)$'
 
     LEFT_CHORDS ={

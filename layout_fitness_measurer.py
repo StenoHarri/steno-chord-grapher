@@ -2,7 +2,7 @@ import json
 import re
 import time
 import math
-from base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN, DISALLOWED_ENDINGS
+from base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN, DISALLOWED_ENDINGS, DISALLOWED_STARTINGS
 from find_implied_chords import generate_masks, mask_to_chords
 from collections import defaultdict
 from chord_frequency import *
@@ -57,6 +57,9 @@ RIGHT_BANK = generate_bank_from_chords(RIGHT_CHORDS)
 # Build left bank masks with chord composition preserved
 LEFT_BANK_MASKS = {}
 for mask in generate_masks(LEFT_BANK_LEN):
+    # Skip masks with disallowed starts
+    if re.search(DISALLOWED_STARTINGS, mask) is not None:
+        continue
     chord_compositions = mask_to_chords(mask, LEFT_BANK_LEN, LEFT_BANK)
     if chord_compositions:  # Only include if there are valid chord combinations
         LEFT_BANK_MASKS[mask] = chord_compositions
