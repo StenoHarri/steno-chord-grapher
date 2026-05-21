@@ -141,14 +141,51 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     # Sort subsets
     sorted_subsets = sorted(subsets.keys())
     
+    # Special handling for exactly 2 layers: add invisible intermediate layers
+    original_sorted_subsets = sorted_subsets.copy()
+    if len(sorted_subsets) == 2:
+        layer1, layer2 = sorted_subsets[0], sorted_subsets[1]
+        
+        # Create 3 invisible intermediate layers between the two real layers
+        num_intermediate_layers = 3
+        
+        # Calculate positions for intermediate layers
+        step = (layer2 - layer1) / (num_intermediate_layers + 1)
+        
+        # Create intermediate layer numbers and add dummy nodes
+        for i in range(1, num_intermediate_layers + 1):
+            intermediate_layer = layer1 + (step * i)
+            
+            # Add a dummy node to force spacing (completely transparent)
+            dummy_node_name = f"__dummy_{intermediate_layer}__"
+            G.add_node(dummy_node_name, subset=intermediate_layer, is_dummy=True)
+            subsets[intermediate_layer].append(dummy_node_name)
+            
+            # Add to chord_info so it's recognized
+            chord_info[dummy_node_name] = {
+                'subset': intermediate_layer,
+                'is_dummy': True
+            }
+        
+        # Update sorted_subsets to include intermediate layers
+        sorted_subsets = sorted(subsets.keys())
+    
     # Add edges with significant probability
     for (from_chord, to_chord), info in edge_info.items():
         if info['probability'] >= min_edge_prob:
             if from_chord in chord_info and to_chord in chord_info:
-                G.add_edge(from_chord, to_chord, **info)
+                # Skip if either node is dummy
+                if not chord_info[from_chord].get('is_dummy', False) and not chord_info[to_chord].get('is_dummy', False):
+                    G.add_edge(from_chord, to_chord, **info)
     
     # Use networkx's built-in multipartite layout
     pos = nx.multipartite_layout(G, subset_key='subset', align='vertical')
+    
+    # Remove dummy nodes from position dict for display
+    dummy_nodes = [node for node in G.nodes if chord_info.get(node, {}).get('is_dummy', False)]
+    for dummy in dummy_nodes:
+        if dummy in pos:
+            del pos[dummy]
     
     # Create figure with 2 columns: network (60%), stats (40%)
     # Stats will be split into chords (left side of stats) and edges (right side of stats)
@@ -163,20 +200,23 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     ax1.set_title(f"{bank_name.capitalize()} Hand Chord Layout\n(Node size = Coverage, Color intensity = Conflict ratio)", 
                   fontsize=14, fontweight='bold')
     
-    # Calculate node sizes based on probability
-    max_prob = max(info['probability'] for info in chord_info.values())
+    # Calculate node sizes based on probability (skip dummy nodes)
+    real_chords = [info for info in chord_info.values() if not info.get('is_dummy', False)]
+    max_prob = max(info['probability'] for info in real_chords)
     min_size = 300
     max_size = 3000
     
     # Calculate node colors based on conflict ratio
     max_conflict_ratio = 0
-    for info in chord_info.values():
+    for info in real_chords:
         if info['probability'] > 0:
             ratio = info['conflict'] / info['probability']
             max_conflict_ratio = max(max_conflict_ratio, ratio)
     
-    # Draw nodes
+    # Draw nodes (skip dummy nodes)
     for chord, info in chord_info.items():
+        if info.get('is_dummy', False):
+            continue
         if chord in pos:
             size = min_size + (info['probability'] / max_prob) * (max_size - min_size) if max_prob > 0 else min_size
             
@@ -198,13 +238,17 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
             ax1.annotate(chord, pos[chord], textcoords="offset points", 
                         xytext=(0, 0), ha='center', fontsize=9, fontweight='bold')
     
-    # Draw edges
+    # Draw edges (skip those involving dummy nodes)
     max_edge_prob = max(info['probability'] for info in edge_info.values()) if edge_info else 1
     min_edge_width = 2.0
     max_edge_width = 10
     
     for (from_chord, to_chord), info in edge_info.items():
         if info['probability'] >= min_edge_prob and from_chord in pos and to_chord in pos:
+            # Skip if either node is dummy
+            if chord_info.get(from_chord, {}).get('is_dummy', False) or chord_info.get(to_chord, {}).get('is_dummy', False):
+                continue
+                
             width = min_edge_width + (info['probability'] / max_edge_prob) * (max_edge_width - min_edge_width)
             alpha = 1.0
 
@@ -237,9 +281,9 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
                                        connectionstyle=f"arc3,rad={rad}"),
                         zorder=1)
     
-    # Add subset labels
-    for subset in sorted_subsets:
-        nodes_in_subset = subsets[subset]
+    # Add subset labels (only for original subsets that had nodes)
+    for subset in original_sorted_subsets:
+        nodes_in_subset = [n for n in subsets[subset] if not chord_info.get(n, {}).get('is_dummy', False)]
         x_positions = [pos[n][0] for n in nodes_in_subset if n in pos]
         if x_positions:
             avg_x = sum(x_positions) / len(x_positions)
@@ -255,9 +299,10 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     ax2.set_facecolor('#E8F0F8')
     ax3.set_facecolor('#E8F0F8')
     
-    # Sort data
-    sorted_chords = sorted(chord_info.items(), key=lambda x: x[1]['probability'], reverse=True)
-    chords_by_conflict = sorted(chord_info.items(), key=lambda x: x[1]['conflict'], reverse=True)
+    # Sort data (skip dummy nodes)
+    real_chord_info = {k: v for k, v in chord_info.items() if not v.get('is_dummy', False)}
+    sorted_chords = sorted(real_chord_info.items(), key=lambda x: x[1]['probability'], reverse=True)
+    chords_by_conflict = sorted(real_chord_info.items(), key=lambda x: x[1]['conflict'], reverse=True)
     sorted_edges = sorted(edge_info.items(), key=lambda x: x[1]['probability'], reverse=True)
     edges_by_conflict = sorted(edge_info.items(), key=lambda x: x[1]['conflict'], reverse=True)
     
@@ -327,7 +372,7 @@ def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     edge_lines.append("LEGEND:")
     edge_lines.append("  Node size = Coverage")
     edge_lines.append("  Color = Conflict ratio")
-    edge_lines.append(f"  Total chords: {len(chord_info)}")
+    edge_lines.append(f"  Total chords: {len(real_chord_info)}")
     edge_lines.append(f"  Total edges: {sum(1 for e in edge_info.values() if e['probability'] >= min_edge_prob)}")
     
     edge_text = "\n".join(edge_lines)
