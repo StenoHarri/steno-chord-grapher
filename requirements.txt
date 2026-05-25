@@ -3,3 +3,5 @@ pronouncing
 wordfreq
 networkx
 matplotlib
+powerlaw
+scipy
