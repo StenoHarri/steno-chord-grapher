@@ -1,11 +1,11 @@
 """
 Given a base layout, construct all the implied chords, such as 1000: s + 0100: t = 1100: st
 """
-from allowed_chords import before_vowel, after_vowel
+from chord_tracking.allowed_chords import before_vowel, after_vowel
 import re
 
 # Import the strip function
-from base_chords import strip_chord_numbers
+from layouts.base_chords import strip_chord_numbers
 
 def mask_is_subset(possible_subset, full_mask):
     """If a key is present in the subset that isn't in the full mask, return false"""

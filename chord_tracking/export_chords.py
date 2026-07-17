@@ -1,5 +1,5 @@
 import math
-from base_chords import LEFT_CHORDS, RIGHT_CHORDS
+from layouts.base_chords import LEFT_CHORDS, RIGHT_CHORDS
 
 def serialize_matches_for_export(matches, pron_freqs):
     """Convert matches to a JSON-serializable format with frequency info"""
@@ -11,12 +11,12 @@ def serialize_matches_for_export(matches, pron_freqs):
             key = (match['full_match'], tuple(match['left_chords']), tuple(match['right_chords']))
             if key not in seen:
                 seen.add(key)
-                
+
                 pron = match['full_match']
                 freq_info = {}
                 if pron in pron_freqs:
                     freq_info = pron_freqs[pron]
-                
+
                 # Get individual masks for each chord, with bank specified
                 left_chords_with_masks = [
                     {'chord': c, 'mask': get_chord_mask(c, 'left'), 'bank': 'left'} 
@@ -26,7 +26,7 @@ def serialize_matches_for_export(matches, pron_freqs):
                     {'chord': c, 'mask': get_chord_mask(c, 'right'), 'bank': 'right'} 
                     for c in match['right_chords']
                 ]
-                
+
                 formatted_match = {
                     'full_match': match['full_match'],
                     'frequency': freq_info,
@@ -37,9 +37,9 @@ def serialize_matches_for_export(matches, pron_freqs):
                     'right_mask': match['right_mask']
                 }
                 formatted_matches.append(formatted_match)
-        
+
         export[combo] = formatted_matches
-    
+
     return export
 
 
@@ -71,7 +71,7 @@ def serialize_conflicts_for_export(conflicts, conflict_details):
     export = []
     for combo, details in sorted(conflict_details.items(), 
                                   key=lambda x: x[1]['losing_prob'], reverse=True):
-        
+
         # Serialize colliding chords with masks (specify bank)
         colliding_left_chords = [
             {'chord': c, 'mask': get_chord_mask(c, 'left'), 'bank': 'left'} 
@@ -81,11 +81,11 @@ def serialize_conflicts_for_export(conflicts, conflict_details):
             {'chord': c, 'mask': get_chord_mask(c, 'right'), 'bank': 'right'} 
             for c in details['colliding_right_chords']
         ]
-        
+
         # Serialize colliding edges with directional info, masks, and bank
         colliding_left_edges = [serialize_edge(e, 'left') for e in details['colliding_left_edges']]
         colliding_right_edges = [serialize_edge(e, 'right') for e in details['colliding_right_edges']]
-        
+
         # Serialize word chord info with masks and bank
         word_to_chords_with_masks = {}
         for word, chords in details['word_to_chords'].items():
@@ -99,7 +99,7 @@ def serialize_conflicts_for_export(conflicts, conflict_details):
                     for c in chords.get('right', [])
                 ]
             }
-        
+
         # Serialize winner chords with masks and bank
         winner_left = [
             {'chord': c, 'mask': get_chord_mask(c, 'left'), 'bank': 'left'} 
@@ -109,7 +109,7 @@ def serialize_conflicts_for_export(conflicts, conflict_details):
             {'chord': c, 'mask': get_chord_mask(c, 'right'), 'bank': 'right'} 
             for c in details['winner_right']
         ]
-        
+
         export.append({
             'combo': combo,
             'winner_word': details['winner_word'],
@@ -185,10 +185,10 @@ def serialize_frequencies_with_collisions_for_export(freq_dict, collisions_dict,
                 'mask': get_chord_mask(k, name),
                 'bank': name
             }
-        
+
         # Get ALL collisions for this chord/edge (not just top 3)
         collisions = collisions_dict.get(k, [])
-        
+
         entry = {
             **item,
             'probability': round(v, 6),

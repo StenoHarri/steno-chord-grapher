@@ -1,5 +1,5 @@
 from collections import defaultdict
-from layout_fitness_measurer import zipf_to_prob
+from chord_tracking.layout_fitness_measurer import zipf_to_prob
 import math
  
 

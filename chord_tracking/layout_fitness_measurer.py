@@ -2,11 +2,11 @@ import json
 import re
 import time
 import math
-from base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN, DISALLOWED_ENDINGS, DISALLOWED_STARTINGS
-from find_implied_chords import generate_masks, mask_to_chords
+from layouts.base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN, DISALLOWED_ENDINGS, DISALLOWED_STARTINGS
+from chord_tracking.find_implied_chords import generate_masks, mask_to_chords
 from collections import defaultdict
-from chord_frequency import *
-from export_chords import *
+from chord_tracking.chord_frequency import *
+from chord_tracking.export_chords import *
 
 # Choose which pronunciation file to use
 #PRON_FREQ_FILE = "pronunciation_frequency.json"           # merged vowels
