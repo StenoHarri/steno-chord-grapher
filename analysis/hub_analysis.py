@@ -5,16 +5,16 @@ from collections import defaultdict
 from scipy import stats
 
 # Load your data
-with open("chord_frequencies.json", "r", encoding="utf-8") as f:
+with open("analysis/chord_data/chord_frequencies.json", "r", encoding="utf-8") as f:
     chord_freqs = json.load(f)
 
-with open("edge_frequencies.json", "r", encoding="utf-8") as f:
+with open("analysis/chord_data/edge_frequencies.json", "r", encoding="utf-8") as f:
     edge_freqs = json.load(f)
 
-with open("chord_conflicts.json", "r", encoding="utf-8") as f:
+with open("analysis/chord_data/chord_conflicts.json", "r", encoding="utf-8") as f:
     chord_conflicts = json.load(f)
 
-with open("edge_conflicts.json", "r", encoding="utf-8") as f:
+with open("analysis/chord_data/edge_conflicts.json", "r", encoding="utf-8") as f:
     edge_conflicts = json.load(f)
 
 
@@ -181,7 +181,7 @@ def analyze_hubs_clean(chord_freqs, chord_conflicts, edge_freqs, edge_conflicts,
     ax.grid(True, alpha=0.3, which='both')
     
     plt.tight_layout()
-    plt.savefig(f'{bank_name}_hubs_clean.png', dpi=150, bbox_inches='tight')
+    plt.savefig(f'analysis/chord_analysis/{bank_name}_hubs_clean.png', dpi=150, bbox_inches='tight')
     plt.show()
     
     # === PLOT 2: Hub Comparison Bar Chart ===
@@ -211,7 +211,7 @@ def analyze_hubs_clean(chord_freqs, chord_conflicts, edge_freqs, edge_conflicts,
     ax.grid(True, alpha=0.3, axis='y')
     
     plt.tight_layout()
-    plt.savefig(f'{bank_name}_hub_comparison_bars.png', dpi=150, bbox_inches='tight')
+    plt.savefig(f'analysis/chord_analysis/{bank_name}_hub_comparison_bars.png', dpi=150, bbox_inches='tight')
     plt.show()
     
     # === PLOT 3: Conflict Ratio Analysis ===
@@ -263,7 +263,7 @@ def analyze_hubs_clean(chord_freqs, chord_conflicts, edge_freqs, edge_conflicts,
             bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
     
     plt.tight_layout()
-    plt.savefig(f'{bank_name}_conflict_ratio.png', dpi=150, bbox_inches='tight')
+    plt.savefig(f'analysis/chord_analysis/{bank_name}_conflict_ratio.png', dpi=150, bbox_inches='tight')
     plt.show()
     
     # === SUMMARY ===

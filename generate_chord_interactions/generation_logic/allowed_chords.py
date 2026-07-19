@@ -3,7 +3,7 @@ most implied chords are not found in any English words
 """
 import json
 
-PRON_FREQ_FILE = "pronunciation_frequency.json"
+PRON_FREQ_FILE = "generate_chord_interactions/pronunciation_data/pronunciation_frequency.json"
 VOWELS = {"AA", "AE", "AH", "AO", "AW", "AY",
           "EH", "ER", "EY", "IH", "IY", "OW", "OY", "UH", "UW", "vowel"}
 
@@ -26,7 +26,7 @@ for key in data.keys():
         # Before vowel: everything up to but not including that vowel
         if idx > 0:
             before_vowel.add(" ".join(pronunciation[:idx]))
-        
+
         # After vowel: everything AFTER that vowel (exclude the vowel itself)
         if idx < len(pronunciation) - 1:
             after_vowel.add(" ".join(pronunciation[idx + 1:]))  # Skip the vowel

@@ -7,13 +7,13 @@ from tqdm import tqdm
 from collections import Counter
 
 # input
-WORD_LIST_FILE = "pronunciation_data/words.txt"
+WORD_LIST_FILE = "generate_pronunciations/words.txt"
 
 # output
-PRON_FREQ_FILE = "pronunciation_data/pronunciation_frequency.json"
-PRON_FREQ_SPECIFIC_FILE = "pronunciation_data/pronunciation_frequency_specific.json"
-INITIAL_CLUSTERS_FILE = "pronunciation_data/initial_clusters.json"
-FINAL_CLUSTERS_FILE = "pronunciation_data/final_clusters.json"
+PRON_FREQ_FILE = "generate_chord_interactions/pronunciation_data/pronunciation_frequency.json"
+PRON_FREQ_SPECIFIC_FILE = "generate_chord_interactions/pronunciation_data/pronunciation_frequency_specific.json"
+INITIAL_CLUSTERS_FILE = "generate_chord_interactions/pronunciation_data/initial_clusters.json"
+FINAL_CLUSTERS_FILE = "generate_chord_interactions/pronunciation_data/final_clusters.json"
 
 # Load or generate word list
 def load_word_list():

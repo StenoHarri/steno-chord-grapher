@@ -6,10 +6,10 @@ from collections import defaultdict
 import math
 
 # Input files
-CHORD_FREQS_FILE = "chord_frequencies.json"
-EDGE_FREQS_FILE = "edge_frequencies.json"
-CHORD_CONFLICTS_FILE = "chord_conflicts.json"
-EDGE_CONFLICTS_FILE = "edge_conflicts.json"
+CHORD_FREQS_FILE = "analysis/chord_data/chord_frequencies.json"
+EDGE_FREQS_FILE = "analysis/chord_data/edge_frequencies.json"
+CHORD_CONFLICTS_FILE = "analysis/chord_data/chord_conflicts.json"
+EDGE_CONFLICTS_FILE = "analysis/chord_data/edge_conflicts.json"
 
 # Load data
 with open(CHORD_FREQS_FILE, "r", encoding="utf-8") as f:
@@ -397,12 +397,12 @@ right_edge_info = add_conflicts_to_edge_info(right_edge_info, edge_conflicts['ri
 # Plot both banks
 print("Plotting left hand layout...")
 fig_left = plot_bank_layout(left_chord_info, left_edge_info, "left", min_edge_prob=0.01)
-plt.savefig("left_hand_layout.png", dpi=150, bbox_inches='tight')
+plt.savefig("analysis/chord_analysis/left_hand_layout.png", dpi=150, bbox_inches='tight')
 print("Saved left_hand_layout.png")
 
 print("Plotting right hand layout...")
 fig_right = plot_bank_layout(right_chord_info, right_edge_info, "right", min_edge_prob=0.01)
-plt.savefig("right_hand_layout.png", dpi=150, bbox_inches='tight')
+plt.savefig("analysis/chord_analysis/right_hand_layout.png", dpi=150, bbox_inches='tight')
 print("Saved right_hand_layout.png")
 
 plt.show()

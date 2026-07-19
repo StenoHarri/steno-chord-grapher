@@ -1,7 +1,9 @@
 from collections import defaultdict
-from chord_tracking.layout_fitness_measurer import zipf_to_prob
 import math
  
+def zipf_to_prob(zipf):
+    """Convert Zipf frequency to relative probability."""
+    return 10 ** (zipf - 6)
 
 def print_detailed_matches(matches, pron_freqs):
     """Print matches with chord breakdown details including frequency"""

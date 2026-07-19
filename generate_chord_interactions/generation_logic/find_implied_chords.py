@@ -1,7 +1,6 @@
 """
 Given a base layout, construct all the implied chords, such as 1000: s + 0100: t = 1100: st
 """
-from chord_tracking.allowed_chords import before_vowel, after_vowel
 import re
 
 # Import the strip function
@@ -23,7 +22,7 @@ def is_intersecting(accumulated_mask, mask):
     return accumulated_mask.rfind('1') > mask.find('1')
 
 
-def find_combinations(target_mask, base_items, start_index=0, accumulated_mask=None):
+def find_combinations(target_mask, base_items, before_vowel, after_vowel, start_index=0, accumulated_mask=None):
     """
     Find all combinations of base chords that form the target mask.
     Returns list of chord combinations, where each combination preserves
@@ -52,13 +51,13 @@ def find_combinations(target_mask, base_items, start_index=0, accumulated_mask=N
             results.append([name])
         else:
             # Look for additional chords to complete the mask
-            for combo in find_combinations(remainder, base_items, i, new_accum):
+            for combo in find_combinations(remainder, base_items, before_vowel, after_vowel, i, new_accum):
                 combined = [name] + combo
-                
+
                 # Create the pronunciation string (with numbers stripped for comparison)
                 pron_string = ' '.join(combined)
                 stripped_pron_string = strip_chord_numbers(pron_string)
-                
+
                 # Check against allowed chords (strip numbers from allowed chords too)
                 # We need to check both with and without numbers
                 if (stripped_pron_string in before_vowel or 
@@ -82,13 +81,13 @@ def order_base_items(order_len, base_chords):
     return ordered_base_items
 
 
-def mask_to_chords(mask, order_len, base_chords):
+def mask_to_chords(mask, order_len, base_chords, before_vowel, after_vowel):
     """
     Convert a mask into all possible chord combinations.
     Returns a dict mapping pronunciation strings to their constituent chord lists.
     Example: {'Z': [['Z']], 'S D': [['S', 'D']]}
     """
-    combos = find_combinations(mask, order_base_items(order_len, base_chords))
+    combos = find_combinations(mask, order_base_items(order_len, base_chords), before_vowel, after_vowel)
     
     # Convert to dict: pronunciation -> list of constituent chords
     results = {}

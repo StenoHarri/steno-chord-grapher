@@ -11,3 +11,8 @@ layout_matches.json
 edge_conflicts.json
 chord_conflicts.json
 *.png
+analysis/chord_tracking/__pycache__/*
+analysis/chord_tracking/layouts/__pycache__/*
+generate_chord_interactions/generation_logic/__pycache__/*
+generate_chord_interactions/__pycache__/*
+generate_chord_interactions/layouts/__pycache__/*

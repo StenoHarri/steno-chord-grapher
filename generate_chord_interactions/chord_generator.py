@@ -3,14 +3,15 @@ import re
 import time
 import math
 from layouts.base_chords import LEFT_CHORDS, RIGHT_CHORDS, LEFT_BANK_LEN, RIGHT_BANK_LEN, DISALLOWED_ENDINGS, DISALLOWED_STARTINGS
-from chord_tracking.find_implied_chords import generate_masks, mask_to_chords
+from generation_logic.allowed_chords import before_vowel, after_vowel
+from generation_logic.find_implied_chords import generate_masks, mask_to_chords
 from collections import defaultdict
-from chord_tracking.chord_frequency import *
-from chord_tracking.export_chords import *
+from generation_logic.chord_frequency import *
+from export_chords import *
 
 # Choose which pronunciation file to use
-#PRON_FREQ_FILE = "pronunciation_frequency.json"           # merged vowels
-PRON_FREQ_FILE = "pronunciation_frequency_specific.json"   # specific vowels
+#PRON_FREQ_FILE = "generate_chord_interactions/pronunciation_data/pronunciation_frequency.json"           # merged vowels
+PRON_FREQ_FILE = "generate_chord_interactions/pronunciation_data/pronunciation_frequency_specific.json"   # specific vowels
 with open(PRON_FREQ_FILE, "r", encoding="utf-8") as f:
     PRONUNCIATIONS = json.load(f)
 
@@ -32,13 +33,13 @@ else:
 print(f"Using vowel set: {VOWELS}")
 
 # Output files
-MATCHES_FILE = "layout_matches.json"
-CONFLICTS_FILE = "layout_conflicts.json"
-CHORD_FREQS_FILE = "chord_frequencies.json"
-CHORD_CONFLICTS_FILE = "chord_conflicts.json"
-EDGE_FREQS_FILE = "edge_frequencies.json"
-EDGE_CONFLICTS_FILE = "edge_conflicts.json"
-SCORES_FILE = "layout_scores.json"
+MATCHES_FILE = "analysis/chord_data/layout_matches.json"
+CONFLICTS_FILE = "analysis/chord_data/layout_conflicts.json"
+CHORD_FREQS_FILE = "analysis/chord_data/chord_frequencies.json"
+CHORD_CONFLICTS_FILE = "analysis/chord_data/chord_conflicts.json"
+EDGE_FREQS_FILE = "analysis/chord_data/edge_frequencies.json"
+EDGE_CONFLICTS_FILE = "analysis/chord_data/edge_conflicts.json"
+SCORES_FILE = "analysis/chord_data/layout_scores.json"
 
 
 # The genes are chords, I would like to generate the corresponding layout
@@ -60,7 +61,7 @@ for mask in generate_masks(LEFT_BANK_LEN):
     # Skip masks with disallowed starts
     if re.search(DISALLOWED_STARTINGS, mask) is not None:
         continue
-    chord_compositions = mask_to_chords(mask, LEFT_BANK_LEN, LEFT_BANK)
+    chord_compositions = mask_to_chords(mask, LEFT_BANK_LEN, LEFT_BANK, before_vowel, after_vowel)
     if chord_compositions:  # Only include if there are valid chord combinations
         LEFT_BANK_MASKS[mask] = chord_compositions
 
@@ -71,7 +72,7 @@ for mask in generate_masks(RIGHT_BANK_LEN):
     # Skip masks with disallowed endings
     if re.search(DISALLOWED_ENDINGS, mask) is not None:
         continue
-    chord_compositions = mask_to_chords(mask, RIGHT_BANK_LEN, RIGHT_BANK)
+    chord_compositions = mask_to_chords(mask, RIGHT_BANK_LEN, RIGHT_BANK, before_vowel, after_vowel)
     if chord_compositions:  # Only include if there are valid chord combinations
         RIGHT_BANK_MASKS[mask] = chord_compositions
 
