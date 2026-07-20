@@ -59,10 +59,27 @@ def location_to_binary_location(location):
 
     return binary_location
 
+left_chords={}
 
 for left_chord_gene in genes['left_chord_genes']:
 
     print(left_chord_gene[0])
-    print(location_to_binary_location(left_chord_gene[1]))
+    binary_location = location_to_binary_location(left_chord_gene[1])
+
+    left_chords[left_chord_gene[0]+'1']  = binary_location+'1'+'000000'+'0'
+    left_chords[left_chord_gene[0]+'2']  = '000000'+'0'+binary_location+'1'
     print()
 
+print(left_chords)
+
+right_chords ={}
+for right_chord_gene in genes['right_chord_genes']:
+
+    print(right_chord_gene[0])
+    binary_location = location_to_binary_location(right_chord_gene[1])
+
+    right_chords[right_chord_gene[0]+'1']  = binary_location+'1'+'000000'+'0'
+    right_chords[right_chord_gene[0]+'2']  = '000000'+'0'+binary_location+'1'
+    print()
+
+print(right_chords)
