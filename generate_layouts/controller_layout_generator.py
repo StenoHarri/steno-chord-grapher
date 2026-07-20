@@ -18,7 +18,51 @@ with open(f"generate_layouts/evolved_runs/{organism_file}.json") as f:
 
 genes = organism['layout']
 
-for bank in genes:
-    print(genes[bank])
 
+direction_to_three_digit_binary={
+    '1': '001',
+    '2': '010',
+    '3': '011',
+    '4': '100',
+    '5': '101',
+    '6': '110',
+    '7': '111',
+    '8': '000',
+}
+
+def location_to_binary_location(location):
+    """
+    First 3 bits to describe direction
+    
+    4th bit if rotation is involved
+    5th bit 0 = l, 1=r
+    6th bit if rotation is large
+    """
+
+    binary_location = direction_to_three_digit_binary[location[0]]
+
+    if not len(location) > 1:
+        binary_location += '000'
+        return binary_location
+
+    binary_location += '1'
+
+    if location[1] == 'R':
+        binary_location += '1'
+    else:
+        binary_location += '0'
+
+    if len(location) > 2:
+        binary_location += '1'
+    else:
+        binary_location += '0'
+
+    return binary_location
+
+
+for left_chord_gene in genes['left_chord_genes']:
+
+    print(left_chord_gene[0])
+    print(location_to_binary_location(left_chord_gene[1]))
+    print()
 
