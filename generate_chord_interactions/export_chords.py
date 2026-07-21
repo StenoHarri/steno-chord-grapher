@@ -200,9 +200,19 @@ def serialize_frequencies_with_collisions_for_export(freq_dict, collisions_dict,
         result.append(entry)
     return result
 
-def serialize_mask_frequencies(chord_freqs_export):
+def serialize_mask_frequencies(
+    chord_freqs_export,
+    left_chord_conflicts=None,
+    right_chord_conflicts=None
+):
     """
     Aggregate chord frequencies into mask frequencies.
+
+    Includes:
+    - mask usage probability
+    - chord contribution to mask usage
+    - chord contribution to mask collisions
+
     """
 
     result = {
@@ -215,12 +225,20 @@ def serialize_mask_frequencies(chord_freqs_export):
         ("right_chords", "right_masks")
     ]:
 
+        if bank_key == "left_chords":
+            chord_conflicts = left_chord_conflicts or {}
+        else:
+            chord_conflicts = right_chord_conflicts or {}
+
+
         masks = defaultdict(lambda: {
             "probability": 0.0,
             "chords": []
         })
 
+
         for chord in chord_freqs_export[bank_key]:
+
             m = masks[chord["mask"]]
 
             m["probability"] += chord["probability"]
@@ -228,36 +246,98 @@ def serialize_mask_frequencies(chord_freqs_export):
             m["chords"].append({
                 "chord": chord["chord"],
                 "probability": chord["probability"],
-                "zipf": chord["zipf"]
+                "zipf": chord["zipf"],
+                "collision_probability": chord_conflicts.get(
+                    chord["chord"],
+                    0.0
+                )
             })
+
 
         for mask, data in sorted(
             masks.items(),
             key=lambda x: x[1]["probability"],
             reverse=True
         ):
+
             total_probability = data["probability"]
 
-            chords_with_percent = []
+            total_collision_probability = sum(
+                c["collision_probability"]
+                for c in data["chords"]
+            )
+
+
+            chords = []
+
             for chord in data["chords"]:
-                chords_with_percent.append({
-                    **chord,
+
+                chords.append({
+                    "chord": chord["chord"],
+
+                    # Normal usage
+                    "probability": round(
+                        chord["probability"],
+                        6
+                    ),
+
+                    "zipf": chord["zipf"],
+
                     "percent_of_mask": round(
-                        100 * chord["probability"] / total_probability,
+                        chord["probability"] /
+                        total_probability * 100,
                         1
-                    ) if total_probability > 0 else 0
+                    ) if total_probability > 0 else 0,
+
+
+                    # Collision contribution
+                    "collision_probability": round(
+                        chord["collision_probability"],
+                        6
+                    ),
+
+                    "percent_of_mask_collisions": round(
+                        chord["collision_probability"] /
+                        total_collision_probability * 100,
+                        1
+                    ) if total_collision_probability > 0 else 0
                 })
 
+
             result[output_key].append({
-                "bank": "left" if bank_key == "left_chords" else "right",
+
+                "bank": (
+                    "left"
+                    if bank_key == "left_chords"
+                    else "right"
+                ),
+
                 "mask": mask,
-                "probability": round(total_probability, 6),
+
+                "probability": round(
+                    total_probability,
+                    6
+                ),
+
                 "zipf": round(
                     6 + math.log10(total_probability),
                     2
                 ) if total_probability > 0 else 0,
+
+
+                "collision_probability": round(
+                    total_collision_probability,
+                    6
+                ),
+
+                "collision_zipf": round(
+                    6 + math.log10(total_collision_probability),
+                    2
+                ) if total_collision_probability > 0 else 0,
+
+
                 "chords": sorted(
-                    chords_with_percent,
+                    chords,
                     key=lambda c: c["probability"],
                     reverse=True
                 )

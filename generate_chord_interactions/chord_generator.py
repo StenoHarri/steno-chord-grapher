@@ -328,7 +328,11 @@ if __name__ == "__main__":
     print(f"Exported edge conflicts to {EDGE_CONFLICTS_FILE}")
 
 
-    mask_freqs_export = serialize_mask_frequencies(chord_freqs_export)
+    mask_freqs_export = serialize_mask_frequencies(
+        chord_freqs_export,
+        scores["left_chord_conflicts"],
+        scores["right_chord_conflicts"]
+    )
     with open(MASK_FREQS_FILE, "w", encoding="utf-8") as f:
         json.dump(mask_freqs_export, f, indent=2)
     print(f"Exported mask frequencies to {MASK_FREQS_FILE}")
