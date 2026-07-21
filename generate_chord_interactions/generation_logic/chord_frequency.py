@@ -123,21 +123,21 @@ def print_edge_frequencies(matches, pron_freqs):
             for i in range(len(right_chords) - 1):
                 right_transitions[(right_chords[i], right_chords[i+1])] += total_freq
     
-    print("\n--- Left-Hand Chord Transitions (Edges) ---")
-    print(f"{'From':<8} {'To':<8} {'Probability':<12} {'Zipf':<8}")
-    print("-" * 40)
+    # print("\n--- Left-Hand Chord Transitions (Edges) ---")
+    # print(f"{'From':<8} {'To':<8} {'Probability':<12} {'Zipf':<8}")
+    # print("-" * 40)
     for (from_chord, to_chord), prob in sorted(left_transitions.items(), 
                                                 key=lambda x: x[1], reverse=True):
         zipf = 6 + math.log10(prob) if prob > 0 else 0
-        print(f"{from_chord:<8} {to_chord:<8} {prob:<12.6f} {zipf:<8.2f}")
+        # print(f"{from_chord:<8} {to_chord:<8} {prob:<12.6f} {zipf:<8.2f}")
     
-    print(f"\n--- Right-Hand Chord Transitions (Edges) ---")
-    print(f"{'From':<8} {'To':<8} {'Probability':<12} {'Zipf':<8}")
-    print("-" * 40)
+    # print(f"\n--- Right-Hand Chord Transitions (Edges) ---")
+    # print(f"{'From':<8} {'To':<8} {'Probability':<12} {'Zipf':<8}")
+    # print("-" * 40)
     for (from_chord, to_chord), prob in sorted(right_transitions.items(), 
                                                 key=lambda x: x[1], reverse=True):
         zipf = 6 + math.log10(prob) if prob > 0 else 0
-        print(f"{from_chord:<8} {to_chord:<8} {prob:<12.6f} {zipf:<8.2f}")
+        # print(f"{from_chord:<8} {to_chord:<8} {prob:<12.6f} {zipf:<8.2f}")
     
     # Combine both for analysis
     all_transitions = {}

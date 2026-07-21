@@ -9,6 +9,7 @@ from collections import defaultdict
 from generation_logic.chord_frequency import *
 from export_chords import *
 from pathlib import Path
+from tqdm import tqdm
 
 # Choose which pronunciation file to use
 #PRON_FREQ_FILE = "generate_chord_interactions/pronunciation_data/pronunciation_frequency.json"           # merged vowels
@@ -58,7 +59,8 @@ RIGHT_BANK = generate_bank_from_chords(RIGHT_CHORDS)
 
 # Build left bank masks with chord composition preserved
 LEFT_BANK_MASKS = {}
-for mask in generate_masks(LEFT_BANK_LEN):
+left_masks = list(generate_masks(LEFT_BANK_LEN))
+for mask in tqdm(left_masks, desc="Building left masks", unit="mask", smoothing=0.01):
     # Skip masks with disallowed starts
     if re.search(DISALLOWED_STARTINGS, mask) is not None:
         continue
@@ -69,7 +71,8 @@ for mask in generate_masks(LEFT_BANK_LEN):
 
 # Build right bank masks with some disallowed endings
 RIGHT_BANK_MASKS = {}
-for mask in generate_masks(RIGHT_BANK_LEN):
+right_masks = list(generate_masks(RIGHT_BANK_LEN))
+for mask in tqdm(right_masks, desc="Building right masks", unit="mask", smoothing=0.01):
     # Skip masks with disallowed endings
     if re.search(DISALLOWED_ENDINGS, mask) is not None:
         continue
@@ -89,7 +92,13 @@ def find_vowel_split_matches(pronunciations, vowels, left_masks, right_masks):
     blank_left = "0" * len(next(iter(left_masks)))
     blank_right = "0" * len(next(iter(right_masks)))
     
-    for pron, data in pronunciations.items():
+    for pron, data in tqdm(
+        pronunciations.items(),
+        total=len(pronunciations),
+        desc="Finding matches",
+        unit="word",
+        smoothing=0.01
+    ):
         phonemes = pron.split()
         
         # Find all vowels in the pronunciation
@@ -145,6 +154,7 @@ def find_vowel_split_matches(pronunciations, vowels, left_masks, right_masks):
                         matches[combo].append(match_detail)
     
     # Now check for conflicts (same combo matches multiple pronunciations)
+    print ('checking conflicts')
     conflicts = {}
     for combo, match_list in matches.items():
         unique_prons = set(m['full_match'] for m in match_list)
@@ -227,9 +237,11 @@ if __name__ == "__main__":
     )
 
     # Calculate chord frequencies (coverage)
+    print('adding up chord frequencies')
     left_freqs, right_freqs = calculate_chord_frequencies(matches, PRONUNCIATIONS)
     
     # Analyze edges/transitions (coverage)
+    print('connecting edges')
     transitions = print_edge_frequencies(matches, PRONUNCIATIONS)
 
     # Compute coverage and conflicts
