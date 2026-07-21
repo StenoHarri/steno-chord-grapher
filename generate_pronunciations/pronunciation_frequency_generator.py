@@ -5,6 +5,7 @@ import re
 from wordfreq import zipf_frequency
 from tqdm import tqdm
 from collections import Counter
+from pathlib import Path
 
 # input
 WORD_LIST_FILE = "generate_pronunciations/words.txt"
@@ -366,6 +367,12 @@ if __name__ == "__main__":
     # Apply frequency capping and merging to both datasets
     merged_pron_map = merge_and_cap_frequencies(merged_pron_map)
     specific_pron_map = merge_and_cap_frequencies(specific_pron_map)
+
+    # If the folder doesn't exist, make it
+    Path("generate_chord_interactions/pronunciation_data").mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     # Write cluster files (shared between both datasets)
     with open(INITIAL_CLUSTERS_FILE, "w", encoding="utf-8") as f:

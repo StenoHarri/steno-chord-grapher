@@ -8,6 +8,7 @@ from generation_logic.find_implied_chords import generate_masks, mask_to_chords
 from collections import defaultdict
 from generation_logic.chord_frequency import *
 from export_chords import *
+from pathlib import Path
 
 # Choose which pronunciation file to use
 #PRON_FREQ_FILE = "generate_chord_interactions/pronunciation_data/pronunciation_frequency.json"           # merged vowels
@@ -250,6 +251,12 @@ if __name__ == "__main__":
 
     # Export all data to JSON files
     print("\n--- Exporting Data ---")
+
+    # If the folder doesn't exist, make it
+    Path("analysis/chord_data").mkdir(
+        parents=True,
+        exist_ok=True,
+    )
     
     # Export matches
     matches_export = serialize_matches_for_export(matches, PRONUNCIATIONS)

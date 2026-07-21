@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict
 from scipy import stats
+from pathlib import Path
 
 # Load your data
 with open("analysis/chord_data/chord_frequencies.json", "r", encoding="utf-8") as f:
@@ -17,6 +18,11 @@ with open("analysis/chord_data/chord_conflicts.json", "r", encoding="utf-8") as 
 with open("analysis/chord_data/edge_conflicts.json", "r", encoding="utf-8") as f:
     edge_conflicts = json.load(f)
 
+# If the folder doesn't exist, make it
+Path("analysis/chord_analysis").mkdir(
+    parents=True,
+    exist_ok=True,
+)
 
 def analyze_hubs_clean(chord_freqs, chord_conflicts, edge_freqs, edge_conflicts, bank_name):
     """

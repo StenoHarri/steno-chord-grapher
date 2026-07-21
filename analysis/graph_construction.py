@@ -4,6 +4,7 @@ import matplotlib.patches as mpatches
 import networkx as nx
 from collections import defaultdict
 import math
+from pathlib import Path
 
 # Input files
 CHORD_FREQS_FILE = "analysis/chord_data/chord_frequencies.json"
@@ -393,6 +394,12 @@ right_chord_info = build_chord_info(chord_freqs['right_chords'])
 right_chord_info = add_conflicts_to_chord_info(right_chord_info, chord_conflicts['right_chords'])
 right_edge_info = build_edge_info(edge_freqs['right_edges'])
 right_edge_info = add_conflicts_to_edge_info(right_edge_info, edge_conflicts['right_edges'])
+
+# If the folder doesn't exist, make it
+Path("analysis/chord_data").mkdir(
+    parents=True,
+    exist_ok=True,
+)
 
 # Plot both banks
 print("Plotting left hand layout...")
