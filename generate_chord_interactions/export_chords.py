@@ -236,19 +236,32 @@ def serialize_mask_frequencies(chord_freqs_export):
             key=lambda x: x[1]["probability"],
             reverse=True
         ):
+            total_probability = data["probability"]
+
+            chords_with_percent = []
+            for chord in data["chords"]:
+                chords_with_percent.append({
+                    **chord,
+                    "percent_of_mask": round(
+                        100 * chord["probability"] / total_probability,
+                        1
+                    ) if total_probability > 0 else 0
+                })
+
             result[output_key].append({
                 "bank": "left" if bank_key == "left_chords" else "right",
                 "mask": mask,
-                "probability": round(data["probability"], 6),
+                "probability": round(total_probability, 6),
                 "zipf": round(
-                    6 + math.log10(data["probability"]),
+                    6 + math.log10(total_probability),
                     2
-                ) if data["probability"] > 0 else 0,
+                ) if total_probability > 0 else 0,
                 "chords": sorted(
-                    data["chords"],
+                    chords_with_percent,
                     key=lambda c: c["probability"],
                     reverse=True
                 )
             })
+
 
     return result
