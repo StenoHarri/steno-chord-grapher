@@ -3,16 +3,10 @@ initial_clusters.json
 final_clusters.json
 __pycache__/*
 pronunciation_frequency_specific.json
-chord_frequencies.json
-edge_frequencies.json
-layout_conflicts.json
-layout_scores.json
-layout_matches.json
-edge_conflicts.json
-chord_conflicts.json
 *.png
 analysis/chord_tracking/__pycache__/*
 analysis/chord_tracking/layouts/__pycache__/*
 generate_chord_interactions/generation_logic/__pycache__/*
 generate_chord_interactions/__pycache__/*
 generate_chord_interactions/layouts/__pycache__/*
+analysis/chord_data/*.json

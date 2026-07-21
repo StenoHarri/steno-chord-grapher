@@ -42,6 +42,7 @@ CHORD_CONFLICTS_FILE = "analysis/chord_data/chord_conflicts.json"
 EDGE_FREQS_FILE = "analysis/chord_data/edge_frequencies.json"
 EDGE_CONFLICTS_FILE = "analysis/chord_data/edge_conflicts.json"
 SCORES_FILE = "analysis/chord_data/layout_scores.json"
+MASK_FREQS_FILE = "analysis/chord_data/mask_frequencies.json"
 
 
 # The genes are chords, I would like to generate the corresponding layout
@@ -325,6 +326,13 @@ if __name__ == "__main__":
     with open(EDGE_CONFLICTS_FILE, "w", encoding="utf-8") as f:
         json.dump(edge_conflicts_export, f, indent=2)
     print(f"Exported edge conflicts to {EDGE_CONFLICTS_FILE}")
+
+
+    mask_freqs_export = serialize_mask_frequencies(chord_freqs_export)
+    with open(MASK_FREQS_FILE, "w", encoding="utf-8") as f:
+        json.dump(mask_freqs_export, f, indent=2)
+    print(f"Exported mask frequencies to {MASK_FREQS_FILE}")
+
     
     # Export scores summary
     scores_export = {

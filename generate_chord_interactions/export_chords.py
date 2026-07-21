@@ -1,5 +1,6 @@
 import math
 from layouts.base_chords import LEFT_CHORDS, RIGHT_CHORDS
+from collections import defaultdict
 
 def serialize_matches_for_export(matches, pron_freqs):
     """Convert matches to a JSON-serializable format with frequency info"""
@@ -197,4 +198,57 @@ def serialize_frequencies_with_collisions_for_export(freq_dict, collisions_dict,
             'top_collisions': collisions  # Store ALL collisions, graph will display first 3
         }
         result.append(entry)
+    return result
+
+def serialize_mask_frequencies(chord_freqs_export):
+    """
+    Aggregate chord frequencies into mask frequencies.
+    """
+
+    result = {
+        "left_masks": [],
+        "right_masks": []
+    }
+
+    for bank_key, output_key in [
+        ("left_chords", "left_masks"),
+        ("right_chords", "right_masks")
+    ]:
+
+        masks = defaultdict(lambda: {
+            "probability": 0.0,
+            "chords": []
+        })
+
+        for chord in chord_freqs_export[bank_key]:
+            m = masks[chord["mask"]]
+
+            m["probability"] += chord["probability"]
+
+            m["chords"].append({
+                "chord": chord["chord"],
+                "probability": chord["probability"],
+                "zipf": chord["zipf"]
+            })
+
+        for mask, data in sorted(
+            masks.items(),
+            key=lambda x: x[1]["probability"],
+            reverse=True
+        ):
+            result[output_key].append({
+                "bank": "left" if bank_key == "left_chords" else "right",
+                "mask": mask,
+                "probability": round(data["probability"], 6),
+                "zipf": round(
+                    6 + math.log10(data["probability"]),
+                    2
+                ) if data["probability"] > 0 else 0,
+                "chords": sorted(
+                    data["chords"],
+                    key=lambda c: c["probability"],
+                    reverse=True
+                )
+            })
+
     return result
