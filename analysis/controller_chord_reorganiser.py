@@ -7,6 +7,8 @@ Also need to undo the chord duplication as technically chord1 and chord2 of the 
 """
 import json
 import math
+import matplotlib.pyplot as plt
+import numpy as np
 
 def probability_to_zipf(probability_percent):
     """Convert a percentage probability to a Zipf score."""
@@ -319,6 +321,90 @@ for bank in ("left_masks", "right_masks"):
             f"mask {i}: {mask['mask']} "
             f"[{mask['probability']:.3f}%] -> {chords}"
         )
+
+# create multi-level pie chart summary
+
+
+for bank in ("left_masks", "right_masks"):
+    if bank not in chord_freqs:
+        continue
+
+    masks = chord_freqs[bank][:40]
+
+    layers = [
+        masks[:8],
+        masks[8:24],
+        masks[24:40],
+    ]
+
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    colours = [
+        plt.cm.tab10(range(8)),
+        plt.cm.tab20(range(16)),
+        plt.cm.tab20b(range(16)),
+    ]
+
+    # inner and outer radius of each ring
+    rings = [
+        (0.0, 0.5),
+        (0.5, 1.0),
+        (1.0, 1.5),
+    ]
+
+    for layer, colour_set, (inner, outer) in zip(
+        layers,
+        colours,
+        rings,
+    ):
+        values = [1] * len(layer)
+
+        wedges, _ = ax.pie(
+            values,
+            radius=outer,
+            colors=colour_set,
+            startangle=67.5,
+            wedgeprops=dict(
+                width=outer-inner,
+                edgecolor="white",
+            ),
+        )
+
+        # Put text exactly halfway through the ring
+        radius = (inner + outer) / 2
+
+        for wedge, mask in zip(wedges, layer):
+            angle = (
+                wedge.theta1 + wedge.theta2
+            ) / 2
+
+            angle_rad = np.deg2rad(angle)
+
+            x = radius * np.cos(angle_rad)
+            y = radius * np.sin(angle_rad)
+
+            label = "\n".join(
+                chord["chord"]
+                for chord in mask["chords"]
+            )
+
+            ax.text(
+                x,
+                y,
+                label,
+                ha="center",
+                va="center",
+                fontsize=7,
+            )
+
+    ax.set_title(
+        f"{bank}: mask priority tiers",
+        fontsize=12,
+    )
+
+    ax.set_aspect("equal")
+    plt.tight_layout()
+    plt.show()
 
 with open(REORDERED_CHORD_FREQS_FILE, "w", encoding="utf-8") as f:
     json.dump(chord_freqs, f, indent=2)
