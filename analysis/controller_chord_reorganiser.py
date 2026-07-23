@@ -99,6 +99,54 @@ for bank in ("left_masks", "right_masks"):
 
 # shove 1st and 2nd occurences of a chord into the same mask
 
+for bank in ("left_masks", "right_masks"):
+    if bank not in chord_freqs:
+        continue
+
+    merged_masks = {}
+
+    for mask in chord_freqs[bank]:
+        bits = mask["mask"]
+
+        # One half is empty, the other contains the real location.
+        left_half = bits[:6]
+        right_half = bits[7:13]
+
+        canonical_mask = left_half if left_half != "000000" else right_half
+
+        if canonical_mask not in merged_masks:
+            merged_masks[canonical_mask] = {
+                "bank": mask["bank"],
+                "mask": canonical_mask,
+                "probability": 0.0,
+                "zipf": 0.0,
+                "collision_probability": 0.0,
+                "collision_zipf": 0.0,
+                "chords": [],
+            }
+
+        merged = merged_masks[canonical_mask]
+
+        merged["probability"] += mask["probability"]
+        merged["collision_probability"] += mask["collision_probability"]
+        merged["chords"].extend(mask["chords"])
+
+    # recompute derived values
+    for merged in merged_masks.values():
+        if merged["probability"] > 0:
+            merged["zipf"] = round(
+                max(ch["zipf"] for ch in merged["chords"]),
+                2,
+            )
+
+        if merged["collision_probability"] > 0:
+            merged["collision_zipf"] = round(
+                max(ch.get("collision_zipf", 0) for ch in merged["chords"]),
+                2,
+            )
+
+    chord_freqs[bank] = list(merged_masks.values())
+
 # make a note of which chords are solely word final (drop them and treat as suffixes? -Y, -MNT)
 
 # take the most common occurence, delete the other
