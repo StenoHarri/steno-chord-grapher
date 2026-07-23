@@ -203,17 +203,33 @@ def serialize_frequencies_with_collisions_for_export(freq_dict, collisions_dict,
 def serialize_mask_frequencies(
     chord_freqs_export,
     left_chord_conflicts=None,
-    right_chord_conflicts=None
+    right_chord_conflicts=None,
+    matches=None
 ):
     """
     Aggregate chord frequencies into mask frequencies.
 
     Includes:
     - mask usage probability
+    - mask occurrence count
     - chord contribution to mask usage
     - chord contribution to mask collisions
-
     """
+
+    from collections import defaultdict
+
+    # Count how many times each chord is used
+    chord_counts = defaultdict(int)
+
+    if matches:
+        for combo, match_list in matches.items():
+            for match in match_list:
+
+                for chord in set(match.get("left_chords", [])):
+                    chord_counts[("left", chord)] += 1
+
+                for chord in set(match.get("right_chords", [])):
+                    chord_counts[("right", chord)] += 1
 
     result = {
         "left_masks": [],
@@ -227,15 +243,15 @@ def serialize_mask_frequencies(
 
         if bank_key == "left_chords":
             chord_conflicts = left_chord_conflicts or {}
+            bank_name = "left"
         else:
             chord_conflicts = right_chord_conflicts or {}
-
+            bank_name = "right"
 
         masks = defaultdict(lambda: {
             "probability": 0.0,
             "chords": []
         })
-
 
         for chord in chord_freqs_export[bank_key]:
 
@@ -245,6 +261,10 @@ def serialize_mask_frequencies(
 
             m["chords"].append({
                 "chord": chord["chord"],
+                "count": chord_counts.get(
+                    (bank_name, chord["chord"]),
+                    0
+                ),
                 "probability": chord["probability"],
                 "zipf": chord["zipf"],
                 "collision_probability": chord_conflicts.get(
@@ -274,28 +294,21 @@ def serialize_mask_frequencies(
 
                 chords.append({
                     "chord": chord["chord"],
-
-                    # Normal usage
+                    "count": chord["count"],
                     "probability": round(
                         chord["probability"],
                         6
                     ),
-
                     "zipf": chord["zipf"],
-
                     "percent_of_mask": round(
                         chord["probability"] /
                         total_probability * 100,
                         1
                     ) if total_probability > 0 else 0,
-
-
-                    # Collision contribution
                     "collision_probability": round(
                         chord["collision_probability"],
                         6
                     ),
-
                     "percent_of_mask_collisions": round(
                         chord["collision_probability"] /
                         total_collision_probability * 100,
@@ -305,36 +318,24 @@ def serialize_mask_frequencies(
 
 
             result[output_key].append({
-
-                "bank": (
-                    "left"
-                    if bank_key == "left_chords"
-                    else "right"
-                ),
-
+                "bank": bank_name,
                 "mask": mask,
-
                 "probability": round(
                     total_probability,
                     6
                 ),
-
                 "zipf": round(
                     6 + math.log10(total_probability),
                     2
                 ) if total_probability > 0 else 0,
-
-
                 "collision_probability": round(
                     total_collision_probability,
                     6
                 ),
-
                 "collision_zipf": round(
                     6 + math.log10(total_collision_probability),
                     2
                 ) if total_collision_probability > 0 else 0,
-
 
                 "chords": sorted(
                     chords,
@@ -342,6 +343,5 @@ def serialize_mask_frequencies(
                     reverse=True
                 )
             })
-
 
     return result
