@@ -301,6 +301,24 @@ for bank in ("left_masks", "right_masks"):
             reverse=True,
         )
 
+# print simple summary of masks in frequency order
+
+for bank in ("left_masks", "right_masks"):
+    if bank not in chord_freqs:
+        continue
+
+    print(f"\n{bank}")
+
+    for i, mask in enumerate(chord_freqs[bank], start=1):
+        chords = ", ".join(
+            f"{chord['chord']} ({chord['count']})"
+            for chord in mask["chords"]
+        )
+
+        print(
+            f"mask {i}: {mask['mask']} "
+            f"[{mask['probability']:.3f}%] -> {chords}"
+        )
 
 with open(REORDERED_CHORD_FREQS_FILE, "w", encoding="utf-8") as f:
     json.dump(chord_freqs, f, indent=2)
