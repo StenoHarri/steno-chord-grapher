@@ -454,7 +454,17 @@ for bank, cmap in (
 
     ax.set_aspect("equal")
     plt.tight_layout()
-    plt.show()
+
+    output_file = f"analysis/chord_data/{bank}_joystick_pie.png"
+    plt.savefig(
+        output_file,
+        dpi=300,
+        bbox_inches="tight",
+    )
+
+    print(f"Saved {output_file}")
+
+    plt.close(fig)
 
 
 with open(REORDERED_CHORD_FREQS_FILE, "w", encoding="utf-8") as f:
