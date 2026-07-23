@@ -8,6 +8,7 @@ Also need to undo the chord duplication as technically chord1 and chord2 of the 
 import json
 import math
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import numpy as np
 
 def probability_to_zipf(probability_percent):
@@ -121,7 +122,11 @@ for bank in ("left_masks", "right_masks"):
         left_half = bits[:6]
         right_half = bits[7:13]
 
-        canonical_mask = left_half if left_half != "000000" else right_half
+        canonical_mask = (
+            left_half
+            if left_half != "000000"
+            else right_half
+        )
 
         if canonical_mask not in merged_masks:
             merged_masks[canonical_mask] = {
@@ -143,15 +148,13 @@ for bank in ("left_masks", "right_masks"):
     # recompute derived values
     for merged in merged_masks.values():
         if merged["probability"] > 0:
-            merged["zipf"] = round(
-                max(ch["zipf"] for ch in merged["chords"]),
-                2,
+            merged["zipf"] = probability_to_zipf(
+                merged["probability"]
             )
 
         if merged["collision_probability"] > 0:
-            merged["collision_zipf"] = round(
-                max(ch.get("collision_zipf", 0) for ch in merged["chords"]),
-                2,
+            merged["collision_zipf"] = probability_to_zipf(
+                merged["collision_probability"]
             )
 
     chord_freqs[bank] = list(merged_masks.values())
@@ -260,7 +263,10 @@ for bank in ("left_masks", "right_masks"):
         )
 
         # recompute Zipf values from the probabilities
-        mask["zipf"] = probability_to_zipf(mask["probability"])
+        mask["zipf"] = probability_to_zipf(
+            mask["probability"]
+        )
+
         mask["collision_zipf"] = probability_to_zipf(
             mask["collision_probability"]
         )
@@ -270,7 +276,9 @@ for bank in ("left_masks", "right_masks"):
 
             if mask["probability"] > 0:
                 chord["percent_of_mask"] = round(
-                    100 * chord["probability"] / mask["probability"],
+                    100
+                    * chord["probability"]
+                    / mask["probability"],
                     1,
                 )
             else:
@@ -322,8 +330,21 @@ for bank in ("left_masks", "right_masks"):
             f"[{mask['probability']:.3f}%] -> {chords}"
         )
 
+
 # create multi-level pie chart summary
 
+def shift_hue(colour, amount):
+    """
+    Shift hue while keeping saturation/value similar.
+    amount is 0-1, where 1 = full colour wheel rotation.
+    """
+    hsv = mcolors.rgb_to_hsv(
+        np.array(mcolors.to_rgb(colour)).reshape(1, 1, 3)
+    )[0][0]
+
+    hsv[0] = (hsv[0] + amount) % 1.0
+
+    return mcolors.hsv_to_rgb(hsv)
 
 for bank in ("left_masks", "right_masks"):
     if bank not in chord_freqs:
@@ -339,10 +360,31 @@ for bank in ("left_masks", "right_masks"):
 
     fig, ax = plt.subplots(figsize=(8, 8))
 
+    # 8 joystick-direction colour families
+    base_colours = list(
+    plt.cm.tab20c(np.linspace(0.0, 0.99, 8))
+    )
+
+    inner_colours = base_colours
+
+    middle_colours = []
+    outer_colours = []
+
+    for colour in base_colours:
+        middle_colours.extend([
+            shift_hue(colour, 0.03),
+            shift_hue(colour, -0.03),
+        ])
+
+        outer_colours.extend([
+            shift_hue(colour, 0.03),
+            shift_hue(colour, -0.03),
+        ])
+
     colours = [
-        plt.cm.tab10(range(8)),
-        plt.cm.tab20(range(16)),
-        plt.cm.tab20b(range(16)),
+        inner_colours,
+        middle_colours,
+        outer_colours,
     ]
 
     # inner and outer radius of each ring
@@ -351,6 +393,7 @@ for bank in ("left_masks", "right_masks"):
         (0.5, 1.0),
         (1.0, 1.5),
     ]
+
 
     for layer, colour_set, (inner, outer) in zip(
         layers,
@@ -365,7 +408,7 @@ for bank in ("left_masks", "right_masks"):
             colors=colour_set,
             startangle=67.5,
             wedgeprops=dict(
-                width=outer-inner,
+                width=outer - inner,
                 edgecolor="white",
             ),
         )
@@ -375,7 +418,8 @@ for bank in ("left_masks", "right_masks"):
 
         for wedge, mask in zip(wedges, layer):
             angle = (
-                wedge.theta1 + wedge.theta2
+                wedge.theta1
+                + wedge.theta2
             ) / 2
 
             angle_rad = np.deg2rad(angle)
@@ -384,7 +428,9 @@ for bank in ("left_masks", "right_masks"):
             y = radius * np.sin(angle_rad)
 
             label = "\n".join(
-                chord["chord"]
+                chord["chord"][:-1]
+                if chord["chord"].endswith(("1", "2"))
+                else chord["chord"]
                 for chord in mask["chords"]
             )
 
@@ -395,6 +441,7 @@ for bank in ("left_masks", "right_masks"):
                 ha="center",
                 va="center",
                 fontsize=7,
+                fontweight="bold",
             )
 
     ax.set_title(
@@ -406,6 +453,10 @@ for bank in ("left_masks", "right_masks"):
     plt.tight_layout()
     plt.show()
 
+
 with open(REORDERED_CHORD_FREQS_FILE, "w", encoding="utf-8") as f:
     json.dump(chord_freqs, f, indent=2)
-print(f"Exported layout scores to {REORDERED_CHORD_FREQS_FILE}")
+
+print(
+    f"Exported layout scores to {REORDERED_CHORD_FREQS_FILE}"
+)
