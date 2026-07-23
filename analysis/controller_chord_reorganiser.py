@@ -7,8 +7,11 @@ Also need to undo the chord duplication as technically chord1 and chord2 of the 
 """
 import json
 
-# Input files
+# Input file
 CHORD_FREQS_FILE = "analysis/chord_data/mask_frequencies.json"
+
+# Output file
+REORDERED_CHORD_FREQS_FILE = "analysis/chord_data/reordered_mask_frequencies.json"
 
 # Load data
 with open(CHORD_FREQS_FILE, "r", encoding="utf-8") as f:
@@ -17,15 +20,94 @@ with open(CHORD_FREQS_FILE, "r", encoding="utf-8") as f:
 print(chord_freqs)
 
 # remove chords that are rare
+RARE_CUTOFF = 3.5  # zipf, equivalent to a probability of 0.003162
 
-# remove chords that are only used 3 times
+for bank in ("left_masks", "right_masks"):
+    if bank not in chord_freqs:
+        continue
+
+    filtered_masks = []
+
+    for mask in chord_freqs[bank]:
+        kept_chords = []
+
+        for chord in mask["chords"]:
+            # remove chords with this zipf
+            if chord["zipf"] < RARE_CUTOFF:
+                continue
+
+            kept_chords.append(chord)
+
+        if kept_chords:
+            mask["chords"] = kept_chords
+            filtered_masks.append(mask)
+
+    chord_freqs[bank] = filtered_masks
+
+# remove chords that are only used 1-9 times
+
+for bank in ("left_masks", "right_masks"):
+    if bank not in chord_freqs:
+        continue
+
+    filtered_masks = []
+
+    for mask in chord_freqs[bank]:
+        kept_chords = []
+
+        for chord in mask["chords"]:
+            if chord["count"] < 10:
+                continue
+
+            kept_chords.append(chord)
+
+        if kept_chords:
+            mask["chords"] = kept_chords
+            filtered_masks.append(mask)
+
+    chord_freqs[bank] = filtered_masks
 
 # remove chords that contribute to disproportionately more collisions
+COLLISION_RATIO = 1.5 # remove if its contribution to collisions is closer to double its contribution to the mask
 
-# shove 1st and 2nd occurences of a chord into the same
+for bank in ("left_masks", "right_masks"):
+    if bank not in chord_freqs:
+        continue
+
+    filtered_masks = []
+
+    for mask in chord_freqs[bank]:
+        kept_chords = []
+
+        for chord in mask["chords"]:
+            mask_share = chord["percent_of_mask"]
+            collision_share = chord["percent_of_mask_collisions"]
+
+            if (
+                mask_share > 0
+                and collision_share > COLLISION_RATIO * mask_share
+            ):
+                continue
+
+            kept_chords.append(chord)
+
+        if kept_chords:
+            mask["chords"] = kept_chords
+            filtered_masks.append(mask)
+
+    chord_freqs[bank] = filtered_masks
+
+# shove 1st and 2nd occurences of a chord into the same mask
 
 # make a note of which chords are solely word final (drop them and treat as suffixes? -Y, -MNT)
 
 # take the most common occurence, delete the other
 
 # order by mask frequency
+
+print(json.dumps(chord_freqs, indent=2))
+
+
+with open(REORDERED_CHORD_FREQS_FILE, "w", encoding="utf-8") as f:
+    json.dump(chord_freqs, f, indent=2)
+print(f"Exported layout scores to {REORDERED_CHORD_FREQS_FILE}")
