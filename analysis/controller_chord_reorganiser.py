@@ -346,7 +346,10 @@ def shift_hue(colour, amount):
 
     return mcolors.hsv_to_rgb(hsv)
 
-for bank in ("left_masks", "right_masks"):
+for bank, cmap in (
+    ("left_masks", plt.cm.tab20b),
+    ("right_masks", plt.cm.tab20c),
+):
     if bank not in chord_freqs:
         continue
 
@@ -362,7 +365,7 @@ for bank in ("left_masks", "right_masks"):
 
     # 8 joystick-direction colour families
     base_colours = list(
-    plt.cm.tab20c(np.linspace(0.0, 0.99, 8))
+        cmap(np.linspace(0.1, 0.9, 8))
     )
 
     inner_colours = base_colours
@@ -440,12 +443,12 @@ for bank in ("left_masks", "right_masks"):
                 label,
                 ha="center",
                 va="center",
-                fontsize=7,
+                fontsize=12,
                 fontweight="bold",
             )
 
     ax.set_title(
-        f"{bank}: mask priority tiers",
+        f"{bank} joystick",
         fontsize=12,
     )
 
