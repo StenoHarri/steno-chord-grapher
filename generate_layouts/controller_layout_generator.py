@@ -1,7 +1,7 @@
 
 import json
 
-organism_file = "run1"
+organism_file = "27_07_2026_run_2"
 
 layout={
     "left_bank_len": (6+1)*2, # 3 bits for 8 segments, 1 bit for rotation, 2 bits to describe rotation, 1 bit to prevent overlap with same bank

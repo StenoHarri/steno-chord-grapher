@@ -409,7 +409,8 @@ for bank, cmap in (
             values,
             radius=outer,
             colors=colour_set,
-            startangle=67.5,
+            startangle=112.5,
+            counterclock=False,
             wedgeprops=dict(
                 width=outer - inner,
                 edgecolor="white",
