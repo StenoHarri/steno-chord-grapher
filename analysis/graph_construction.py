@@ -58,7 +58,7 @@ def add_conflicts_to_chord_info(chord_info, conflict_list):
             'conflict_prob': entry.get('probability', 0.0),
             'collisions': entry.get('top_collisions', [])
         }
-    
+
     for chord, info in chord_info.items():
         if chord in conflict_lookup:
             info['conflict'] = conflict_lookup[chord]['conflict_prob']
@@ -66,7 +66,7 @@ def add_conflicts_to_chord_info(chord_info, conflict_list):
         else:
             info['conflict'] = 0.0
             info['collisions'] = []
-    
+
     return chord_info
 
 
@@ -95,7 +95,7 @@ def add_conflicts_to_edge_info(edge_info, conflict_list):
             'conflict_prob': entry.get('probability', 0.0),
             'collisions': entry.get('top_collisions', [])
         }
-    
+
     for key, info in edge_info.items():
         if key in conflict_lookup:
             info['conflict'] = conflict_lookup[key]['conflict_prob']
@@ -103,7 +103,7 @@ def add_conflicts_to_edge_info(edge_info, conflict_list):
         else:
             info['conflict'] = 0.0
             info['collisions'] = []
-    
+
     return edge_info
 
 
@@ -111,289 +111,641 @@ def format_collision_display(collisions, max_display=3):
     """Format collision list - show total count but only display top 'max_display' examples"""
     if not collisions:
         return ["    (no collisions)"]
-    
+
     displays = []
     total = len(collisions)
-    
+
     # Show top examples
     for i, coll in enumerate(collisions[:max_display]):
-        word1 = coll['colliding_word'][:15] + '..' if len(coll['colliding_word']) > 15 else coll['colliding_word']
-        word2 = coll['colliding_with_word'][:15] + '..' if len(coll['colliding_with_word']) > 15 else coll['colliding_with_word']
+        word1 = (
+            coll['colliding_word'][:15] + '..'
+            if len(coll['colliding_word']) > 15
+            else coll['colliding_word']
+        )
+        word2 = (
+            coll['colliding_with_word'][:15] + '..'
+            if len(coll['colliding_with_word']) > 15
+            else coll['colliding_with_word']
+        )
         displays.append(f"    {i+1}. '{word1}' ↔ '{word2}'")
-    
+
     return displays
+
 
 def plot_bank_layout(chord_info, edge_info, bank_name, min_edge_prob=0.001):
     """
     Plot a multipartite layout for one bank (left or right).
+
+    When there are exactly two real layers, chord labels are placed
+    immediately to the right of their nodes instead of centred on them.
     """
+
     # Create graph
     G = nx.DiGraph()
-    
+
     # Group chords by subset (layer)
     subsets = defaultdict(list)
     for chord, info in chord_info.items():
         subset = info['subset']
         subsets[subset].append(chord)
+
         node_attrs = {k: v for k, v in info.items() if k != 'subset'}
         G.add_node(chord, subset=subset, **node_attrs)
-    
+
     # Sort subsets
     sorted_subsets = sorted(subsets.keys())
-    
+
+    # Remember whether this bank originally has exactly two real layers.
+    # This controls the label positioning.
+    two_columns = len(sorted_subsets) == 2
+
     # Special handling for exactly 2 layers: add invisible intermediate layers
     original_sorted_subsets = sorted_subsets.copy()
-    if len(sorted_subsets) == 2:
+
+    if two_columns:
         layer1, layer2 = sorted_subsets[0], sorted_subsets[1]
-        
-        # Create 3 invisible intermediate layers between the two real layers
-        num_intermediate_layers = 15
-        
+
+        # Create invisible intermediate layers between the two real layers.
+        # These force the multipartite layout to spread the two real layers
+        # apart while keeping them visually as two columns.
+        num_intermediate_layers = 100
+
         # Calculate positions for intermediate layers
         step = (layer2 - layer1) / (num_intermediate_layers + 1)
-        
+
         # Create intermediate layer numbers and add dummy nodes
         for i in range(1, num_intermediate_layers + 1):
             intermediate_layer = layer1 + (step * i)
-            
+
             # Add a dummy node to force spacing (completely transparent)
             dummy_node_name = f"__dummy_{intermediate_layer}__"
-            G.add_node(dummy_node_name, subset=intermediate_layer, is_dummy=True)
+            G.add_node(
+                dummy_node_name,
+                subset=intermediate_layer,
+                is_dummy=True
+            )
+
             subsets[intermediate_layer].append(dummy_node_name)
-            
+
             # Add to chord_info so it's recognized
             chord_info[dummy_node_name] = {
                 'subset': intermediate_layer,
                 'is_dummy': True
             }
-        
+
         # Update sorted_subsets to include intermediate layers
         sorted_subsets = sorted(subsets.keys())
-    
+
     # Add edges with significant probability
     for (from_chord, to_chord), info in edge_info.items():
         if info['probability'] >= min_edge_prob:
             if from_chord in chord_info and to_chord in chord_info:
+
                 # Skip if either node is dummy
-                if not chord_info[from_chord].get('is_dummy', False) and not chord_info[to_chord].get('is_dummy', False):
+                if (
+                    not chord_info[from_chord].get('is_dummy', False)
+                    and not chord_info[to_chord].get('is_dummy', False)
+                ):
                     G.add_edge(from_chord, to_chord, **info)
-    
+
     # Use networkx's built-in multipartite layout
-    pos = nx.multipartite_layout(G, subset_key='subset', align='vertical')
-    
+    pos = nx.multipartite_layout(
+        G,
+        subset_key='subset',
+        align='vertical'
+    )
+
+    # Stretch the graph vertically
+    vertical_scale = 5.0
+
+    for node in pos:
+        pos[node][1] *= vertical_scale
+
     # Remove dummy nodes from position dict for display
-    dummy_nodes = [node for node in G.nodes if chord_info.get(node, {}).get('is_dummy', False)]
+    dummy_nodes = [
+        node
+        for node in G.nodes
+        if chord_info.get(node, {}).get('is_dummy', False)
+    ]
+
     for dummy in dummy_nodes:
         if dummy in pos:
             del pos[dummy]
-    
-    # Create figure with 2 columns: network (60%), stats (40%)
-    # Stats will be split into chords (left side of stats) and edges (right side of stats)
-    fig = plt.figure(figsize=(28, 16))
-    gs = fig.add_gridspec(1, 3, width_ratios=[1.5, 0.5, 0.5], top=0.92)  # Added top=0.92 to give room for title
-    
+
+    # Create figure with 3 columns:
+    # network (60%), chord stats (20%), edge stats (20%)
+    fig = plt.figure(
+        figsize=(28, 16)
+    )
+
+    gs = fig.add_gridspec(
+        1,
+        3,
+        width_ratios=[1.5, 0.5, 0.5],
+        top=0.92
+    )
+
     ax1 = fig.add_subplot(gs[0])  # Network graph
     ax2 = fig.add_subplot(gs[1])  # Chord Statistics
     ax3 = fig.add_subplot(gs[2])  # Edge Statistics
-    
+
     # Plot 1: Chord nodes with coverage and conflict
-    ax1.set_title(f"{bank_name.capitalize()} Hand Chord Layout\n(Node size = Coverage, Color intensity = Conflict ratio)", 
-                  fontsize=14, fontweight='bold', pad=20)  # Added pad=20 for more spacing
-    
+    ax1.set_title(
+        f"{bank_name.capitalize()} Hand Chord Layout\n"
+        "(Node size = Coverage, Color intensity = Conflict ratio)",
+        fontsize=14,
+        fontweight='bold',
+        pad=20
+    )
+
     # Calculate node sizes based on probability (skip dummy nodes)
-    real_chords = [info for info in chord_info.values() if not info.get('is_dummy', False)]
-    max_prob = max(info['probability'] for info in real_chords)
+    real_chords = [
+        info
+        for info in chord_info.values()
+        if not info.get('is_dummy', False)
+    ]
+
+    max_prob = max(
+        info['probability']
+        for info in real_chords
+    )
+
     min_size = 300
     max_size = 3000
-    
+
     # Calculate node colors based on conflict ratio
     max_conflict_ratio = 0
+
     for info in real_chords:
         if info['probability'] > 0:
             ratio = info['conflict'] / info['probability']
-            max_conflict_ratio = max(max_conflict_ratio, ratio)
-    
+            max_conflict_ratio = max(
+                max_conflict_ratio,
+                ratio
+            )
+
+    # Store calculated node sizes so they can also be used
+    # when positioning labels.
+    node_sizes = {}
+
     # Draw nodes (skip dummy nodes)
     for chord, info in chord_info.items():
         if info.get('is_dummy', False):
             continue
+
         if chord in pos:
-            size = min_size + (info['probability'] / max_prob) * (max_size - min_size) if max_prob > 0 else min_size
-            
+            size = (
+                min_size
+                + (info['probability'] / max_prob)
+                * (max_size - min_size)
+                if max_prob > 0
+                else min_size
+            )
+
+            node_sizes[chord] = size
+
             if info['probability'] > 0 and max_conflict_ratio > 0:
-                conflict_ratio = info['conflict'] / info['probability']
-                color_intensity = conflict_ratio / max_conflict_ratio
+                conflict_ratio = (
+                    info['conflict']
+                    / info['probability']
+                )
+
+                color_intensity = (
+                    conflict_ratio
+                    / max_conflict_ratio
+                )
             else:
                 color_intensity = 0
-            
+
             adjusted_intensity = color_intensity ** 0.5
+
             red = adjusted_intensity
-            green = max(0, min(1, 1 - adjusted_intensity * 1.2))
+            green = max(
+                0,
+                min(1, 1 - adjusted_intensity * 1.2)
+            )
             blue = 0
-            color = (red, green, blue)
-            
-            ax1.scatter(pos[chord][0], pos[chord][1], s=size, c=[color], 
-                       edgecolors='black', linewidth=1.5, zorder=3, alpha=0.8)
-            
-            ax1.annotate(chord, pos[chord], textcoords="offset points", 
-                        xytext=(0, 0), ha='center', fontsize=9, fontweight='bold')
-    
+
+            color = (
+                red,
+                green,
+                blue
+            )
+
+            ax1.scatter(
+                pos[chord][0],
+                pos[chord][1],
+                s=size,
+                c=[color],
+                edgecolors='black',
+                linewidth=1.5,
+                zorder=3,
+                alpha=0.8
+            )
+
+            # ---------------------------------------------------------
+            # LABEL POSITIONING
+            # ---------------------------------------------------------
+            # For exactly two columns, place the label just outside
+            # the right edge of the node and vertically centre it.
+            #
+            # For layouts with more than two layers, retain the
+            # original centred label behaviour.
+            # ---------------------------------------------------------
+            if two_columns:
+                # Convert the scatter size from points^2 into an
+                # approximate radius in points, then add a small gap.
+                radius_points = math.sqrt(size / math.pi)
+                label_offset = radius_points + 7
+
+                ax1.annotate(
+                    chord,
+                    pos[chord],
+                    textcoords="offset points",
+                    xytext=(label_offset, 0),
+                    ha='left',
+                    va='center',
+                    fontsize=9,
+                    fontweight='bold',
+                    zorder=4
+                )
+            else:
+                ax1.annotate(
+                    chord,
+                    pos[chord],
+                    textcoords="offset points",
+                    xytext=(0, 0),
+                    ha='center',
+                    va='center',
+                    fontsize=9,
+                    fontweight='bold',
+                    zorder=4
+                )
+
     # Draw edges (skip those involving dummy nodes)
-    max_edge_prob = max(info['probability'] for info in edge_info.values()) if edge_info else 1
+    max_edge_prob = (
+        max(
+            info['probability']
+            for info in edge_info.values()
+        )
+        if edge_info
+        else 1
+    )
+
     min_edge_width = 2.0
     max_edge_width = 10
-    
+
     for (from_chord, to_chord), info in edge_info.items():
-        if info['probability'] >= min_edge_prob and from_chord in pos and to_chord in pos:
+        if (
+            info['probability'] >= min_edge_prob
+            and from_chord in pos
+            and to_chord in pos
+        ):
+
             # Skip if either node is dummy
-            if chord_info.get(from_chord, {}).get('is_dummy', False) or chord_info.get(to_chord, {}).get('is_dummy', False):
+            if (
+                chord_info.get(from_chord, {}).get('is_dummy', False)
+                or chord_info.get(to_chord, {}).get('is_dummy', False)
+            ):
                 continue
-                
-            width = min_edge_width + (info['probability'] / max_edge_prob) * (max_edge_width - min_edge_width)
+
+            width = (
+                min_edge_width
+                + (info['probability'] / max_edge_prob)
+                * (max_edge_width - min_edge_width)
+            )
+
             alpha = 1.0
 
             if info['probability'] > 0:
-                conflict_ratio = info['conflict'] / info['probability']
-                edge_max_conflict = max((e['conflict'] / e['probability'] if e['probability'] > 0 else 0) 
-                                       for e in edge_info.values()) if edge_info else 1
+                conflict_ratio = (
+                    info['conflict']
+                    / info['probability']
+                )
+
+                edge_max_conflict = max(
+                    (
+                        e['conflict'] / e['probability']
+                        if e['probability'] > 0
+                        else 0
+                    )
+                    for e in edge_info.values()
+                ) if edge_info else 1
+
                 if edge_max_conflict > 0:
-                    edge_color_intensity = conflict_ratio / edge_max_conflict
+                    edge_color_intensity = (
+                        conflict_ratio
+                        / edge_max_conflict
+                    )
                 else:
                     edge_color_intensity = 0
             else:
                 edge_color_intensity = 0
-            
-            adjusted_edge_intensity = edge_color_intensity ** 0.5
+
+            adjusted_edge_intensity = (
+                edge_color_intensity ** 0.5
+            )
+
             edge_red = adjusted_edge_intensity
-            edge_green = max(0, min(1, 1 - adjusted_edge_intensity * 1.2))
+            edge_green = max(
+                0,
+                min(1, 1 - adjusted_edge_intensity * 1.2)
+            )
             edge_blue = 0
-            edge_color = (edge_red, edge_green, edge_blue)
-            
-            rad = 0.1 if abs(pos[from_chord][1] - pos[to_chord][1]) < 0.1 else 0
-            
-            ax1.annotate("",
-                        xy=pos[to_chord], xycoords='data',
-                        xytext=pos[from_chord], textcoords='data',
-                        arrowprops=dict(arrowstyle="->",
-                                       color=edge_color,
-                                       lw=width,
-                                       alpha=alpha,
-                                       connectionstyle=f"arc3,rad={rad}"),
-                        zorder=1)
-    
+
+            edge_color = (
+                edge_red,
+                edge_green,
+                edge_blue
+            )
+
+            rad = (
+                0.1
+                if abs(
+                    pos[from_chord][1]
+                    - pos[to_chord][1]
+                ) < 0.1
+                else 0
+            )
+
+            ax1.annotate(
+                "",
+                xy=pos[to_chord],
+                xycoords='data',
+                xytext=pos[from_chord],
+                textcoords='data',
+                arrowprops=dict(
+                    arrowstyle="->",
+                    color=edge_color,
+                    lw=width,
+                    alpha=alpha,
+                    connectionstyle=f"arc3,rad={rad}"
+                ),
+                zorder=1
+            )
+
     # Add subset labels (only for original subsets that had nodes)
     for subset in original_sorted_subsets:
-        nodes_in_subset = [n for n in subsets[subset] if not chord_info.get(n, {}).get('is_dummy', False)]
-        x_positions = [pos[n][0] for n in nodes_in_subset if n in pos]
+        nodes_in_subset = [
+            n
+            for n in subsets[subset]
+            if not chord_info.get(n, {}).get('is_dummy', False)
+        ]
+
+        x_positions = [
+            pos[n][0]
+            for n in nodes_in_subset
+            if n in pos
+        ]
+
         if x_positions:
             avg_x = sum(x_positions) / len(x_positions)
-            ax1.text(avg_x, max(pos[n][1] for n in nodes_in_subset if n in pos) + 0.5, 
-                    f"Layer {subset}", ha='center', fontsize=10, fontweight='bold')
-    
+
+            ax1.text(
+                avg_x,
+                max(
+                    pos[n][1]
+                    for n in nodes_in_subset
+                    if n in pos
+                ) + 0.5,
+                f"Layer {subset}",
+                ha='center',
+                fontsize=10,
+                fontweight='bold'
+            )
+
     ax1.axis('equal')
     ax1.axis('off')
-    
+
     # Set background colors
     fig.patch.set_facecolor("#5D6872")
     ax1.set_facecolor('#D6EAF8')
     ax2.set_facecolor('#E8F0F8')
     ax3.set_facecolor('#E8F0F8')
-    
+
     # Sort data (skip dummy nodes)
-    real_chord_info = {k: v for k, v in chord_info.items() if not v.get('is_dummy', False)}
-    sorted_chords = sorted(real_chord_info.items(), key=lambda x: x[1]['probability'], reverse=True)
-    chords_by_conflict = sorted(real_chord_info.items(), key=lambda x: x[1]['conflict'], reverse=True)
-    sorted_edges = sorted(edge_info.items(), key=lambda x: x[1]['probability'], reverse=True)
-    edges_by_conflict = sorted(edge_info.items(), key=lambda x: x[1]['conflict'], reverse=True)
-    
+    real_chord_info = {
+        k: v
+        for k, v in chord_info.items()
+        if not v.get('is_dummy', False)
+    }
+
+    sorted_chords = sorted(
+        real_chord_info.items(),
+        key=lambda x: x[1]['probability'],
+        reverse=True
+    )
+
+    chords_by_conflict = sorted(
+        real_chord_info.items(),
+        key=lambda x: x[1]['conflict'],
+        reverse=True
+    )
+
+    sorted_edges = sorted(
+        edge_info.items(),
+        key=lambda x: x[1]['probability'],
+        reverse=True
+    )
+
+    edges_by_conflict = sorted(
+        edge_info.items(),
+        key=lambda x: x[1]['conflict'],
+        reverse=True
+    )
+
     # ========== LEFT STATS PANEL (CHORDS) ==========
     ax2.axis('off')
-    ax2.set_title("CHORD STATISTICS", fontsize=12, fontweight='bold', color='#2C3E50')
-    
+
+    ax2.set_title(
+        "CHORD STATISTICS",
+        fontsize=12,
+        fontweight='bold',
+        color='#2C3E50'
+    )
+
     chord_lines = []
-    
+
     # Most frequent chords
     chord_lines.append("MOST FREQUENT:")
     chord_lines.append("")
+
     for chord, info in sorted_chords[:5]:
-        chord_lines.append(f"  {chord}: {info['probability']:.6f}")
-    
+        chord_lines.append(
+            f"  {chord}: {info['probability']:.6f}"
+        )
+
     chord_lines.append("")
     chord_lines.append("─" * 35)
     chord_lines.append("")
-    
+
     # Most conflictful chords
-    chord_lines.append("MOST CONFLICTFUL (by collision amount):")
+    chord_lines.append(
+        "MOST CONFLICTFUL (by collision amount):"
+    )
     chord_lines.append("")
+
     for chord, info in chords_by_conflict[:5]:
         num_collisions = len(info['collisions'])
-        chord_lines.append(f"  {chord}: {info['conflict']:.6f} ({num_collisions} total collisions)")
-        collision_displays = format_collision_display(info['collisions'], max_display=3)
+
+        chord_lines.append(
+            f"  {chord}: {info['conflict']:.6f} "
+            f"({num_collisions} total collisions)"
+        )
+
+        collision_displays = format_collision_display(
+            info['collisions'],
+            max_display=3
+        )
+
         for display in collision_displays:
             chord_lines.append(display)
+
         chord_lines.append("")
-    
+
     chord_text = "\n".join(chord_lines)
-    ax2.text(0.05, 0.98, chord_text, transform=ax2.transAxes, fontsize=8.5,
-            verticalalignment='top', fontfamily='monospace',
-            bbox=dict(boxstyle='round', facecolor='white', alpha=0.95))
-    
+
+    ax2.text(
+        0.05,
+        0.98,
+        chord_text,
+        transform=ax2.transAxes,
+        fontsize=8.5,
+        verticalalignment='top',
+        fontfamily='monospace',
+        bbox=dict(
+            boxstyle='round',
+            facecolor='white',
+            alpha=0.95
+        )
+    )
+
     # ========== RIGHT STATS PANEL (EDGES) ==========
     ax3.axis('off')
-    ax3.set_title("EDGE STATISTICS", fontsize=12, fontweight='bold', color='#2C3E50')
-    
+
+    ax3.set_title(
+        "EDGE STATISTICS",
+        fontsize=12,
+        fontweight='bold',
+        color='#2C3E50'
+    )
+
     edge_lines = []
-    
+
     # Most frequent edges
     edge_lines.append("MOST FREQUENT:")
     edge_lines.append("")
+
     for (from_chord, to_chord), info in sorted_edges[:5]:
         if info['probability'] >= min_edge_prob:
-            edge_lines.append(f"  {from_chord}→{to_chord}: {info['probability']:.6f}")
-    
+            edge_lines.append(
+                f"  {from_chord}→{to_chord}: "
+                f"{info['probability']:.6f}"
+            )
+
     edge_lines.append("")
     edge_lines.append("─" * 35)
     edge_lines.append("")
-    
+
     # Most conflictful edges
-    edge_lines.append("MOST CONFLICTFUL (by collision amount):")
+    edge_lines.append(
+        "MOST CONFLICTFUL (by collision amount):"
+    )
     edge_lines.append("")
+
     for (from_chord, to_chord), info in edges_by_conflict[:5]:
         num_collisions = len(info['collisions'])
-        edge_lines.append(f"  {from_chord}→{to_chord}: {info['conflict']:.6f} ({num_collisions} total collisions)")
-        collision_displays = format_collision_display(info['collisions'], max_display=3)
+
+        edge_lines.append(
+            f"  {from_chord}→{to_chord}: "
+            f"{info['conflict']:.6f} "
+            f"({num_collisions} total collisions)"
+        )
+
+        collision_displays = format_collision_display(
+            info['collisions'],
+            max_display=3
+        )
+
         for display in collision_displays:
             edge_lines.append(display)
+
         edge_lines.append("")
-    
+
     # Add legend at bottom of edges panel
     edge_lines.append("─" * 35)
     edge_lines.append("")
     edge_lines.append("LEGEND:")
     edge_lines.append("  Node size = Coverage")
     edge_lines.append("  Color = Conflict ratio")
-    edge_lines.append(f"  Total chords: {len(real_chord_info)}")
-    edge_lines.append(f"  Total edges: {sum(1 for e in edge_info.values() if e['probability'] >= min_edge_prob)}")
-    
+    edge_lines.append(
+        f"  Total chords: {len(real_chord_info)}"
+    )
+    edge_lines.append(
+        f"  Total edges: {sum(1 for e in edge_info.values() if e['probability'] >= min_edge_prob)}"
+    )
+
     edge_text = "\n".join(edge_lines)
-    ax3.text(0.05, 0.98, edge_text, transform=ax3.transAxes, fontsize=8.5,
-            verticalalignment='top', fontfamily='monospace',
-            bbox=dict(boxstyle='round', facecolor='white', alpha=0.95))
-    
+
+    ax3.text(
+        0.05,
+        0.98,
+        edge_text,
+        transform=ax3.transAxes,
+        fontsize=8.5,
+        verticalalignment='top',
+        fontfamily='monospace',
+        bbox=dict(
+            boxstyle='round',
+            facecolor='white',
+            alpha=0.95
+        )
+    )
+
     plt.tight_layout()
+
     return fig
 
+
 # Process left hand
-left_chord_info = build_chord_info(chord_freqs['left_chords'])
-left_chord_info = add_conflicts_to_chord_info(left_chord_info, chord_conflicts['left_chords'])
-left_edge_info = build_edge_info(edge_freqs['left_edges'])
-left_edge_info = add_conflicts_to_edge_info(left_edge_info, edge_conflicts['left_edges'])
+left_chord_info = build_chord_info(
+    chord_freqs['left_chords']
+)
+
+left_chord_info = add_conflicts_to_chord_info(
+    left_chord_info,
+    chord_conflicts['left_chords']
+)
+
+left_edge_info = build_edge_info(
+    edge_freqs['left_edges']
+)
+
+left_edge_info = add_conflicts_to_edge_info(
+    left_edge_info,
+    edge_conflicts['left_edges']
+)
+
 
 # Process right hand
-right_chord_info = build_chord_info(chord_freqs['right_chords'])
-right_chord_info = add_conflicts_to_chord_info(right_chord_info, chord_conflicts['right_chords'])
-right_edge_info = build_edge_info(edge_freqs['right_edges'])
-right_edge_info = add_conflicts_to_edge_info(right_edge_info, edge_conflicts['right_edges'])
+right_chord_info = build_chord_info(
+    chord_freqs['right_chords']
+)
+
+right_chord_info = add_conflicts_to_chord_info(
+    right_chord_info,
+    chord_conflicts['right_chords']
+)
+
+right_edge_info = build_edge_info(
+    edge_freqs['right_edges']
+)
+
+right_edge_info = add_conflicts_to_edge_info(
+    right_edge_info,
+    edge_conflicts['right_edges']
+)
+
 
 # If the folder doesn't exist, make it
 Path("analysis/chord_data").mkdir(
@@ -401,15 +753,47 @@ Path("analysis/chord_data").mkdir(
     exist_ok=True,
 )
 
+Path("analysis/chord_analysis").mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+
 # Plot both banks
 print("Plotting left hand layout...")
-fig_left = plot_bank_layout(left_chord_info, left_edge_info, "left", min_edge_prob=0.01)
-plt.savefig("analysis/chord_analysis/left_hand_layout.png", dpi=150, bbox_inches='tight')
+
+fig_left = plot_bank_layout(
+    left_chord_info,
+    left_edge_info,
+    "left",
+    min_edge_prob=0.01
+)
+
+plt.savefig(
+    "analysis/chord_analysis/left_hand_layout.png",
+    dpi=150,
+    bbox_inches='tight'
+)
+
 print("Saved left_hand_layout.png")
 
+
 print("Plotting right hand layout...")
-fig_right = plot_bank_layout(right_chord_info, right_edge_info, "right", min_edge_prob=0.01)
-plt.savefig("analysis/chord_analysis/right_hand_layout.png", dpi=150, bbox_inches='tight')
+
+fig_right = plot_bank_layout(
+    right_chord_info,
+    right_edge_info,
+    "right",
+    min_edge_prob=0.01
+)
+
+plt.savefig(
+    "analysis/chord_analysis/right_hand_layout.png",
+    dpi=150,
+    bbox_inches='tight'
+)
+
 print("Saved right_hand_layout.png")
+
 
 plt.show()
