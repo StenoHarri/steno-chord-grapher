@@ -3,10 +3,9 @@ initial_clusters.json
 final_clusters.json
 __pycache__/*
 pronunciation_frequency_specific.json
-*.png
 analysis/chord_tracking/__pycache__/*
 analysis/chord_tracking/layouts/__pycache__/*
 generate_chord_interactions/generation_logic/__pycache__/*
 generate_chord_interactions/__pycache__/*
 generate_chord_interactions/layouts/__pycache__/*
-analysis/chord_data/*.json
+figures/*

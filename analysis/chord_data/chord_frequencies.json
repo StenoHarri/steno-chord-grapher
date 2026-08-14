@@ -1,0 +1,2568 @@
+{
+  "left_chords": [
+    {
+      "chord": "R2",
+      "mask": "00000000001001",
+      "bank": "left",
+      "probability": 9.723928,
+      "zipf": 6.99
+    },
+    {
+      "chord": "S1",
+      "mask": "00011110000000",
+      "bank": "left",
+      "probability": 8.628554,
+      "zipf": 6.94
+    },
+    {
+      "chord": "L2",
+      "mask": "00000001001111",
+      "bank": "left",
+      "probability": 7.246842,
+      "zipf": 6.86
+    },
+    {
+      "chord": "K1",
+      "mask": "01100010000000",
+      "bank": "left",
+      "probability": 6.421982,
+      "zipf": 6.81
+    },
+    {
+      "chord": "B1",
+      "mask": "00110110000000",
+      "bank": "left",
+      "probability": 5.343986,
+      "zipf": 6.73
+    },
+    {
+      "chord": "T2",
+      "mask": "00000001111001",
+      "bank": "left",
+      "probability": 5.009955,
+      "zipf": 6.7
+    },
+    {
+      "chord": "D1",
+      "mask": "00000010000000",
+      "bank": "left",
+      "probability": 4.942457,
+      "zipf": 6.69
+    },
+    {
+      "chord": "P2",
+      "mask": "00000000101111",
+      "bank": "left",
+      "probability": 4.91014,
+      "zipf": 6.69
+    },
+    {
+      "chord": "K2",
+      "mask": "00000000110001",
+      "bank": "left",
+      "probability": 4.807892,
+      "zipf": 6.68
+    },
+    {
+      "chord": "P1",
+      "mask": "01011110000000",
+      "bank": "left",
+      "probability": 4.709099,
+      "zipf": 6.67
+    },
+    {
+      "chord": "M2",
+      "mask": "00000001011011",
+      "bank": "left",
+      "probability": 4.633633,
+      "zipf": 6.67
+    },
+    {
+      "chord": "R1",
+      "mask": "00010010000000",
+      "bank": "left",
+      "probability": 4.487608,
+      "zipf": 6.65
+    },
+    {
+      "chord": "S2",
+      "mask": "00000000001111",
+      "bank": "left",
+      "probability": 4.320904,
+      "zipf": 6.64
+    },
+    {
+      "chord": "M1",
+      "mask": "10110110000000",
+      "bank": "left",
+      "probability": 4.099297,
+      "zipf": 6.61
+    },
+    {
+      "chord": "W2",
+      "mask": "00000001011101",
+      "bank": "left",
+      "probability": 4.051908,
+      "zipf": 6.61
+    },
+    {
+      "chord": "B2",
+      "mask": "00000000011011",
+      "bank": "left",
+      "probability": 3.878608,
+      "zipf": 6.59
+    },
+    {
+      "chord": "F1",
+      "mask": "01010110000000",
+      "bank": "left",
+      "probability": 3.695921,
+      "zipf": 6.57
+    },
+    {
+      "chord": "T1",
+      "mask": "11110010000000",
+      "bank": "left",
+      "probability": 3.531489,
+      "zipf": 6.55
+    },
+    {
+      "chord": "F2",
+      "mask": "00000000101011",
+      "bank": "left",
+      "probability": 3.356294,
+      "zipf": 6.53
+    },
+    {
+      "chord": "HH1",
+      "mask": "10010010000000",
+      "bank": "left",
+      "probability": 3.179284,
+      "zipf": 6.5
+    },
+    {
+      "chord": "D2",
+      "mask": "00000000000001",
+      "bank": "left",
+      "probability": 3.05646,
+      "zipf": 6.49
+    },
+    {
+      "chord": "L1",
+      "mask": "10011110000000",
+      "bank": "left",
+      "probability": 2.978989,
+      "zipf": 6.47
+    },
+    {
+      "chord": "HH2",
+      "mask": "00000001001001",
+      "bank": "left",
+      "probability": 2.916667,
+      "zipf": 6.46
+    },
+    {
+      "chord": "AH1",
+      "mask": "10100010000000",
+      "bank": "left",
+      "probability": 2.648647,
+      "zipf": 6.42
+    },
+    {
+      "chord": "N2",
+      "mask": "00000001001011",
+      "bank": "left",
+      "probability": 2.574354,
+      "zipf": 6.41
+    },
+    {
+      "chord": "G1",
+      "mask": "01111010000000",
+      "bank": "left",
+      "probability": 2.316949,
+      "zipf": 6.36
+    },
+    {
+      "chord": "V2",
+      "mask": "00000001101001",
+      "bank": "left",
+      "probability": 2.127934,
+      "zipf": 6.33
+    },
+    {
+      "chord": "W1",
+      "mask": "10111010000000",
+      "bank": "left",
+      "probability": 1.96061,
+      "zipf": 6.29
+    },
+    {
+      "chord": "T R2",
+      "mask": "00000001110001",
+      "bank": "left",
+      "probability": 1.775075,
+      "zipf": 6.25
+    },
+    {
+      "chord": "S T1",
+      "mask": "11000010000000",
+      "bank": "left",
+      "probability": 1.755995,
+      "zipf": 6.24
+    },
+    {
+      "chord": "N1",
+      "mask": "10010110000000",
+      "bank": "left",
+      "probability": 1.731156,
+      "zipf": 6.24
+    },
+    {
+      "chord": "P R1",
+      "mask": "01011010000000",
+      "bank": "left",
+      "probability": 1.710977,
+      "zipf": 6.23
+    },
+    {
+      "chord": "S T2",
+      "mask": "00000001100001",
+      "bank": "left",
+      "probability": 1.655371,
+      "zipf": 6.22
+    },
+    {
+      "chord": "JH2",
+      "mask": "00000000010001",
+      "bank": "left",
+      "probability": 1.563442,
+      "zipf": 6.19
+    },
+    {
+      "chord": "G2",
+      "mask": "00000000111101",
+      "bank": "left",
+      "probability": 1.491158,
+      "zipf": 6.17
+    },
+    {
+      "chord": "JH1",
+      "mask": "00100010000000",
+      "bank": "left",
+      "probability": 1.459612,
+      "zipf": 6.16
+    },
+    {
+      "chord": "K R2",
+      "mask": "00000001101011",
+      "bank": "left",
+      "probability": 1.295418,
+      "zipf": 6.11
+    },
+    {
+      "chord": "IH N1",
+      "mask": "10011010000000",
+      "bank": "left",
+      "probability": 1.276411,
+      "zipf": 6.11
+    },
+    {
+      "chord": "Y2",
+      "mask": "00000000011101",
+      "bank": "left",
+      "probability": 1.275164,
+      "zipf": 6.11
+    },
+    {
+      "chord": "P R2",
+      "mask": "00000000101101",
+      "bank": "left",
+      "probability": 1.248159,
+      "zipf": 6.1
+    },
+    {
+      "chord": "SH2",
+      "mask": "00000000111111",
+      "bank": "left",
+      "probability": 1.245249,
+      "zipf": 6.1
+    },
+    {
+      "chord": "S P2",
+      "mask": "00000000011111",
+      "bank": "left",
+      "probability": 1.236274,
+      "zipf": 6.09
+    },
+    {
+      "chord": "SH1",
+      "mask": "01111110000000",
+      "bank": "left",
+      "probability": 1.224409,
+      "zipf": 6.09
+    },
+    {
+      "chord": "K L2",
+      "mask": "00000001011001",
+      "bank": "left",
+      "probability": 1.22252,
+      "zipf": 6.09
+    },
+    {
+      "chord": "V1",
+      "mask": "11010010000000",
+      "bank": "left",
+      "probability": 1.210851,
+      "zipf": 6.08
+    },
+    {
+      "chord": "K R1",
+      "mask": "11010110000000",
+      "bank": "left",
+      "probability": 1.152471,
+      "zipf": 6.06
+    },
+    {
+      "chord": "P L2",
+      "mask": "00000000011001",
+      "bank": "left",
+      "probability": 1.149846,
+      "zipf": 6.06
+    },
+    {
+      "chord": "B R1",
+      "mask": "00010110000000",
+      "bank": "left",
+      "probability": 1.096956,
+      "zipf": 6.04
+    },
+    {
+      "chord": "S P1",
+      "mask": "00111110000000",
+      "bank": "left",
+      "probability": 1.038369,
+      "zipf": 6.02
+    },
+    {
+      "chord": "IH1",
+      "mask": "10010110000000",
+      "bank": "left",
+      "probability": 1.03828,
+      "zipf": 6.02
+    },
+    {
+      "chord": "B R2",
+      "mask": "00000000001011",
+      "bank": "left",
+      "probability": 1.03193,
+      "zipf": 6.01
+    },
+    {
+      "chord": "G R2",
+      "mask": "00000001001101",
+      "bank": "left",
+      "probability": 0.995603,
+      "zipf": 6.0
+    },
+    {
+      "chord": "T R1",
+      "mask": "11100010000000",
+      "bank": "left",
+      "probability": 0.991254,
+      "zipf": 6.0
+    },
+    {
+      "chord": "CH2",
+      "mask": "00000000111011",
+      "bank": "left",
+      "probability": 0.958006,
+      "zipf": 5.98
+    },
+    {
+      "chord": "K N1",
+      "mask": "01110010000000",
+      "bank": "left",
+      "probability": 0.956209,
+      "zipf": 5.98
+    },
+    {
+      "chord": "K L1",
+      "mask": "10110010000000",
+      "bank": "left",
+      "probability": 0.950286,
+      "zipf": 5.98
+    },
+    {
+      "chord": "D S1",
+      "mask": "11111010000000",
+      "bank": "left",
+      "probability": 0.922143,
+      "zipf": 5.96
+    },
+    {
+      "chord": "CH1",
+      "mask": "01110110000000",
+      "bank": "left",
+      "probability": 0.90616,
+      "zipf": 5.96
+    },
+    {
+      "chord": "G R1",
+      "mask": "10011010000000",
+      "bank": "left",
+      "probability": 0.837329,
+      "zipf": 5.92
+    },
+    {
+      "chord": "R Y1",
+      "mask": "11110110000000",
+      "bank": "left",
+      "probability": 0.834436,
+      "zipf": 5.92
+    },
+    {
+      "chord": "Z2",
+      "mask": "00000001101101",
+      "bank": "left",
+      "probability": 0.779165,
+      "zipf": 5.89
+    },
+    {
+      "chord": "S T R2",
+      "mask": "00000000101001",
+      "bank": "left",
+      "probability": 0.724354,
+      "zipf": 5.86
+    },
+    {
+      "chord": "F R1",
+      "mask": "11111110000000",
+      "bank": "left",
+      "probability": 0.706685,
+      "zipf": 5.85
+    },
+    {
+      "chord": "F L2",
+      "mask": "00000000100001",
+      "bank": "left",
+      "probability": 0.69548,
+      "zipf": 5.84
+    },
+    {
+      "chord": "F L1",
+      "mask": "01000010000000",
+      "bank": "left",
+      "probability": 0.676754,
+      "zipf": 5.83
+    },
+    {
+      "chord": "K W2",
+      "mask": "00000001101111",
+      "bank": "left",
+      "probability": 0.66615,
+      "zipf": 5.82
+    },
+    {
+      "chord": "TH1",
+      "mask": "11111010000000",
+      "bank": "left",
+      "probability": 0.660008,
+      "zipf": 5.82
+    },
+    {
+      "chord": "F R2",
+      "mask": "00000001111111",
+      "bank": "left",
+      "probability": 0.640371,
+      "zipf": 5.81
+    },
+    {
+      "chord": "AH N1",
+      "mask": "10000010000000",
+      "bank": "left",
+      "probability": 0.610484,
+      "zipf": 5.79
+    },
+    {
+      "chord": "P L1",
+      "mask": "00110010000000",
+      "bank": "left",
+      "probability": 0.61048,
+      "zipf": 5.79
+    },
+    {
+      "chord": "K M1",
+      "mask": "00011010000000",
+      "bank": "left",
+      "probability": 0.597784,
+      "zipf": 5.78
+    },
+    {
+      "chord": "IH K S1",
+      "mask": "11011010000000",
+      "bank": "left",
+      "probability": 0.549059,
+      "zipf": 5.74
+    },
+    {
+      "chord": "TH2",
+      "mask": "00000001111101",
+      "bank": "left",
+      "probability": 0.51595,
+      "zipf": 5.71
+    },
+    {
+      "chord": "N T2",
+      "mask": "00000001000001",
+      "bank": "left",
+      "probability": 0.512071,
+      "zipf": 5.71
+    },
+    {
+      "chord": "N S2",
+      "mask": "00000000011001",
+      "bank": "left",
+      "probability": 0.49729,
+      "zipf": 5.7
+    },
+    {
+      "chord": "Y1",
+      "mask": "00111010000000",
+      "bank": "left",
+      "probability": 0.491434,
+      "zipf": 5.69
+    },
+    {
+      "chord": "S T R1",
+      "mask": "01010010000000",
+      "bank": "left",
+      "probability": 0.43796,
+      "zipf": 5.64
+    },
+    {
+      "chord": "IH M1",
+      "mask": "01110010000000",
+      "bank": "left",
+      "probability": 0.436001,
+      "zipf": 5.64
+    },
+    {
+      "chord": "K W1",
+      "mask": "11011110000000",
+      "bank": "left",
+      "probability": 0.402512,
+      "zipf": 5.6
+    },
+    {
+      "chord": "R T2",
+      "mask": "00000000101001",
+      "bank": "left",
+      "probability": 0.348259,
+      "zipf": 5.54
+    },
+    {
+      "chord": "R M2",
+      "mask": "00000001010001",
+      "bank": "left",
+      "probability": 0.34201,
+      "zipf": 5.53
+    },
+    {
+      "chord": "N D2",
+      "mask": "00000001011011",
+      "bank": "left",
+      "probability": 0.316599,
+      "zipf": 5.5
+    },
+    {
+      "chord": "AH B1",
+      "mask": "00111010000000",
+      "bank": "left",
+      "probability": 0.304887,
+      "zipf": 5.48
+    },
+    {
+      "chord": "R Y2",
+      "mask": "00000001111011",
+      "bank": "left",
+      "probability": 0.294811,
+      "zipf": 5.47
+    },
+    {
+      "chord": "Z1",
+      "mask": "11011010000000",
+      "bank": "left",
+      "probability": 0.250104,
+      "zipf": 5.4
+    },
+    {
+      "chord": "P R S1",
+      "mask": "11110110000000",
+      "bank": "left",
+      "probability": 0.241312,
+      "zipf": 5.38
+    },
+    {
+      "chord": "EH1",
+      "mask": "01111010000000",
+      "bank": "left",
+      "probability": 0.226581,
+      "zipf": 5.36
+    },
+    {
+      "chord": "K M2",
+      "mask": "00000000001101",
+      "bank": "left",
+      "probability": 0.217338,
+      "zipf": 5.34
+    },
+    {
+      "chord": "R D2",
+      "mask": "00000001010001",
+      "bank": "left",
+      "probability": 0.215615,
+      "zipf": 5.33
+    },
+    {
+      "chord": "D S2",
+      "mask": "00000001111101",
+      "bank": "left",
+      "probability": 0.208208,
+      "zipf": 5.32
+    },
+    {
+      "chord": "K N T1",
+      "mask": "01000010000000",
+      "bank": "left",
+      "probability": 0.198763,
+      "zipf": 5.3
+    },
+    {
+      "chord": "R K1",
+      "mask": "01011010000000",
+      "bank": "left",
+      "probability": 0.193567,
+      "zipf": 5.29
+    },
+    {
+      "chord": "L W2",
+      "mask": "00000001010001",
+      "bank": "left",
+      "probability": 0.186378,
+      "zipf": 5.27
+    },
+    {
+      "chord": "AA1",
+      "mask": "01010110000000",
+      "bank": "left",
+      "probability": 0.183237,
+      "zipf": 5.26
+    },
+    {
+      "chord": "D M2",
+      "mask": "00000000111001",
+      "bank": "left",
+      "probability": 0.175639,
+      "zipf": 5.24
+    },
+    {
+      "chord": "K N2",
+      "mask": "00000000111001",
+      "bank": "left",
+      "probability": 0.174162,
+      "zipf": 5.24
+    },
+    {
+      "chord": "R K2",
+      "mask": "00000000101101",
+      "bank": "left",
+      "probability": 0.163499,
+      "zipf": 5.21
+    },
+    {
+      "chord": "M N1",
+      "mask": "00010110000000",
+      "bank": "left",
+      "probability": 0.158385,
+      "zipf": 5.2
+    },
+    {
+      "chord": "IH N D1",
+      "mask": "10111110000000",
+      "bank": "left",
+      "probability": 0.145629,
+      "zipf": 5.16
+    },
+    {
+      "chord": "M S1",
+      "mask": "00011010000000",
+      "bank": "left",
+      "probability": 0.144129,
+      "zipf": 5.16
+    },
+    {
+      "chord": "P R S2",
+      "mask": "00000001111011",
+      "bank": "left",
+      "probability": 0.142568,
+      "zipf": 5.15
+    },
+    {
+      "chord": "R M1",
+      "mask": "10100010000000",
+      "bank": "left",
+      "probability": 0.141307,
+      "zipf": 5.15
+    },
+    {
+      "chord": "D M1",
+      "mask": "01110010000000",
+      "bank": "left",
+      "probability": 0.140005,
+      "zipf": 5.15
+    },
+    {
+      "chord": "AE1",
+      "mask": "10111010000000",
+      "bank": "left",
+      "probability": 0.139636,
+      "zipf": 5.14
+    },
+    {
+      "chord": "R T1",
+      "mask": "01010010000000",
+      "bank": "left",
+      "probability": 0.138367,
+      "zipf": 5.14
+    },
+    {
+      "chord": "R Y P1",
+      "mask": "01000010000000",
+      "bank": "left",
+      "probability": 0.137734,
+      "zipf": 5.14
+    },
+    {
+      "chord": "EH M1",
+      "mask": "01111110000000",
+      "bank": "left",
+      "probability": 0.132437,
+      "zipf": 5.12
+    },
+    {
+      "chord": "K N T2",
+      "mask": "00000000100001",
+      "bank": "left",
+      "probability": 0.129423,
+      "zipf": 5.11
+    },
+    {
+      "chord": "AH N2",
+      "mask": "00000001000001",
+      "bank": "left",
+      "probability": 0.127226,
+      "zipf": 5.1
+    },
+    {
+      "chord": "AH B2",
+      "mask": "00000000011101",
+      "bank": "left",
+      "probability": 0.125664,
+      "zipf": 5.1
+    },
+    {
+      "chord": "M N2",
+      "mask": "00000000001011",
+      "bank": "left",
+      "probability": 0.119447,
+      "zipf": 5.08
+    },
+    {
+      "chord": "IH G Z1",
+      "mask": "01110010000000",
+      "bank": "left",
+      "probability": 0.11942,
+      "zipf": 5.08
+    },
+    {
+      "chord": "IH G Z2",
+      "mask": "00000000111001",
+      "bank": "left",
+      "probability": 0.113095,
+      "zipf": 5.05
+    },
+    {
+      "chord": "AE D1",
+      "mask": "00100010000000",
+      "bank": "left",
+      "probability": 0.112427,
+      "zipf": 5.05
+    },
+    {
+      "chord": "UW1",
+      "mask": "00010010000000",
+      "bank": "left",
+      "probability": 0.10786,
+      "zipf": 5.03
+    },
+    {
+      "chord": "IH N S T1",
+      "mask": "10100010000000",
+      "bank": "left",
+      "probability": 0.101819,
+      "zipf": 5.01
+    },
+    {
+      "chord": "G N2",
+      "mask": "00000000000001",
+      "bank": "left",
+      "probability": 0.09941,
+      "zipf": 5.0
+    },
+    {
+      "chord": "L W1",
+      "mask": "10100010000000",
+      "bank": "left",
+      "probability": 0.094554,
+      "zipf": 4.98
+    },
+    {
+      "chord": "IH M2",
+      "mask": "00000000111001",
+      "bank": "left",
+      "probability": 0.093405,
+      "zipf": 4.97
+    },
+    {
+      "chord": "R Y P2",
+      "mask": "00000000100001",
+      "bank": "left",
+      "probability": 0.09207,
+      "zipf": 4.96
+    },
+    {
+      "chord": "K N T R1",
+      "mask": "11111010000000",
+      "bank": "left",
+      "probability": 0.090665,
+      "zipf": 4.96
+    },
+    {
+      "chord": "IH K S2",
+      "mask": "00000001101101",
+      "bank": "left",
+      "probability": 0.089883,
+      "zipf": 4.95
+    },
+    {
+      "chord": "P T2",
+      "mask": "00000001011111",
+      "bank": "left",
+      "probability": 0.088573,
+      "zipf": 4.95
+    },
+    {
+      "chord": "IH N D2",
+      "mask": "00000001011111",
+      "bank": "left",
+      "probability": 0.088389,
+      "zipf": 4.95
+    },
+    {
+      "chord": "S Y2",
+      "mask": "00000000001101",
+      "bank": "left",
+      "probability": 0.085093,
+      "zipf": 4.93
+    },
+    {
+      "chord": "P T1",
+      "mask": "10111110000000",
+      "bank": "left",
+      "probability": 0.078205,
+      "zipf": 4.89
+    },
+    {
+      "chord": "S Y1",
+      "mask": "00011010000000",
+      "bank": "left",
+      "probability": 0.06865,
+      "zipf": 4.84
+    },
+    {
+      "chord": "B K1",
+      "mask": "11011110000000",
+      "bank": "left",
+      "probability": 0.067031,
+      "zipf": 4.83
+    },
+    {
+      "chord": "P Z2",
+      "mask": "00000001101111",
+      "bank": "left",
+      "probability": 0.065077,
+      "zipf": 4.81
+    },
+    {
+      "chord": "K N T R2",
+      "mask": "00000001111101",
+      "bank": "left",
+      "probability": 0.063675,
+      "zipf": 4.8
+    },
+    {
+      "chord": "AE K S1",
+      "mask": "11111110000000",
+      "bank": "left",
+      "probability": 0.060813,
+      "zipf": 4.78
+    },
+    {
+      "chord": "IH N2",
+      "mask": "00000001001101",
+      "bank": "left",
+      "probability": 0.060337,
+      "zipf": 4.78
+    },
+    {
+      "chord": "S K S1",
+      "mask": "01110010000000",
+      "bank": "left",
+      "probability": 0.060263,
+      "zipf": 4.78
+    },
+    {
+      "chord": "R D1",
+      "mask": "10100010000000",
+      "bank": "left",
+      "probability": 0.057468,
+      "zipf": 4.76
+    },
+    {
+      "chord": "S R V1",
+      "mask": "11011110000000",
+      "bank": "left",
+      "probability": 0.057319,
+      "zipf": 4.76
+    },
+    {
+      "chord": "AE K S2",
+      "mask": "00000001111111",
+      "bank": "left",
+      "probability": 0.054099,
+      "zipf": 4.73
+    },
+    {
+      "chord": "G W2",
+      "mask": "00000000001101",
+      "bank": "left",
+      "probability": 0.051831,
+      "zipf": 4.71
+    },
+    {
+      "chord": "S R V2",
+      "mask": "00000001101111",
+      "bank": "left",
+      "probability": 0.048759,
+      "zipf": 4.69
+    },
+    {
+      "chord": "S K S2",
+      "mask": "00000000111001",
+      "bank": "left",
+      "probability": 0.046022,
+      "zipf": 4.66
+    },
+    {
+      "chord": "B K2",
+      "mask": "00000001101111",
+      "bank": "left",
+      "probability": 0.045981,
+      "zipf": 4.66
+    },
+    {
+      "chord": "M S2",
+      "mask": "00000000001101",
+      "bank": "left",
+      "probability": 0.045828,
+      "zipf": 4.66
+    },
+    {
+      "chord": "IH N K R1",
+      "mask": "01111110000000",
+      "bank": "left",
+      "probability": 0.042323,
+      "zipf": 4.63
+    },
+    {
+      "chord": "G W1",
+      "mask": "00011010000000",
+      "bank": "left",
+      "probability": 0.040458,
+      "zipf": 4.61
+    },
+    {
+      "chord": "IH N S T2",
+      "mask": "00000001010001",
+      "bank": "left",
+      "probability": 0.039546,
+      "zipf": 4.6
+    },
+    {
+      "chord": "W TH1",
+      "mask": "11011010000000",
+      "bank": "left",
+      "probability": 0.039071,
+      "zipf": 4.59
+    },
+    {
+      "chord": "P Z1",
+      "mask": "11011110000000",
+      "bank": "left",
+      "probability": 0.037286,
+      "zipf": 4.57
+    },
+    {
+      "chord": "IH N K R2",
+      "mask": "00000000111111",
+      "bank": "left",
+      "probability": 0.03555,
+      "zipf": 4.55
+    },
+    {
+      "chord": "N T1",
+      "mask": "10000010000000",
+      "bank": "left",
+      "probability": 0.034069,
+      "zipf": 4.53
+    },
+    {
+      "chord": "AA P R1",
+      "mask": "01111110000000",
+      "bank": "left",
+      "probability": 0.03079,
+      "zipf": 4.49
+    },
+    {
+      "chord": "R P R Z1",
+      "mask": "11010110000000",
+      "bank": "left",
+      "probability": 0.02628,
+      "zipf": 4.42
+    },
+    {
+      "chord": "AH N D R S T2",
+      "mask": "00000001000001",
+      "bank": "left",
+      "probability": 0.02621,
+      "zipf": 4.42
+    },
+    {
+      "chord": "AH N D R S T1",
+      "mask": "10000010000000",
+      "bank": "left",
+      "probability": 0.02621,
+      "zipf": 4.42
+    },
+    {
+      "chord": "T K N2",
+      "mask": "00000001101001",
+      "bank": "left",
+      "probability": 0.025602,
+      "zipf": 4.41
+    },
+    {
+      "chord": "T K N1",
+      "mask": "11010010000000",
+      "bank": "left",
+      "probability": 0.024408,
+      "zipf": 4.39
+    },
+    {
+      "chord": "R P R Z2",
+      "mask": "00000001101011",
+      "bank": "left",
+      "probability": 0.02207,
+      "zipf": 4.34
+    },
+    {
+      "chord": "AO R G N Z2",
+      "mask": "00000001110001",
+      "bank": "left",
+      "probability": 0.021377,
+      "zipf": 4.33
+    },
+    {
+      "chord": "AO R G N Z1",
+      "mask": "11100010000000",
+      "bank": "left",
+      "probability": 0.021377,
+      "zipf": 4.33
+    },
+    {
+      "chord": "AA P R2",
+      "mask": "00000000111111",
+      "bank": "left",
+      "probability": 0.020716,
+      "zipf": 4.32
+    },
+    {
+      "chord": "N S1",
+      "mask": "00110010000000",
+      "bank": "left",
+      "probability": 0.018372,
+      "zipf": 4.26
+    },
+    {
+      "chord": "T G2",
+      "mask": "00000001001101",
+      "bank": "left",
+      "probability": 0.016077,
+      "zipf": 4.21
+    },
+    {
+      "chord": "W TH2",
+      "mask": "00000001101101",
+      "bank": "left",
+      "probability": 0.012649,
+      "zipf": 4.1
+    },
+    {
+      "chord": "G N1",
+      "mask": "00000010000000",
+      "bank": "left",
+      "probability": 0.011963,
+      "zipf": 4.08
+    },
+    {
+      "chord": "IH N T R N2",
+      "mask": "00000000001011",
+      "bank": "left",
+      "probability": 0.011387,
+      "zipf": 4.06
+    },
+    {
+      "chord": "IH N T R N1",
+      "mask": "00010110000000",
+      "bank": "left",
+      "probability": 0.011387,
+      "zipf": 4.06
+    },
+    {
+      "chord": "EH JH K2",
+      "mask": "00000000111101",
+      "bank": "left",
+      "probability": 0.010082,
+      "zipf": 4.0
+    },
+    {
+      "chord": "EH JH K1",
+      "mask": "01111010000000",
+      "bank": "left",
+      "probability": 0.010082,
+      "zipf": 4.0
+    },
+    {
+      "chord": "N D1",
+      "mask": "10110110000000",
+      "bank": "left",
+      "probability": 0.00867,
+      "zipf": 3.94
+    },
+    {
+      "chord": "T D2",
+      "mask": "00000001011111",
+      "bank": "left",
+      "probability": 0.008122,
+      "zipf": 3.91
+    },
+    {
+      "chord": "T D1",
+      "mask": "10111110000000",
+      "bank": "left",
+      "probability": 0.008093,
+      "zipf": 3.91
+    },
+    {
+      "chord": "EH M2",
+      "mask": "00000000111111",
+      "bank": "left",
+      "probability": 0.006808,
+      "zipf": 3.83
+    },
+    {
+      "chord": "UH R S2",
+      "mask": "00000001001001",
+      "bank": "left",
+      "probability": 0.006325,
+      "zipf": 3.8
+    },
+    {
+      "chord": "UH R S1",
+      "mask": "10010010000000",
+      "bank": "left",
+      "probability": 0.006325,
+      "zipf": 3.8
+    },
+    {
+      "chord": "T G1",
+      "mask": "10011010000000",
+      "bank": "left",
+      "probability": 0.003476,
+      "zipf": 3.54
+    },
+    {
+      "chord": "IH N D V2",
+      "mask": "00000000101011",
+      "bank": "left",
+      "probability": 0.001471,
+      "zipf": 3.17
+    },
+    {
+      "chord": "IH N D V1",
+      "mask": "01010110000000",
+      "bank": "left",
+      "probability": 0.001471,
+      "zipf": 3.17
+    },
+    {
+      "chord": "AE D2",
+      "mask": "00000000010001",
+      "bank": "left",
+      "probability": 9.3e-05,
+      "zipf": 1.97
+    }
+  ],
+  "right_chords": [
+    {
+      "chord": "SS2",
+      "mask": "00000001100001",
+      "bank": "right",
+      "probability": 11.666848,
+      "zipf": 7.07
+    },
+    {
+      "chord": "D2",
+      "mask": "00000000111111",
+      "bank": "right",
+      "probability": 9.702238,
+      "zipf": 6.99
+    },
+    {
+      "chord": "N1",
+      "mask": "10110110000000",
+      "bank": "right",
+      "probability": 9.369865,
+      "zipf": 6.97
+    },
+    {
+      "chord": "R1",
+      "mask": "11010010000000",
+      "bank": "right",
+      "probability": 8.485011,
+      "zipf": 6.93
+    },
+    {
+      "chord": "NG2",
+      "mask": "00000000101001",
+      "bank": "right",
+      "probability": 7.368709,
+      "zipf": 6.87
+    },
+    {
+      "chord": "L1",
+      "mask": "00011110000000",
+      "bank": "right",
+      "probability": 7.357286,
+      "zipf": 6.87
+    },
+    {
+      "chord": "T1",
+      "mask": "00011010000000",
+      "bank": "right",
+      "probability": 7.348119,
+      "zipf": 6.87
+    },
+    {
+      "chord": "N2",
+      "mask": "00000001011011",
+      "bank": "right",
+      "probability": 7.237787,
+      "zipf": 6.86
+    },
+    {
+      "chord": "R2",
+      "mask": "00000001101001",
+      "bank": "right",
+      "probability": 7.172605,
+      "zipf": 6.86
+    },
+    {
+      "chord": "K1",
+      "mask": "01011110000000",
+      "bank": "right",
+      "probability": 5.965508,
+      "zipf": 6.78
+    },
+    {
+      "chord": "T2",
+      "mask": "00000000001101",
+      "bank": "right",
+      "probability": 5.830243,
+      "zipf": 6.77
+    },
+    {
+      "chord": "Y2",
+      "mask": "00000001001001",
+      "bank": "right",
+      "probability": 5.476284,
+      "zipf": 6.74
+    },
+    {
+      "chord": "D1",
+      "mask": "01111110000000",
+      "bank": "right",
+      "probability": 5.119691,
+      "zipf": 6.71
+    },
+    {
+      "chord": "L2",
+      "mask": "00000000001111",
+      "bank": "right",
+      "probability": 4.893065,
+      "zipf": 6.69
+    },
+    {
+      "chord": "M1",
+      "mask": "11010110000000",
+      "bank": "right",
+      "probability": 4.322403,
+      "zipf": 6.64
+    },
+    {
+      "chord": "S1",
+      "mask": "00111010000000",
+      "bank": "right",
+      "probability": 4.042603,
+      "zipf": 6.61
+    },
+    {
+      "chord": "K2",
+      "mask": "00000000101111",
+      "bank": "right",
+      "probability": 3.33744,
+      "zipf": 6.52
+    },
+    {
+      "chord": "P1",
+      "mask": "01100010000000",
+      "bank": "right",
+      "probability": 3.281536,
+      "zipf": 6.52
+    },
+    {
+      "chord": "R SS2",
+      "mask": "00000000111101",
+      "bank": "right",
+      "probability": 3.176535,
+      "zipf": 6.5
+    },
+    {
+      "chord": "N D1",
+      "mask": "10000010000000",
+      "bank": "right",
+      "probability": 3.110035,
+      "zipf": 6.49
+    },
+    {
+      "chord": "V1",
+      "mask": "11011010000000",
+      "bank": "right",
+      "probability": 2.600644,
+      "zipf": 6.42
+    },
+    {
+      "chord": "S T1",
+      "mask": "01011010000000",
+      "bank": "right",
+      "probability": 2.566545,
+      "zipf": 6.41
+    },
+    {
+      "chord": "N T1",
+      "mask": "00010110000000",
+      "bank": "right",
+      "probability": 2.539772,
+      "zipf": 6.4
+    },
+    {
+      "chord": "AH2",
+      "mask": "00000000111011",
+      "bank": "right",
+      "probability": 2.482624,
+      "zipf": 6.39
+    },
+    {
+      "chord": "SH1",
+      "mask": "00110110000000",
+      "bank": "right",
+      "probability": 2.417651,
+      "zipf": 6.38
+    },
+    {
+      "chord": "Z1",
+      "mask": "01110010000000",
+      "bank": "right",
+      "probability": 2.32902,
+      "zipf": 6.37
+    },
+    {
+      "chord": "L Y2",
+      "mask": "00000000001001",
+      "bank": "right",
+      "probability": 2.273484,
+      "zipf": 6.36
+    },
+    {
+      "chord": "N SS2",
+      "mask": "00000001011101",
+      "bank": "right",
+      "probability": 2.147034,
+      "zipf": 6.33
+    },
+    {
+      "chord": "B1",
+      "mask": "11011110000000",
+      "bank": "right",
+      "probability": 2.072385,
+      "zipf": 6.32
+    },
+    {
+      "chord": "NG1",
+      "mask": "01010010000000",
+      "bank": "right",
+      "probability": 1.920017,
+      "zipf": 6.28
+    },
+    {
+      "chord": "M2",
+      "mask": "00000001101011",
+      "bank": "right",
+      "probability": 1.869061,
+      "zipf": 6.27
+    },
+    {
+      "chord": "S2",
+      "mask": "00000000011101",
+      "bank": "right",
+      "probability": 1.834313,
+      "zipf": 6.26
+    },
+    {
+      "chord": "AH SS2",
+      "mask": "00000001111001",
+      "bank": "right",
+      "probability": 1.797549,
+      "zipf": 6.25
+    },
+    {
+      "chord": "G1",
+      "mask": "10100010000000",
+      "bank": "right",
+      "probability": 1.777557,
+      "zipf": 6.25
+    },
+    {
+      "chord": "SS1",
+      "mask": "11000010000000",
+      "bank": "right",
+      "probability": 1.767078,
+      "zipf": 6.25
+    },
+    {
+      "chord": "R T1",
+      "mask": "10010110000000",
+      "bank": "right",
+      "probability": 1.759733,
+      "zipf": 6.25
+    },
+    {
+      "chord": "L SS2",
+      "mask": "00000001110001",
+      "bank": "right",
+      "probability": 1.709301,
+      "zipf": 6.23
+    },
+    {
+      "chord": "K T1",
+      "mask": "00100010000000",
+      "bank": "right",
+      "probability": 1.695469,
+      "zipf": 6.23
+    },
+    {
+      "chord": "N T2",
+      "mask": "00000000001011",
+      "bank": "right",
+      "probability": 1.647312,
+      "zipf": 6.22
+    },
+    {
+      "chord": "F1",
+      "mask": "11110110000000",
+      "bank": "right",
+      "probability": 1.59933,
+      "zipf": 6.2
+    },
+    {
+      "chord": "OW2",
+      "mask": "00000001101101",
+      "bank": "right",
+      "probability": 1.581734,
+      "zipf": 6.2
+    },
+    {
+      "chord": "R D2",
+      "mask": "00000001111101",
+      "bank": "right",
+      "probability": 1.538262,
+      "zipf": 6.19
+    },
+    {
+      "chord": "R D1",
+      "mask": "11111010000000",
+      "bank": "right",
+      "probability": 1.443613,
+      "zipf": 6.16
+    },
+    {
+      "chord": "N D2",
+      "mask": "00000001000001",
+      "bank": "right",
+      "probability": 1.435047,
+      "zipf": 6.16
+    },
+    {
+      "chord": "S T2",
+      "mask": "00000000101101",
+      "bank": "right",
+      "probability": 1.393765,
+      "zipf": 6.14
+    },
+    {
+      "chord": "P2",
+      "mask": "00000000110001",
+      "bank": "right",
+      "probability": 1.342206,
+      "zipf": 6.13
+    },
+    {
+      "chord": "R Y2",
+      "mask": "00000001001101",
+      "bank": "right",
+      "probability": 1.276061,
+      "zipf": 6.11
+    },
+    {
+      "chord": "R N1",
+      "mask": "00110010000000",
+      "bank": "right",
+      "probability": 1.27581,
+      "zipf": 6.11
+    },
+    {
+      "chord": "R Y1",
+      "mask": "10011010000000",
+      "bank": "right",
+      "probability": 1.273561,
+      "zipf": 6.11
+    },
+    {
+      "chord": "CH1",
+      "mask": "10110010000000",
+      "bank": "right",
+      "probability": 1.263595,
+      "zipf": 6.1
+    },
+    {
+      "chord": "L T1",
+      "mask": "00000010000000",
+      "bank": "right",
+      "probability": 1.195096,
+      "zipf": 6.08
+    },
+    {
+      "chord": "N S1",
+      "mask": "00111110000000",
+      "bank": "right",
+      "probability": 1.186977,
+      "zipf": 6.07
+    },
+    {
+      "chord": "L D1",
+      "mask": "11110010000000",
+      "bank": "right",
+      "probability": 1.157631,
+      "zipf": 6.06
+    },
+    {
+      "chord": "L D2",
+      "mask": "00000001111001",
+      "bank": "right",
+      "probability": 1.149323,
+      "zipf": 6.06
+    },
+    {
+      "chord": "L Y1",
+      "mask": "00010010000000",
+      "bank": "right",
+      "probability": 1.069154,
+      "zipf": 6.03
+    },
+    {
+      "chord": "V2",
+      "mask": "00000001101101",
+      "bank": "right",
+      "probability": 1.044294,
+      "zipf": 6.02
+    },
+    {
+      "chord": "R K1",
+      "mask": "11111110000000",
+      "bank": "right",
+      "probability": 0.996532,
+      "zipf": 6.0
+    },
+    {
+      "chord": "B L2",
+      "mask": "00000000101011",
+      "bank": "right",
+      "probability": 0.967711,
+      "zipf": 5.99
+    },
+    {
+      "chord": "JH1",
+      "mask": "10111110000000",
+      "bank": "right",
+      "probability": 0.967616,
+      "zipf": 5.99
+    },
+    {
+      "chord": "NG K1",
+      "mask": "01110110000000",
+      "bank": "right",
+      "probability": 0.965625,
+      "zipf": 5.98
+    },
+    {
+      "chord": "N SS1",
+      "mask": "10111010000000",
+      "bank": "right",
+      "probability": 0.938906,
+      "zipf": 5.97
+    },
+    {
+      "chord": "R M1",
+      "mask": "10011110000000",
+      "bank": "right",
+      "probability": 0.920259,
+      "zipf": 5.96
+    },
+    {
+      "chord": "TH1",
+      "mask": "01000010000000",
+      "bank": "right",
+      "probability": 0.886654,
+      "zipf": 5.95
+    },
+    {
+      "chord": "Z2",
+      "mask": "00000000111001",
+      "bank": "right",
+      "probability": 0.794707,
+      "zipf": 5.9
+    },
+    {
+      "chord": "Y SS2",
+      "mask": "00000001010001",
+      "bank": "right",
+      "probability": 0.787902,
+      "zipf": 5.9
+    },
+    {
+      "chord": "JH2",
+      "mask": "00000001011111",
+      "bank": "right",
+      "probability": 0.785343,
+      "zipf": 5.9
+    },
+    {
+      "chord": "L SS1",
+      "mask": "11100010000000",
+      "bank": "right",
+      "probability": 0.760106,
+      "zipf": 5.88
+    },
+    {
+      "chord": "R S1",
+      "mask": "00100010000000",
+      "bank": "right",
+      "probability": 0.716841,
+      "zipf": 5.86
+    },
+    {
+      "chord": "R T2",
+      "mask": "00000001001011",
+      "bank": "right",
+      "probability": 0.71246,
+      "zipf": 5.85
+    },
+    {
+      "chord": "R SS1",
+      "mask": "01111010000000",
+      "bank": "right",
+      "probability": 0.708721,
+      "zipf": 5.85
+    },
+    {
+      "chord": "N S2",
+      "mask": "00000000011111",
+      "bank": "right",
+      "probability": 0.703621,
+      "zipf": 5.85
+    },
+    {
+      "chord": "F2",
+      "mask": "00000001111011",
+      "bank": "right",
+      "probability": 0.677495,
+      "zipf": 5.83
+    },
+    {
+      "chord": "K T2",
+      "mask": "00000000010001",
+      "bank": "right",
+      "probability": 0.673634,
+      "zipf": 5.83
+    },
+    {
+      "chord": "SH2",
+      "mask": "00000000011011",
+      "bank": "right",
+      "probability": 0.668005,
+      "zipf": 5.82
+    },
+    {
+      "chord": "CH2",
+      "mask": "00000001011001",
+      "bank": "right",
+      "probability": 0.658577,
+      "zipf": 5.82
+    },
+    {
+      "chord": "R N2",
+      "mask": "00000000011001",
+      "bank": "right",
+      "probability": 0.656062,
+      "zipf": 5.82
+    },
+    {
+      "chord": "M N T2",
+      "mask": "00000000000001",
+      "bank": "right",
+      "probability": 0.595437,
+      "zipf": 5.77
+    },
+    {
+      "chord": "NG SS2",
+      "mask": "00000001001111",
+      "bank": "right",
+      "probability": 0.579304,
+      "zipf": 5.76
+    },
+    {
+      "chord": "B L1",
+      "mask": "01010110000000",
+      "bank": "right",
+      "probability": 0.573728,
+      "zipf": 5.76
+    },
+    {
+      "chord": "TH2",
+      "mask": "00000000100001",
+      "bank": "right",
+      "probability": 0.55388,
+      "zipf": 5.74
+    },
+    {
+      "chord": "G2",
+      "mask": "00000001010001",
+      "bank": "right",
+      "probability": 0.542572,
+      "zipf": 5.73
+    },
+    {
+      "chord": "S K1",
+      "mask": "01111010000000",
+      "bank": "right",
+      "probability": 0.536296,
+      "zipf": 5.73
+    },
+    {
+      "chord": "N JH1",
+      "mask": "10010010000000",
+      "bank": "right",
+      "probability": 0.521534,
+      "zipf": 5.72
+    },
+    {
+      "chord": "L T2",
+      "mask": "00000000000001",
+      "bank": "right",
+      "probability": 0.506794,
+      "zipf": 5.7
+    },
+    {
+      "chord": "K SH N1",
+      "mask": "11110110000000",
+      "bank": "right",
+      "probability": 0.490955,
+      "zipf": 5.69
+    },
+    {
+      "chord": "B2",
+      "mask": "00000001101111",
+      "bank": "right",
+      "probability": 0.490526,
+      "zipf": 5.69
+    },
+    {
+      "chord": "M B1",
+      "mask": "11100010000000",
+      "bank": "right",
+      "probability": 0.483515,
+      "zipf": 5.68
+    },
+    {
+      "chord": "Y N2",
+      "mask": "00000000111001",
+      "bank": "right",
+      "probability": 0.477309,
+      "zipf": 5.68
+    },
+    {
+      "chord": "R K2",
+      "mask": "00000001111111",
+      "bank": "right",
+      "probability": 0.459956,
+      "zipf": 5.66
+    },
+    {
+      "chord": "P T1",
+      "mask": "00111110000000",
+      "bank": "right",
+      "probability": 0.423385,
+      "zipf": 5.63
+    },
+    {
+      "chord": "Y AH2",
+      "mask": "00000000011111",
+      "bank": "right",
+      "probability": 0.374977,
+      "zipf": 5.57
+    },
+    {
+      "chord": "N K1",
+      "mask": "01010110000000",
+      "bank": "right",
+      "probability": 0.371097,
+      "zipf": 5.57
+    },
+    {
+      "chord": "R V1",
+      "mask": "10010010000000",
+      "bank": "right",
+      "probability": 0.328507,
+      "zipf": 5.52
+    },
+    {
+      "chord": "S IH SS2",
+      "mask": "00000001001011",
+      "bank": "right",
+      "probability": 0.325214,
+      "zipf": 5.51
+    },
+    {
+      "chord": "L JH1",
+      "mask": "10010110000000",
+      "bank": "right",
+      "probability": 0.321982,
+      "zipf": 5.51
+    },
+    {
+      "chord": "K SH N2",
+      "mask": "00000001111011",
+      "bank": "right",
+      "probability": 0.318709,
+      "zipf": 5.5
+    },
+    {
+      "chord": "R M2",
+      "mask": "00000001001111",
+      "bank": "right",
+      "probability": 0.313913,
+      "zipf": 5.5
+    },
+    {
+      "chord": "L V1",
+      "mask": "01111010000000",
+      "bank": "right",
+      "probability": 0.310678,
+      "zipf": 5.49
+    },
+    {
+      "chord": "NG K2",
+      "mask": "00000000111011",
+      "bank": "right",
+      "probability": 0.310066,
+      "zipf": 5.49
+    },
+    {
+      "chord": "L S1",
+      "mask": "10111010000000",
+      "bank": "right",
+      "probability": 0.302713,
+      "zipf": 5.48
+    },
+    {
+      "chord": "M N T SS2",
+      "mask": "00000001011001",
+      "bank": "right",
+      "probability": 0.295243,
+      "zipf": 5.47
+    },
+    {
+      "chord": "N S T1",
+      "mask": "00010010000000",
+      "bank": "right",
+      "probability": 0.278839,
+      "zipf": 5.45
+    },
+    {
+      "chord": "M N T1",
+      "mask": "00000010000000",
+      "bank": "right",
+      "probability": 0.255431,
+      "zipf": 5.41
+    },
+    {
+      "chord": "ZH N1",
+      "mask": "00110110000000",
+      "bank": "right",
+      "probability": 0.239335,
+      "zipf": 5.38
+    },
+    {
+      "chord": "P T2",
+      "mask": "00000000011111",
+      "bank": "right",
+      "probability": 0.214709,
+      "zipf": 5.33
+    },
+    {
+      "chord": "EY2",
+      "mask": "00000001111111",
+      "bank": "right",
+      "probability": 0.211867,
+      "zipf": 5.33
+    },
+    {
+      "chord": "R S2",
+      "mask": "00000000010001",
+      "bank": "right",
+      "probability": 0.208484,
+      "zipf": 5.32
+    },
+    {
+      "chord": "SH N L2",
+      "mask": "00000001001101",
+      "bank": "right",
+      "probability": 0.195221,
+      "zipf": 5.29
+    },
+    {
+      "chord": "ZH N2",
+      "mask": "00000000011011",
+      "bank": "right",
+      "probability": 0.194949,
+      "zipf": 5.29
+    },
+    {
+      "chord": "SH N L1",
+      "mask": "10011010000000",
+      "bank": "right",
+      "probability": 0.187307,
+      "zipf": 5.27
+    },
+    {
+      "chord": "S V1",
+      "mask": "10011110000000",
+      "bank": "right",
+      "probability": 0.18231,
+      "zipf": 5.26
+    },
+    {
+      "chord": "N SH N1",
+      "mask": "10111110000000",
+      "bank": "right",
+      "probability": 0.17873,
+      "zipf": 5.25
+    },
+    {
+      "chord": "ZH R1",
+      "mask": "10110010000000",
+      "bank": "right",
+      "probability": 0.178425,
+      "zipf": 5.25
+    },
+    {
+      "chord": "M P L1",
+      "mask": "01011010000000",
+      "bank": "right",
+      "probability": 0.172006,
+      "zipf": 5.24
+    },
+    {
+      "chord": "S K2",
+      "mask": "00000000111101",
+      "bank": "right",
+      "probability": 0.168628,
+      "zipf": 5.23
+    },
+    {
+      "chord": "S V2",
+      "mask": "00000001001111",
+      "bank": "right",
+      "probability": 0.16281,
+      "zipf": 5.21
+    },
+    {
+      "chord": "M S1",
+      "mask": "11111110000000",
+      "bank": "right",
+      "probability": 0.16162,
+      "zipf": 5.21
+    },
+    {
+      "chord": "K CH R1",
+      "mask": "10111010000000",
+      "bank": "right",
+      "probability": 0.158476,
+      "zipf": 5.2
+    },
+    {
+      "chord": "N JH2",
+      "mask": "00000001001001",
+      "bank": "right",
+      "probability": 0.156353,
+      "zipf": 5.19
+    },
+    {
+      "chord": "F K1",
+      "mask": "00010110000000",
+      "bank": "right",
+      "probability": 0.15601,
+      "zipf": 5.19
+    },
+    {
+      "chord": "N K2",
+      "mask": "00000000101011",
+      "bank": "right",
+      "probability": 0.151445,
+      "zipf": 5.18
+    },
+    {
+      "chord": "P SH N1",
+      "mask": "10111110000000",
+      "bank": "right",
+      "probability": 0.148124,
+      "zipf": 5.17
+    },
+    {
+      "chord": "N Y N1",
+      "mask": "01110110000000",
+      "bank": "right",
+      "probability": 0.145808,
+      "zipf": 5.16
+    },
+    {
+      "chord": "NG SS1",
+      "mask": "10011110000000",
+      "bank": "right",
+      "probability": 0.140433,
+      "zipf": 5.15
+    },
+    {
+      "chord": "S IH SS1",
+      "mask": "10010110000000",
+      "bank": "right",
+      "probability": 0.135902,
+      "zipf": 5.13
+    },
+    {
+      "chord": "Y1",
+      "mask": "10010010000000",
+      "bank": "right",
+      "probability": 0.132847,
+      "zipf": 5.12
+    },
+    {
+      "chord": "P SH N2",
+      "mask": "00000001011111",
+      "bank": "right",
+      "probability": 0.118908,
+      "zipf": 5.08
+    },
+    {
+      "chord": "T K L2",
+      "mask": "00000001001111",
+      "bank": "right",
+      "probability": 0.11491,
+      "zipf": 5.06
+    },
+    {
+      "chord": "N S T2",
+      "mask": "00000000001001",
+      "bank": "right",
+      "probability": 0.104539,
+      "zipf": 5.02
+    },
+    {
+      "chord": "N Y N2",
+      "mask": "00000000111011",
+      "bank": "right",
+      "probability": 0.10389,
+      "zipf": 5.02
+    },
+    {
+      "chord": "T B1",
+      "mask": "10110010000000",
+      "bank": "right",
+      "probability": 0.102005,
+      "zipf": 5.01
+    },
+    {
+      "chord": "T K L1",
+      "mask": "10011110000000",
+      "bank": "right",
+      "probability": 0.099954,
+      "zipf": 5.0
+    },
+    {
+      "chord": "N TH1",
+      "mask": "11011110000000",
+      "bank": "right",
+      "probability": 0.098865,
+      "zipf": 5.0
+    },
+    {
+      "chord": "AH1",
+      "mask": "01110110000000",
+      "bank": "right",
+      "probability": 0.09258,
+      "zipf": 4.97
+    },
+    {
+      "chord": "N SH N2",
+      "mask": "00000001011111",
+      "bank": "right",
+      "probability": 0.088727,
+      "zipf": 4.95
+    },
+    {
+      "chord": "G R M1",
+      "mask": "00111110000000",
+      "bank": "right",
+      "probability": 0.08406,
+      "zipf": 4.92
+    },
+    {
+      "chord": "L JH2",
+      "mask": "00000001001011",
+      "bank": "right",
+      "probability": 0.07802,
+      "zipf": 4.89
+    },
+    {
+      "chord": "D N T SS2",
+      "mask": "00000000101101",
+      "bank": "right",
+      "probability": 0.074158,
+      "zipf": 4.87
+    },
+    {
+      "chord": "ZH R2",
+      "mask": "00000001011001",
+      "bank": "right",
+      "probability": 0.071986,
+      "zipf": 4.86
+    },
+    {
+      "chord": "N SH L1",
+      "mask": "00110010000000",
+      "bank": "right",
+      "probability": 0.065053,
+      "zipf": 4.81
+    },
+    {
+      "chord": "N TH2",
+      "mask": "00000001101111",
+      "bank": "right",
+      "probability": 0.064617,
+      "zipf": 4.81
+    },
+    {
+      "chord": "D Y OW1",
+      "mask": "01110010000000",
+      "bank": "right",
+      "probability": 0.06167,
+      "zipf": 4.79
+    },
+    {
+      "chord": "F K2",
+      "mask": "00000000001011",
+      "bank": "right",
+      "probability": 0.061652,
+      "zipf": 4.79
+    },
+    {
+      "chord": "Z K1",
+      "mask": "10111110000000",
+      "bank": "right",
+      "probability": 0.059917,
+      "zipf": 4.78
+    },
+    {
+      "chord": "R V2",
+      "mask": "00000001001001",
+      "bank": "right",
+      "probability": 0.05971,
+      "zipf": 4.78
+    },
+    {
+      "chord": "V R Y1",
+      "mask": "10010110000000",
+      "bank": "right",
+      "probability": 0.059292,
+      "zipf": 4.77
+    },
+    {
+      "chord": "L S2",
+      "mask": "00000001011101",
+      "bank": "right",
+      "probability": 0.055925,
+      "zipf": 4.75
+    },
+    {
+      "chord": "K CH R2",
+      "mask": "00000001011101",
+      "bank": "right",
+      "probability": 0.053297,
+      "zipf": 4.73
+    },
+    {
+      "chord": "V R Y2",
+      "mask": "00000001001011",
+      "bank": "right",
+      "probability": 0.051252,
+      "zipf": 4.71
+    },
+    {
+      "chord": "V R L1",
+      "mask": "00110010000000",
+      "bank": "right",
+      "probability": 0.050167,
+      "zipf": 4.7
+    },
+    {
+      "chord": "G R M2",
+      "mask": "00000000011111",
+      "bank": "right",
+      "probability": 0.049698,
+      "zipf": 4.7
+    },
+    {
+      "chord": "M N T SS1",
+      "mask": "10110010000000",
+      "bank": "right",
+      "probability": 0.049569,
+      "zipf": 4.7
+    },
+    {
+      "chord": "L V2",
+      "mask": "00000000111101",
+      "bank": "right",
+      "probability": 0.046888,
+      "zipf": 4.67
+    },
+    {
+      "chord": "N R L1",
+      "mask": "01100010000000",
+      "bank": "right",
+      "probability": 0.046656,
+      "zipf": 4.67
+    },
+    {
+      "chord": "D Y OW2",
+      "mask": "00000000111001",
+      "bank": "right",
+      "probability": 0.045423,
+      "zipf": 4.66
+    },
+    {
+      "chord": "AH SS1",
+      "mask": "11110010000000",
+      "bank": "right",
+      "probability": 0.039368,
+      "zipf": 4.6
+    },
+    {
+      "chord": "M P L2",
+      "mask": "00000000101101",
+      "bank": "right",
+      "probability": 0.035836,
+      "zipf": 4.55
+    },
+    {
+      "chord": "F R N T2",
+      "mask": "00000001001111",
+      "bank": "right",
+      "probability": 0.032324,
+      "zipf": 4.51
+    },
+    {
+      "chord": "N SH L2",
+      "mask": "00000000011001",
+      "bank": "right",
+      "probability": 0.032209,
+      "zipf": 4.51
+    },
+    {
+      "chord": "M P N Y1",
+      "mask": "10011110000000",
+      "bank": "right",
+      "probability": 0.025525,
+      "zipf": 4.41
+    },
+    {
+      "chord": "F R N T1",
+      "mask": "10011110000000",
+      "bank": "right",
+      "probability": 0.024897,
+      "zipf": 4.4
+    },
+    {
+      "chord": "S CH N SS2",
+      "mask": "00000001110001",
+      "bank": "right",
+      "probability": 0.023029,
+      "zipf": 4.36
+    },
+    {
+      "chord": "S CH N SS1",
+      "mask": "11100010000000",
+      "bank": "right",
+      "probability": 0.023029,
+      "zipf": 4.36
+    },
+    {
+      "chord": "R S T Y2",
+      "mask": "00000000011111",
+      "bank": "right",
+      "probability": 0.021661,
+      "zipf": 4.34
+    },
+    {
+      "chord": "R S T Y1",
+      "mask": "00111110000000",
+      "bank": "right",
+      "probability": 0.021542,
+      "zipf": 4.33
+    },
+    {
+      "chord": "M S2",
+      "mask": "00000001111111",
+      "bank": "right",
+      "probability": 0.021034,
+      "zipf": 4.32
+    },
+    {
+      "chord": "N R L2",
+      "mask": "00000000110001",
+      "bank": "right",
+      "probability": 0.02074,
+      "zipf": 4.32
+    },
+    {
+      "chord": "R T M N T1",
+      "mask": "10010010000000",
+      "bank": "right",
+      "probability": 0.019547,
+      "zipf": 4.29
+    },
+    {
+      "chord": "Z K2",
+      "mask": "00000001011111",
+      "bank": "right",
+      "probability": 0.016974,
+      "zipf": 4.23
+    },
+    {
+      "chord": "Z N AH SS2",
+      "mask": "00000001000001",
+      "bank": "right",
+      "probability": 0.014202,
+      "zipf": 4.15
+    },
+    {
+      "chord": "Z N AH SS1",
+      "mask": "10000010000000",
+      "bank": "right",
+      "probability": 0.014202,
+      "zipf": 4.15
+    },
+    {
+      "chord": "D N T SS1",
+      "mask": "01011010000000",
+      "bank": "right",
+      "probability": 0.013951,
+      "zipf": 4.14
+    },
+    {
+      "chord": "V R L2",
+      "mask": "00000000011001",
+      "bank": "right",
+      "probability": 0.012404,
+      "zipf": 4.09
+    },
+    {
+      "chord": "R T M N T2",
+      "mask": "00000001001001",
+      "bank": "right",
+      "probability": 0.011485,
+      "zipf": 4.06
+    },
+    {
+      "chord": "N R JH Y1",
+      "mask": "10111010000000",
+      "bank": "right",
+      "probability": 0.011165,
+      "zipf": 4.05
+    },
+    {
+      "chord": "M P N Y2",
+      "mask": "00000001001111",
+      "bank": "right",
+      "probability": 0.010336,
+      "zipf": 4.01
+    },
+    {
+      "chord": "EY1",
+      "mask": "11111110000000",
+      "bank": "right",
+      "probability": 0.00955,
+      "zipf": 3.98
+    },
+    {
+      "chord": "OW1",
+      "mask": "11011010000000",
+      "bank": "right",
+      "probability": 0.00899,
+      "zipf": 3.95
+    },
+    {
+      "chord": "T B2",
+      "mask": "00000001011001",
+      "bank": "right",
+      "probability": 0.008926,
+      "zipf": 3.95
+    },
+    {
+      "chord": "Y AH1",
+      "mask": "00111110000000",
+      "bank": "right",
+      "probability": 0.007485,
+      "zipf": 3.87
+    },
+    {
+      "chord": "N R JH Y2",
+      "mask": "00000001011101",
+      "bank": "right",
+      "probability": 0.00652,
+      "zipf": 3.81
+    },
+    {
+      "chord": "L P M N T1",
+      "mask": "10111010000000",
+      "bank": "right",
+      "probability": 0.006325,
+      "zipf": 3.8
+    },
+    {
+      "chord": "R V S AH SS2",
+      "mask": "00000001111001",
+      "bank": "right",
+      "probability": 0.006325,
+      "zipf": 3.8
+    },
+    {
+      "chord": "R V S AH SS1",
+      "mask": "11110010000000",
+      "bank": "right",
+      "probability": 0.006325,
+      "zipf": 3.8
+    },
+    {
+      "chord": "M W N2",
+      "mask": "00000000101011",
+      "bank": "right",
+      "probability": 0.006325,
+      "zipf": 3.8
+    },
+    {
+      "chord": "M W N1",
+      "mask": "01010110000000",
+      "bank": "right",
+      "probability": 0.006325,
+      "zipf": 3.8
+    },
+    {
+      "chord": "Y SS1",
+      "mask": "10100010000000",
+      "bank": "right",
+      "probability": 0.004657,
+      "zipf": 3.67
+    },
+    {
+      "chord": "L P M N T2",
+      "mask": "00000001011101",
+      "bank": "right",
+      "probability": 0.003162,
+      "zipf": 3.5
+    },
+    {
+      "chord": "Y N1",
+      "mask": "01110010000000",
+      "bank": "right",
+      "probability": 0.001782,
+      "zipf": 3.25
+    },
+    {
+      "chord": "M B2",
+      "mask": "00000001110001",
+      "bank": "right",
+      "probability": 0.000303,
+      "zipf": 2.48
+    }
+  ]
+}
